@@ -1,0 +1,13 @@
+#fontos{
+    border: 3px solid lightcoral;
+    padding: 5px;
+}
+header{
+    text-align: center;
+}
+#gomb{
+    text-align: center;
+    padding: 10px;
+    width: 200px;
+    height: auto;
+}
