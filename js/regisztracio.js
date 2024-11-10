@@ -7,6 +7,7 @@ function ellenorzes(){
     let radioeredmeny = document.querySelector('input:checked')
     console.log(jelszo)
     const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ])\w/)
+    const tel = new RegExp(/(^\+?\d[0-9]{10})$/g)
     if(email=="" || vezetnev== "" || keresztnev == "" || telefon == "" || radioeredmeny == null){
         alert("Kérem minden mezőt töltsön ki!")
         return
@@ -37,5 +38,71 @@ function ellenorzes(){
         document.getElementById('knev').style.border = "2px dashed red"
         return
     }
+    else if(tel.test(telefon)==false){
+        document.getElementById('email').style.border = "2px solid green"
+        document.getElementById('jelszo').style.border = "2px solid green"
+        document.getElementById('vnev').style.border = "2px solid green"
+        document.getElementById('knev').style.border = "2px solid green"
+        alert("Hibás telefonszám!")
+        document.getElementById('telefonszam').style.border = "2px dashed red"
+        return
+    }
+    else{
+        
+    }
+}
+async function adatKuldes(email, jelszo, knev, vnev, tel, tipus) {
+    try {
+        let kuldendo = {
+            "email": email,
+            "jelszo": jelszo,
+            "knev": knev, 
+            "vnev": vnev,
+            "telefon": tel,
+            "tipus": tipus
+        }
+        let eredmeny = await fetch('./php/regisztracio.php', {
+            method : "POST",
+            headers : {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(kuldendo)
+        })
+        if(eredmeny.ok){
+            console.log("Sikeres rogzites")
+        }
+        else{
+            throw new error
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+function feltoltes(adatok){
+    let select = document.getElementById('megye')
+    for (let adat of adatok) {
+        for (let [kulcs, ertek] of Object.entries(adat)) {
+            let opt = document.createElement('option')
+            opt.innerText = ertek
+            select.appendChild(opt)
+        }
+        //let opt = document.createElement('option')
+        
+    }
+}
+async function megyelekeres(){
+    try {
+        let eredmeny = await fetch('../php/regisztracio.php/megyek')
+        if(eredmeny.ok){
+            let adatok = await eredmeny.json()
+            feltoltes(adatok)
+        }
+        else{
+            throw new error
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
 document.getElementById('gomb').addEventListener('click', ellenorzes)
+window.addEventListener('load', megyelekeres)
