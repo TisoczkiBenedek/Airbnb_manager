@@ -12,7 +12,7 @@ function adatokLekerese($muvelet){
             if($eredmeny->num_rows !=0){
                 //Az adatok lehívása
                 $adatok = $eredmeny->fetch_all(MYSQLI_ASSOC);
-                return $adatok;
+                //return $adatok;
             }
             else {
                 return 'Nincsenek találatok!';
