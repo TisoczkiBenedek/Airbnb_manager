@@ -5,10 +5,10 @@ function ellenorzes(){
     let keresztnev = document.getElementById('knev').value 
     let telefon = document.getElementById('telefonszam').value
     let radioeredmeny = document.querySelector('input:checked')
-    console.log(jelszo)
+    let megye = document.getElementById('megye').value
     const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ])\w/)
     const tel = new RegExp(/(^\+?\d[0-9]{10})$/g)
-    if(email=="" || vezetnev== "" || keresztnev == "" || telefon == "" || radioeredmeny == null){
+    if(email=="" || vezetnev== "" || keresztnev == "" || telefon == "" || radioeredmeny == null || megye==""){
         alert("Kérem minden mezőt töltsön ki!")
         return
     }
@@ -48,10 +48,12 @@ function ellenorzes(){
         return
     }
     else{
-        
+        document.getElementById('telefonszam').style.border = "2px solid green"
+        document.getElementById('megye').style.border = "2px solid green"
+        adatKuldes(email, jelszo, keresztnev, vezetnev, telefon, radioeredmeny.id, megye)
     }
 }
-async function adatKuldes(email, jelszo, knev, vnev, tel, tipus) {
+async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
     try {
         let kuldendo = {
             "email": email,
@@ -59,9 +61,10 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus) {
             "knev": knev, 
             "vnev": vnev,
             "telefon": tel,
-            "tipus": tipus
+            "tipus": tipus,
+            "megye": megye
         }
-        let eredmeny = await fetch('./php/regisztracio.php', {
+        let eredmeny = await fetch('../php/regisztracio.php/regsiztracio', {
             method : "POST",
             headers : {
                 "Content-Type": "application/json"
