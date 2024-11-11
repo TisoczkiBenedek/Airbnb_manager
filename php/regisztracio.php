@@ -6,6 +6,9 @@ switch (end($teljesURL)) {
         $muvelet = "SELECT * FROM megye;";
         echo adatokLekerese($muvelet);
         break;
+    case 'regiszracio':
+        
+        break;
     default:
         echo "Hiba";
         break;

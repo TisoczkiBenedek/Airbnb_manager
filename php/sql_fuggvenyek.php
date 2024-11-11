@@ -1,7 +1,7 @@
 <?php
 function adatokLekerese($muvelet){
     //Kapcsolat létrehozása
-    $db = new mysqli ('localhost', 'root', '', 'vizsgaremek');
+    $db = new mysqli ('localhost', 'root', '', 'vizsgaremek_takaritas');
     // Kapcsolat létrejött-e
     if($db->connect_errno == 0){
         //Az sql művelet végrehajtása
@@ -12,22 +12,22 @@ function adatokLekerese($muvelet){
             if($eredmeny->num_rows !=0){
                 //Az adatok lehívása
                 $adatok = $eredmeny->fetch_all(MYSQLI_ASSOC);
-                //return $adatok;
             }
             else {
-                return 'Nincsenek találatok!';
+                $adatok = array('valasz'=>'Nincsenek találatok!');
             }
         }
         else{
-            return $db->error;
+            $adatok= $db->error;
         }
     }
     else{
-        return $db->connect_error;
+        $adatok= $db->connect_error;
     }
+    return json_encode($adatok, JSON_UNESCAPED_UNICODE);
 }
 function adatokValtoztatasa($muvelet){
-    $db = new mysqli ('localhost', 'root', '', 'vizsgaremek');
+    $db = new mysqli ('localhost', 'root', '', 'vizsgaremek_takaritas');
     if($db->connect_errno==0){
         $db->query($muvelet);
         if($db-> errno==0){

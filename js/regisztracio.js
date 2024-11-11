@@ -81,13 +81,10 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus) {
 function feltoltes(adatok){
     let select = document.getElementById('megye')
     for (let adat of adatok) {
-        for (let [kulcs, ertek] of Object.entries(adat)) {
-            let opt = document.createElement('option')
-            opt.innerText = ertek
-            select.appendChild(opt)
-        }
-        //let opt = document.createElement('option')
-        
+        let opt = document.createElement('option')
+        opt.innerText = adat['megyeNev']
+        opt.value = adat['Id']
+        select.appendChild(opt)
     }
 }
 async function megyelekeres(){
