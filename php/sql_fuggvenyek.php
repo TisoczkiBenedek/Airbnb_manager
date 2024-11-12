@@ -12,19 +12,19 @@ function adatokLekerese($muvelet){
             if($eredmeny->num_rows !=0){
                 //Az adatok lehívása
                 $adatok = $eredmeny->fetch_all(MYSQLI_ASSOC);
+                return $adatok;
             }
             else {
-                $adatok = array('valasz'=>'Nincsenek találatok!');
+                return 'Nincsenek találatok!';
             }
         }
         else{
-            $adatok= $db->error;
+            return $db->error;
         }
     }
     else{
-        $adatok= $db->connect_error;
+        return $db->connect_error;
     }
-    return json_encode($adatok, JSON_UNESCAPED_UNICODE);
 }
 function adatokValtoztatasa($muvelet){
     $db = new mysqli ('localhost', 'root', '', 'vizsgaremek_takaritas');
