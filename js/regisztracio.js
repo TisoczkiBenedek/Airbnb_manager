@@ -6,7 +6,7 @@ function ellenorzes(){
     let telefon = document.getElementById('telefonszam').value
     let radioeredmeny = document.querySelector('input:checked')
     let megye = document.getElementById('megye').value
-    const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ])\w/)
+    const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ][a-zéáűúőóüöí]{1,})/)
     const tel = new RegExp(/(^\+?\d[0-9]{10})$/g)
     if(email=="" || vezetnev== "" || keresztnev == "" || telefon == "" || radioeredmeny == null || megye==""){
         alert("Kérem minden mezőt töltsön ki!")
@@ -48,6 +48,10 @@ function ellenorzes(){
         return
     }
     else{
+        document.getElementById('email').style.border = "2px solid green"
+        document.getElementById('jelszo').style.border = "2px solid green"
+        document.getElementById('vnev').style.border = "2px solid green"
+        document.getElementById('knev').style.border = "2px solid green"
         document.getElementById('telefonszam').style.border = "2px solid green"
         document.getElementById('megye').style.border = "2px solid green"
         adatKuldes(email, jelszo, keresztnev, vezetnev, telefon, radioeredmeny.id, megye)
@@ -72,7 +76,8 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
             body : JSON.stringify(kuldendo)
         })
         if(eredmeny.ok){
-            console.log("Sikeres rogzites")
+            let valasz = await eredmeny.json()
+            valaszkiir(valasz)
         }
         else{
             throw new error
@@ -103,6 +108,13 @@ async function megyelekeres(){
     } catch (error) {
         console.log(error)
     }
+}
+function valaszkiir(valasz){
+        document.getElementById('infok').classList.add("visually-hidden")
+        document.getElementById('urlap').classList.add("visually-hidden")
+        let div = document.createElement('div')
+        div.innerText = valasz['valasz']
+        document.getElementById("torzs").appendChild(div)
 }
 document.getElementById('gomb').addEventListener('click', ellenorzes)
 window.addEventListener('load', megyelekeres)
