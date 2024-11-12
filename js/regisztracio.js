@@ -64,7 +64,7 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
             "tipus": tipus,
             "megye": megye
         }
-        let eredmeny = await fetch('../php/regisztracio.php/regsiztracio', {
+        let eredmeny = await fetch('../php/regisztracio.php/regisztracio', {
             method : "POST",
             headers : {
                 "Content-Type": "application/json"
