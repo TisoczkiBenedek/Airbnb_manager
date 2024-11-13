@@ -12,7 +12,7 @@ function ellenorzes(){
         alert("Kérem minden mezőt töltsön ki!")
         return
     }
-    if(!email.includes("@")){
+    else if(!email.includes("@")){
         alert("Hibás e-mail cím!")
         document.getElementById('email').style.border = "2px dashed red"
         return
@@ -86,14 +86,12 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
         console.log(error)
     }
 }
-function feltoltes(adatok){
-    let select = document.getElementById('megye')
-    for (let adat of adatok) {
-        let opt = document.createElement('option')
-        opt.innerText = adat['megyeNev']
-        opt.value = adat['Id']
-        select.appendChild(opt)
-    }
+function valaszkiir(valasz){
+    document.getElementById('infok').classList.add("visually-hidden")
+    document.getElementById('urlap').classList.add("visually-hidden")
+    let div = document.createElement('div')
+    div.innerText = valasz['valasz']
+    document.getElementById("torzs").appendChild(div)
 }
 async function megyelekeres(){
     try {
@@ -109,12 +107,14 @@ async function megyelekeres(){
         console.log(error)
     }
 }
-function valaszkiir(valasz){
-        document.getElementById('infok').classList.add("visually-hidden")
-        document.getElementById('urlap').classList.add("visually-hidden")
-        let div = document.createElement('div')
-        div.innerText = valasz['valasz']
-        document.getElementById("torzs").appendChild(div)
+function feltoltes(adatok){
+    let select = document.getElementById('megye')
+    for (let adat of adatok) {
+        let opt = document.createElement('option')
+        opt.innerText = adat['megyeNev']
+        opt.value = adat['Id']
+        select.appendChild(opt)
+    }
 }
 document.getElementById('gomb').addEventListener('click', ellenorzes)
 window.addEventListener('load', megyelekeres)
