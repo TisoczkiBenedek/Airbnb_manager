@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Nov 11. 12:06
--- Kiszolgáló verziója: 10.4.32-MariaDB
--- PHP verzió: 8.2.12
+-- Létrehozás ideje: 2024. Nov 14. 16:51
+-- Kiszolgáló verziója: 10.4.25-MariaDB
+-- PHP verzió: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,8 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `eszkoz` (
   `Id` int(10) NOT NULL,
-  `nev` varchar(25) NOT NULL,
-  `kiszereles` varchar(30) NOT NULL,
+  `nev` varchar(25) COLLATE utf8_hungarian_ci NOT NULL,
+  `kiszereles` varchar(30) COLLATE utf8_hungarian_ci NOT NULL,
   `keszletenDB` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
@@ -43,7 +43,7 @@ CREATE TABLE `eszkoz` (
 CREATE TABLE `eszkozszugseglet` (
   `eszkozId` int(10) NOT NULL,
   `lakasId` int(10) NOT NULL,
-  `takaritoEmail` varchar(65) NOT NULL,
+  `takaritoEmail` varchar(65) COLLATE utf8_hungarian_ci NOT NULL,
   `teljesitve` tinyint(1) NOT NULL,
   `igenyeltDarabszam` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
@@ -55,11 +55,11 @@ CREATE TABLE `eszkozszugseglet` (
 --
 
 CREATE TABLE `felhasznalo` (
-  `emailcim` varchar(65) NOT NULL,
-  `jelszo` varchar(25) NOT NULL,
-  `vezetekNev` text NOT NULL,
-  `keresztNev` text NOT NULL,
-  `elerhetoseg` varchar(30) NOT NULL,
+  `emailcim` varchar(65) COLLATE utf8_hungarian_ci NOT NULL,
+  `jelszo` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
+  `vezetekNev` text COLLATE utf8_hungarian_ci NOT NULL,
+  `keresztNev` text COLLATE utf8_hungarian_ci NOT NULL,
+  `elerhetoseg` varchar(30) COLLATE utf8_hungarian_ci NOT NULL,
   `megyeId` int(5) NOT NULL,
   `tulajdonos` tinyint(1) NOT NULL,
   `takarito` tinyint(1) NOT NULL,
@@ -68,6 +68,14 @@ CREATE TABLE `felhasznalo` (
   `TakaritoSzabadsagKezd` date NOT NULL,
   `TakaritoSzabadsagVeg` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `felhasznalo`
+--
+
+INSERT INTO `felhasznalo` (`emailcim`, `jelszo`, `vezetekNev`, `keresztNev`, `elerhetoseg`, `megyeId`, `tulajdonos`, `takarito`, `admin`, `szabadTakarito`, `TakaritoSzabadsagKezd`, `TakaritoSzabadsagVeg`) VALUES
+('12c-tisoczki@ipari.vein.hu', '$2y$10$6h501RvpKL9LUcBvS9', 'Kutya', 'Kutya', '+36301234567', 9, 0, 0, 0, 0, '0000-00-00', '0000-00-00'),
+('eva@gmail.com', '$2y$10$qU.ZHDv0mjAYEHZjrEhCmeMqjWSW6TGilqiK5zlYtvKcL9Z4GkxA.', 'Éva', 'Kereszt', '36301202345', 19, 0, 1, 0, 0, '0000-00-00', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -91,14 +99,14 @@ CREATE TABLE `foglaltsag` (
 
 CREATE TABLE `lakas` (
   `Id` int(10) NOT NULL,
-  `lakcim` varchar(150) NOT NULL,
+  `lakcim` varchar(150) COLLATE utf8_hungarian_ci NOT NULL,
   `terulet` int(15) NOT NULL,
   `medence` tinyint(1) NOT NULL,
   `szauna` tinyint(1) NOT NULL,
-  `tulajdonosEmail` varchar(65) NOT NULL,
-  `belepesiAdatok` varchar(50) NOT NULL,
+  `tulajdonosEmail` varchar(65) COLLATE utf8_hungarian_ci NOT NULL,
+  `belepesiAdatok` varchar(50) COLLATE utf8_hungarian_ci NOT NULL,
   `megyeId` int(5) NOT NULL,
-  `kepek` varchar(255) NOT NULL
+  `kepek` varchar(255) COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -109,7 +117,7 @@ CREATE TABLE `lakas` (
 
 CREATE TABLE `megye` (
   `Id` int(5) NOT NULL,
-  `megyeNev` text NOT NULL
+  `megyeNev` text COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -150,7 +158,7 @@ CREATE TABLE `takaritas` (
   `takaritoEmail` int(65) NOT NULL,
   `takaritoErkezes` date NOT NULL,
   `befejezve` tinyint(1) NOT NULL,
-  `megjegyzes` varchar(50) NOT NULL
+  `megjegyzes` varchar(50) COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
