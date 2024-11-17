@@ -1,18 +1,20 @@
+<!--AZ ADATBÁZISBAN A TAKARÍTÓK SZABADSÁGÁT MEG KELL MAJD CSINÁLNI!!!-->
+
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="adminOldal.css">
+    <link rel="stylesheet" href="../adminOldal.css">
     <title>Admin főoldal</title>
 </head>
 <body>
     <?php
-        include "./sql_fuggvenyek/sqlGET.php";
+        include "./sql_fuggvenyek/sql_fuggvenyek.php";
     ?>
 
-    
     <div class="pos-f-t">
         <div class="navbar-right">
             <div class="collapse" id="navbarToggleExternalContent">
@@ -43,14 +45,22 @@
 
                 <?php
                     function profilBetoltese(){
-                        $muvelet = "";
-                        $felhasznaloBetoltese = adatokLekerese($muvelet);
+                        if($_SERVER['REQUEST_METHOD'] == 'GET'){
+                            if(isset($_GET['emailcim']) && !empty($_GET['emailcim'])){
+                                $emailcim = $_GET['emailcim'];
+                                $muvelet = "SELECT felhasznalo.profilkep, felhasznalo.vezetekNev, felhasznalo.keresztNev FROM `felhasznalo` WHERE felhasznalo.emailcim = '{$emailcim}'";
+                                $felhasznaloBetoltese = adatokLekerese($muvelet);
+                                if(is_array($felhasznaloBetoltese)){
+                                    $profilKep = $felhasznaloBetoltese[0]['profilkep'];
+                                    $felhasznaloNev = $felhasznaloBetoltese[0]['vezetekNev'] + $felhasznaloBetoltese[0]['keresztNev'];
+                                    echo "<h5 id='nev'>$felhasznaloNev</h5> <img id='profilKep' src='$profilKep' alt='profilkép'>";
+                                }else{
+                                    echo "Hiba a profil betöltésekor!";
+                                }
+                            }                  
+                        }
                     }
-                ?>
-
-
-                <h5 id="nev">név(XY)</h5>
-                <img id="profilKep" src="./warhammer-40.jpg" alt="profilkép">
+                ?>              
             </div>
         </nav>
     </div>
