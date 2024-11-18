@@ -14,7 +14,7 @@ function regisztracio(){
     $telefonszam = $adatok['telefon'];
     $tipus = $adatok['tipus'];
     $megye = $adatok['megye'];
-    $muvelet = "SELECT felhasznalo.vezetekNev, felhasznalo.keresztNev FROM felhasznalo WHERE felhasznalo.emailcim LIKE 'envagyok@gmail.com';";
+    $muvelet = "SELECT felhasznalo.vezetekNev, felhasznalo.keresztNev FROM felhasznalo WHERE felhasznalo.emailcim LIKE '{$email}';";
     $van = adatokLekerese($muvelet);
     if(is_array($van)){
         echo json_encode(["valasz"=>"Nincs"], JSON_UNESCAPED_UNICODE);

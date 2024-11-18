@@ -34,7 +34,7 @@ async function adatKuldes(email, jelszo) {
         })
         if(eredmeny.ok){
             let valasz = await eredmeny.json()
-            console.log(valasz)
+            felhasznaloInformalas(valasz)
         }
         else{
             throw new error
@@ -42,7 +42,14 @@ async function adatKuldes(email, jelszo) {
     } catch (error) {
         console.log(error)
     }
-    
-    
+}
+function felhasznaloInformalas(valasz){
+    if(Array.isArray(valasz)){
+        console.log(valasz)
+        window.open('../html/adminproba.html', '_parent')
+    }
+    else{
+        console.log(valasz)
+    }
 }
 document.getElementById('gomb').addEventListener('click', ellenorzes)
