@@ -96,6 +96,8 @@ function valaszkiir(valasz){
         let div = document.createElement('div')
         div.innerText = valasz['valasz']
         document.getElementById("torzs").appendChild(div)
+        alert(valasz['valasz'])
+        window.open('../html/alapoldal.html', '_parent')
     }
     
 }
