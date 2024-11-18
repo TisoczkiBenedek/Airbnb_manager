@@ -15,6 +15,8 @@ function bejelentkezes(){
     $email = $adatok['email'];
     $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.tulajdonos, felhasznalo.takarito, felhasznalo.jelszo FROM felhasznalo WHERE felhasznalo.emailcim like '{$email}'";
     $eredmeny = adatokLekerese($muvelet);
+    $_SESSION['emailcim'] = $eredmeny[0]['emailcim'];//email cím átküldése a főoldalra, a felhasználónév betöltésésnek céljából.
+    header('Location: adminFoOldal.php');//átküldés az admin oldalra
     if(is_array($eredmeny)){
         if(password_verify($adatok['jelszo'], $eredmeny[0]['jelszo'])){
             echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
