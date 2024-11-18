@@ -14,16 +14,24 @@ function regisztracio(){
     $telefonszam = $adatok['telefon'];
     $tipus = $adatok['tipus'];
     $megye = $adatok['megye'];
-    if($tipus== "takarito"){
-        $muvelet = "INSERT INTO `felhasznalo`(`emailcim`, `jelszo`, `vezetekNev`, `keresztNev`, `elerhetoseg`, `megyeId`, `tulajdonos`, `takarito`, `admin`) VALUES ('{$email}','{$jelszo}','{$vezeteknev}','{$keresztnev}','{$telefonszam}','{$megye}','0','1','0')";
-        $valasz = adatokValtoztatasa($muvelet);
-        echo json_encode(['valasz'=>"{$valasz}"], JSON_UNESCAPED_UNICODE);
+    $muvelet = "SELECT felhasznalo.vezetekNev, felhasznalo.keresztNev FROM felhasznalo WHERE felhasznalo.emailcim LIKE 'envagyok@gmail.com';";
+    $van = adatokLekerese($muvelet);
+    if(is_array($van)){
+        echo json_encode(["valasz"=>"Nincs"], JSON_UNESCAPED_UNICODE);
     }
     else{
-        $muvelet = "INSERT INTO `felhasznalo`(`emailcim`, `jelszo`, `vezetekNev`, `keresztNev`, `elerhetoseg`, `megyeId`, `tulajdonos`, `takarito`, `admin`) VALUES ('{$email}','{$jelszo}','{$vezeteknev}','{$keresztnev}','{$telefonszam}','{$megye}','1','0','0')";
-        $valasz = adatokValtoztatasa($muvelet);
-        echo json_encode(['valasz'=>"{$valasz}"], JSON_UNESCAPED_UNICODE);
+        if($tipus== "takarito"){
+            $muvelet = "INSERT INTO `felhasznalo`(`emailcim`, `jelszo`, `vezetekNev`, `keresztNev`, `elerhetoseg`, `megyeId`, `tulajdonos`, `takarito`, `admin`) VALUES ('{$email}','{$jelszo}','{$vezeteknev}','{$keresztnev}','{$telefonszam}','{$megye}','0','1','0')";
+            $valasz = adatokValtoztatasa($muvelet);
+            echo json_encode(['valasz'=>"{$valasz}"], JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            $muvelet = "INSERT INTO `felhasznalo`(`emailcim`, `jelszo`, `vezetekNev`, `keresztNev`, `elerhetoseg`, `megyeId`, `tulajdonos`, `takarito`, `admin`) VALUES ('{$email}','{$jelszo}','{$vezeteknev}','{$keresztnev}','{$telefonszam}','{$megye}','1','0','0')";
+            $valasz = adatokValtoztatasa($muvelet);
+            echo json_encode(['valasz'=>"{$valasz}"], JSON_UNESCAPED_UNICODE);
+        }
     }
+    
 }
 $teljesURL = explode('/', $_SERVER['REQUEST_URI']);
 switch (end($teljesURL)) {
