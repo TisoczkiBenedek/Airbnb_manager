@@ -87,11 +87,17 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
     }
 }
 function valaszkiir(valasz){
-    document.getElementById('infok').classList.add("visually-hidden")
-    document.getElementById('urlap').classList.add("visually-hidden")
-    let div = document.createElement('div')
-    div.innerText = valasz['valasz']
-    document.getElementById("torzs").appendChild(div)
+    if(valasz['valasz']== "Nincs"){
+        alert("Már van ezzel az e-mail címmel regisztrált felhasználó! Kérem próbáljon meg bejelentkezni!")
+    }
+    else{
+        document.getElementById('infok').classList.add("visually-hidden")
+        document.getElementById('urlap').classList.add("visually-hidden")
+        let div = document.createElement('div')
+        div.innerText = valasz['valasz']
+        document.getElementById("torzs").appendChild(div)
+    }
+    
 }
 async function megyelekeres(){
     try {
