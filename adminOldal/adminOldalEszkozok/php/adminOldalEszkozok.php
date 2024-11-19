@@ -14,12 +14,12 @@ function profilBetoltese(){
             $vezetekNev = $eredmeny[0]['vezetekNev']; 
             $keresztNev = $eredmeny[0]['keresztNev']; 
             $felhasznaloNev = $vezetekNev . " " . $keresztNev; 
-            echo "<h3 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h3> <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
+            echo "<h5 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h5> <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
         } else { 
-            echo "Hiba a profil betöltésekor!"; 
+            echo "<h5 id='nev'>Hiba a profil betöltésekor!</h5>"; 
         } 
     } else { 
-        echo "Nincs bejelentkezve!"; 
+        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>"; 
     }
 }
 ?>
