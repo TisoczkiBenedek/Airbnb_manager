@@ -46,7 +46,8 @@ async function adatKuldes(email, jelszo) {
 function felhasznaloInformalas(valasz){
     if(Array.isArray(valasz)){
         console.log(valasz)
-        window.open('../html/adminproba.html', '_parent')
+        //window.open('../html/adminproba.html', '_parent')
+        window.open('../adminOldal/adminOldalEszkozok/php/adminOldalEszkozok.php', '_parent')
     }
     else{
         console.log(valasz)
