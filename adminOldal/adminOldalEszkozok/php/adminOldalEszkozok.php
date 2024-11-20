@@ -64,10 +64,12 @@ function profilBetoltese(){
             </div>          
         </nav>
     </div>
-
+    <div id=eszkozTarolo>
+        <hr>
+        <?php
+            
+        ?>
+    </div>
     <script src="adminOldal.js"></script>
-
-
-    
 </body>
 </html>
