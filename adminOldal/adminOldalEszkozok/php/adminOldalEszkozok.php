@@ -22,6 +22,20 @@ function profilBetoltese(){
         echo "<h5 id='nev'>Nincs bejelentkezve!</h5>"; 
     }
 }
+
+
+
+function eszkozokBetoltese(){
+    $eszkoz_sql = "SELECT eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM `eszkoz`";
+    $eszkoz = adatokLekerese($eszkoz_sql);
+    if(is_array($eszkoz)){
+        foreach ($eszkoz as $adat) {
+            echo "<div><h1>".$adat['nev']."</h1><br><p>A(z) ".$adat['nev']." kiszerelése: <input type='button' value='-' id='kiszeMod'>".$adat['kiszereles']."<input type='button' value='+' id='kiszeMod'><br>Jelenleg készleten:".$adat['keszletenDB']."</p><hr></div>";
+        }
+    }else{
+        echo "<h1>Nem találtunk eszközöket!</h1>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +81,7 @@ function profilBetoltese(){
     <div id=eszkozTarolo>
         <hr>
         <?php
-            
+            eszkozokBetoltese()
         ?>
     </div>
     <script src="adminOldal.js"></script>
