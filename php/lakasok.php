@@ -5,8 +5,8 @@ switch (end($teljesURL)) {
     case 'lekeres':
         lekeres();
         break;
-    case 'lekeresid':
-        lekeres_id();
+    case 'modositas':
+        modositas();
         break;
     default:
         # code...
@@ -23,19 +23,14 @@ function lekeres(){
         echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
     }
 }
-function lekeres_id(){
-    if($_SERVER['REQUEST_METHOD']== "POST"){
+function modositas(){
+    if($_SERVER['REQUEST_METHOD']== 'POST'){
         $adatok = json_decode(file_get_contents('php://input'), true);
         $id = $adatok['id'];
-        $muvelet = "SELECT * FROM lakas WHERE lakas.id = $id";
-        $eredmeny = adatokLekerese($muvelet);
-        if(is_array($eredmeny)){
-            echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
-        }
-        else{
-            header("BAD REQUEST", true, 400);
-            echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
-        }
+        $email = $adatok['email'];
+        $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
+        $eredmeny =adatokValtoztatasa($muvelet);
+        echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
     }
     else{
         header("BAD REQUEST", true, 400);

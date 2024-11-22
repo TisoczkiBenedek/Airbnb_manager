@@ -35,7 +35,7 @@ function kiiras(adatok){
         button1.type = "button"
         button1.classList.add("btn","btn-info")
         button1.id = "gomb"
-        button1.setAttribute("onclick", "modositas("+adat['id']+")")
+        button1.setAttribute("onclick", "modositasModal("+adat['id']+")")
         button1.setAttribute("data-bs-toggle", "modal")
         button1.setAttribute("data-bs-target", "#modal_modosit")
         cardb.appendChild(button1)
@@ -44,7 +44,7 @@ function kiiras(adatok){
         button1.value = "Módosítás"
         button.classList.add("btn","btn-danger")
         button.value = "Törlés"
-        button.setAttribute("onclick", "torles("+adat['id']+")")
+        button.setAttribute("onclick", "torlesModal("+adat['id']+")")
         button.setAttribute("data-bs-toggle", "modal")
         button.setAttribute("data-bs-target", "#modal_torol")
         cardb.appendChild(button)
@@ -53,58 +53,65 @@ function kiiras(adatok){
         valasz.appendChild(div)
     }
 }
-async function modositas(id){
-    try {
-        let kuldendo = {
-            "id": id
-        }
-        let eredmeny = await fetch('../php/lakasok.php/lekeresid', {
-            method : "POST", 
-            headers : {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(kuldendo)
-        })
-        if(eredmeny.ok){
-            let adatok = await eredmeny.json()
-            console.log(adatok)
-            modalfeltoltes(adatok, false)
-        }
-    } catch (error) {
-        
-    }
-   
+function modositasModal(id){
+    let modalform = document.getElementById('modal_form')
+    modalform.innerText = ""
+    let modalcim = document.getElementById('modal_cim')
+    modalcim.innerText = ""
+    let span = document.createElement('span')
+    span.innerText = "Lakás Id: "
+    modalcim.appendChild(span)
+    modalcim.innerText += id
+    let label = document.createElement('label')
+    label.classList.add('form-label')
+    label.innerText = "Lakástulajdonos e-mail címe"
+    modalform.appendChild(label)
+    let cim = document.createElement("input")
+    cim.id = "email"
+    cim.type = "text"
+    cim.value = document.getElementsByClassName(id)[0].innerText
+    cim.classList.add("form-control")
+    modalform.appendChild(cim)
 }
-function torles(id){
-    console.log(id)
-}
-function modalfeltoltes(adatok, torol){
-    if(torol== false){
-        for (let adat of adatok) {
-            let modalform = document.getElementById('modal_form')
-        modalform.innerText = ""
-        let modalcim = document.getElementById('modal_cim')
-        modalcim.innerText = id
-        let label = document.createElement('label')
-        label.classList.add('form-label')
-        label.innerText = "Lakástulajdonos e-mail címe"
-        modalform.appendChild(label)
-        let cim = document.createElement("input")
-        cim.type = "text"
-        cim.value = adat['tulajdonosEmail']
-        cim.classList.add("form-control")
-        modalform.appendChild(cim)
-        let label1 = document.createElement('label')
-        label1.classList.add('form-label')
-        label1.innerText = ""
-        modalform.appendChild(label)
-        let lakcim = document.createElement("input")
-        lakcim.type = "text"
-        cim.value = document.getElementsByClassName(id)[0].innerText
-        cim.classList.add("form-control")
-        modalform.appendChild(cim)
-        } 
+async function modositas(){
+    let email = document.getElementById('email')
+    if(email.value == ""){
+        alert("Kérem töltse ki az e-mail címet!")
+        return
     }
+    if(!email.value.includes("@")){
+        alert("Hibásan megadott e-mail cím!")
+        return
+    }
+    else{
+        try {
+            let kuldendo = {
+                "id": document.getElementById('id_helye').innerText,
+                "email": email.value
+            }
+            let eredmeny = await fetch('../php/lakasok.php/modositas', {
+                method : "POST", 
+                headers : {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(kuldendo)
+            })
+            if(eredmeny.ok){
+                let adatok = await eredmeny.json()
+                console.log(adatok)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
+}
+function torlesModal(id){
+    let idhely = document.getElementById('id_helye')
+    idhely.innerText = ""
+    idhely.innerText += id
 }
 
+
 window.addEventListener('load', adatokLekerese)
+document.getElementById('mentes').addEventListener('click', modositas)
