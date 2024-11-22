@@ -1,42 +1,8 @@
-<?php
-
-include "./sql_fuggvenyek.php";
-
-
-function profilBetoltese(){
-    if(isset($_SESSION['emailcim'])){
-        $emailcim = $_SESSION['emailcim'];
-        $muvelet = "SELECT felhasznalo.profilkep, felhasznalo.vezetekNev, felhasznalo.keresztNev FROM felhasznalo WHERE felhasznalo.emailcim = '{$emailcim}'";
-        $eredmeny = adatokLekerese($muvelet);
-
-        if (is_array($eredmeny) && !empty($eredmeny)) {
-            $profilKep = $eredmeny[0]['profilkep']; 
-            $vezetekNev = $eredmeny[0]['vezetekNev']; 
-            $keresztNev = $eredmeny[0]['keresztNev']; 
-            $felhasznaloNev = $vezetekNev . " " . $keresztNev; 
-            echo "<h5 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h5> <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
-        } else { 
-            echo "<h5 id='nev'>Hiba a profil betöltésekor!</h5>"; 
-        } 
-    } else { 
-        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>"; 
-    }
-}
 
 
 
-function eszkozokBetoltese(){
-    $eszkoz_sql = "SELECT eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM `eszkoz`";
-    $eszkoz = adatokLekerese($eszkoz_sql);
-    if(is_array($eszkoz)){
-        foreach ($eszkoz as $adat) {
-            echo "<div><h1>".$adat['nev']."</h1><br><p>A(z) ".$adat['nev']." kiszerelése: <input type='button' value='-' id='kiszeMod'>".$adat['kiszereles']."<input type='button' value='+' id='kiszeMod'><br>Jelenleg készleten:".$adat['keszletenDB']."</p><hr></div>";
-        }
-    }else{
-        echo "<h1>Nem találtunk eszközöket!</h1>";
-    }
-}
-?>
+
+
 
 <!DOCTYPE html>
 <html lang="hu">
@@ -84,6 +50,59 @@ function eszkozokBetoltese(){
             eszkozokBetoltese()
         ?>
     </div>
-    <script src="adminOldal.js"></script>
+    <!--<script src="adminOldal.js"></script>-->
 </body>
 </html>
+
+
+<?php
+
+include "./sql_fuggvenyek.php";
+
+include "./eszkozFeltoltes.php";
+
+
+function profilBetoltese(){
+    if(isset($_SESSION['emailcim'])){
+        $emailcim = $_SESSION['emailcim'];
+        $muvelet = "SELECT felhasznalo.profilkep, felhasznalo.vezetekNev, felhasznalo.keresztNev FROM felhasznalo WHERE felhasznalo.emailcim = '{$emailcim}'";
+        $eredmeny = adatokLekerese($muvelet);
+
+        if (is_array($eredmeny) && !empty($eredmeny)) {
+            $profilKep = $eredmeny[0]['profilkep']; 
+            $vezetekNev = $eredmeny[0]['vezetekNev']; 
+            $keresztNev = $eredmeny[0]['keresztNev']; 
+            $felhasznaloNev = $vezetekNev . " " . $keresztNev; 
+            echo "<h5 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h5> <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
+        } else { 
+            echo "<h5 id='nev'>Hiba a profil betöltésekor!</h5>"; 
+        } 
+    } else { 
+        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>"; 
+    }
+}
+
+
+
+function eszkozokBetoltese(){
+    $eszkoz_sql = "SELECT eszkoz.Id, eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM `eszkoz`";
+    $eszkoz = adatokLekerese($eszkoz_sql);
+    if(is_array($eszkoz)){
+        foreach ($eszkoz as $adat) {
+            echo "<div id='eszkoz'><h1>".$adat['nev']."</h1><br><p>A(z) ".$adat['nev']." kiszerelése: ".$adat['kiszereles']."<br>Jelenleg készleten: 
+            <form method='post'>
+            <input type='number' id='darab' value='".$adat['keszletenDB']."' name='".$adat['nev']."'>
+            <input type='hidden' value='".$adat['Id']."' name='rejtettNev'>
+            <input type='submit' value='Raktár frissítése' id='kiszeMod' >
+            </form></p></div><hr>";
+            if($_SERVER["REQUEST_METHOD"] == "POST"){
+                if (isset($_POST['rejtettNev']) && isset($_POST[$adat['nev']])) {
+                    feltoltes($_POST[$adat['nev']], $_POST['rejtettNev']);
+                }     
+            }
+        }
+    }else{
+        echo "<h1 id='eszkoz'>Nem találtunk eszközöket!</h1><hr>";
+    }
+}
+?>
