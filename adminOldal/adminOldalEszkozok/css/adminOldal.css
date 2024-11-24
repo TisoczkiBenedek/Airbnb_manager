@@ -89,10 +89,6 @@ h2{
     margin: auto
 }
 
-hr{
-    margin-top: 50px;
-}
-
 #kiszeMod{
     margin: auto;
     margin-left: 20px;
@@ -106,4 +102,9 @@ hr{
 
 #darab{
     margin-left: 30px;
+}
+
+#frissites{
+    margin: 25px;
+    margin-bottom: 15px;
 }
