@@ -1,10 +1,7 @@
-
 <?php
-
+session_start();
 include "./sql_fuggvenyek.php";
-
 include "./eszkozFeltoltes.php";
-
 
 function profilBetoltese(){
     if(isset($_SESSION['emailcim'])){
@@ -13,48 +10,52 @@ function profilBetoltese(){
         $eredmeny = adatokLekerese($muvelet);
 
         if (is_array($eredmeny) && !empty($eredmeny)) {
-            $profilKep = $eredmeny[0]['profilkep']; 
-            $vezetekNev = $eredmeny[0]['vezetekNev']; 
-            $keresztNev = $eredmeny[0]['keresztNev']; 
-            $felhasznaloNev = $vezetekNev . " " . $keresztNev; 
+            $profilKep = $eredmeny[0]['profilkep'];
+            $vezetekNev = $eredmeny[0]['vezetekNev'];
+            $keresztNev = $eredmeny[0]['keresztNev'];
+            $felhasznaloNev = $vezetekNev . " " . $keresztNev;
             echo "<h5 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h5> <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
-        } else { 
-            echo "<h5 id='nev'>Hiba a profil betöltésekor!</h5>"; 
-        } 
-    } else { 
-        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>"; 
+        } else {
+            echo "<h5 id='nev'>Hiba a profil betöltésekor!</h5>";
+        }
+    } else {
+        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>";
     }
 }
 
-
-
 function eszkozokBetoltese(){
-    $eszkoz_sql = "SELECT eszkoz.Id, eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM `eszkoz`";
+    $eszkoz_sql = "SELECT eszkoz.Id, eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM eszkoz";
     $eszkoz = adatokLekerese($eszkoz_sql);
     if(is_array($eszkoz)){
         foreach ($eszkoz as $adat) {
-            echo "<div id='eszkoz'><h1>".$adat['nev']."</h1><br><p>A(z) ".$adat['nev']." kiszerelése: ".$adat['kiszereles']."<br>Jelenleg készleten: 
-            <form method='post'>
-            <input type='number' id='darab' value='".$adat['keszletenDB']."' name='".$adat['nev']."'>
-            <input type='hidden' value='".$adat['Id']."' name='rejtettNev'>
-            <input type='submit' value='Raktár frissítése' id='frissites' >
-            </form></p></div><hr>";
+            echo "<div id='eszkoz'><h1>".htmlspecialchars($adat['nev'])."</h1><br><p>A(z) ".htmlspecialchars($adat['nev'])." kiszerelése: ".htmlspecialchars($adat['kiszereles'])."<br>Jelenleg készleten: ";
+            echo "<input type='number' id='darab' value='".htmlspecialchars($adat['keszletenDB'])."' name='darab_" . htmlspecialchars($adat['Id']) . "'>";
+            echo "<input type='hidden' value='".htmlspecialchars($adat['Id'])."' name='eszkozId_" . htmlspecialchars($adat['Id']) . "'>";
+            echo "</p></div><hr>";
         }
-    }else{
+    } else {
         echo "<h1 id='eszkoz'>Nem találtunk eszközöket!</h1><hr>";
     }
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        if (isset($_POST['rejtettNev']) && isset($_POST[$adat['nev']])) {
-            feltoltes($_POST[$adat['nev']], $_POST['rejtettNev']);
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        }     
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['frissites'])) {
+    foreach ($_POST as $kulcs => $ertek) { 
+        if (strpos($kulcs, 'darab_') === 0) { 
+            $eszkozId = str_replace('darab_', '', $kulcs); 
+            $darab = $ertek;
+            feltoltes($darab, $eszkozId);
+        } 
     }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eszkozFelvitele'])) {
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="hu">
@@ -81,8 +82,8 @@ function eszkozokBetoltese(){
 
         <nav class="navbar navbar-dark bg-dark">
             <div id="oldalLinkek">
-                <a href=#>Felhasználók</a>
-                <a href=#>Lakások</a>
+                <a href="#">Felhasználók</a>
+                <a href="#">Lakások</a>
                 <p id="jelenlegiOldal">Eszközök</p>
             </div>
 
@@ -96,12 +97,15 @@ function eszkozokBetoltese(){
             </div>          
         </nav>
     </div>
-    <div id=eszkozTarolo>
-        <hr>
-        <?php
-            eszkozokBetoltese()
-        ?>
+    <div id="eszkozTarolo">
+        <form method="post" action="">
+            <input type='hidden' name='frissites' value='1'>
+            <input type='submit' value='Raktár frissítése' id='frissites'>
+            <input type='submit' value='Eszköz felvitele' id='eszkozFelvitele'>
+            <hr>
+            <?php eszkozokBetoltese(); ?>
+        </form>
     </div>
-    <!--<script src="adminOldal.js"></script>-->
+    <script src="adminOldal.js"></script>
 </body>
 </html>
