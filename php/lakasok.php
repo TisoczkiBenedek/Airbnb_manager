@@ -8,6 +8,9 @@ switch (end($teljesURL)) {
     case 'modositas':
         modositas();
         break;
+    case 'torles':
+        torles();
+        break;
     default:
         # code...
         break;
@@ -26,17 +29,42 @@ function lekeres(){
 function modositas(){
     if($_SERVER['REQUEST_METHOD']== 'POST'){
         $adatok = json_decode(file_get_contents('php://input'), true);
-        $id = $adatok['id'];
-        $email = $adatok['email'];
-        $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
-        $eredmeny =adatokValtoztatasa($muvelet);
-        echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+        if(!empty($adatok['id']) && !empty($adatok['email']) && isset($adatok['email']) && isset($adatok['id'])){
+            $id = $adatok['id'];
+            $email = $adatok['email'];
+            $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
+            $eredmeny =adatokValtoztatasa($muvelet);
+            echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            header("BAD REQUEST", true, 400);
+            echo json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        }
     }
     else{
         header("BAD REQUEST", true, 400);
         echo json_encode(["valasz"=>"Hibás metódus"], JSON_UNESCAPED_UNICODE);
     }
     
+}
+function torles(){
+    if($_SERVER['REQUEST_METHOD']== 'DELETE'){
+        $adatok = json_decode(file_get_contents('php://input'), true);
+        if(isset($adatok['id']) && !empty($adatok['id'])){
+            $id = $adatok['id'];
+            $muvelet = "DELETE FROM lakas WHERE `lakas`.`Id` = $id";
+            $eredmeny = adatokValtoztatasa($muvelet);
+            echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            header("BAD REQUEST", true, 400);
+            echo json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        }
+    }
+    else{
+        header("BAD REQUEST", true, 400);
+        echo json_encode(["valasz"=>"Hibás metódus"], JSON_UNESCAPED_UNICODE);
+    }
 }
 
 

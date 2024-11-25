@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Nov 22. 12:11
+-- Létrehozás ideje: 2024. Nov 25. 13:01
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -114,8 +114,8 @@ CREATE TABLE `lakas` (
 --
 
 INSERT INTO `lakas` (`Id`, `lakcim`, `terulet`, `medence`, `szauna`, `tulajdonosEmail`, `belepesiAdatok`, `megyeId`, `kepek`) VALUES
-(1, 'Horváth utca 5', 70, 0, 0, 'eva@gmail.com', '5643', 1, 'https://butopea.com/mlc/wp-content/uploads/2017/02/modern-small-apartment-Alvhem-Makleri.jpg'),
-(2, 'Szabadság utca 5/g', 150, 1, 0, '12c-tisoczki@ipari.vein.hu', '5872', 12, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg');
+(2, 'Szabadság utca 5/g', 150, 1, 0, 'eva@gmail.com', '5872', 12, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg'),
+(5, 'Petőfi utca 1/g', 150, 1, 0, 'eva@gmail.com', '5872', 6, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg');
 
 -- --------------------------------------------------------
 
@@ -206,8 +206,8 @@ ALTER TABLE `foglaltsag`
 --
 ALTER TABLE `lakas`
   ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `tulajdonosEmail` (`tulajdonosEmail`),
-  ADD KEY `megyeId` (`megyeId`);
+  ADD KEY `megyeId` (`megyeId`),
+  ADD KEY `tulajdonosEmail` (`tulajdonosEmail`) USING BTREE;
 
 --
 -- A tábla indexei `megye`
@@ -242,7 +242,7 @@ ALTER TABLE `foglaltsag`
 -- AUTO_INCREMENT a táblához `lakas`
 --
 ALTER TABLE `lakas`
-  MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT a táblához `megye`

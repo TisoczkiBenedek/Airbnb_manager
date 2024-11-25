@@ -12,6 +12,7 @@ async function adatokLekerese() {
 }
 function kiiras(adatok){
     let valasz = document.getElementById('valasz')
+    valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
         div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3")
@@ -54,14 +55,19 @@ function kiiras(adatok){
     }
 }
 function modositasModal(id){
+    console.log(id)
+    document.getElementById('mentes').disabled = false
+    document.getElementById('torles').disabled = false
     let modalform = document.getElementById('modal_form')
     modalform.innerText = ""
-    let modalcim = document.getElementById('modal_cim')
-    modalcim.innerText = ""
-    let span = document.createElement('span')
-    span.innerText = "Lakás Id: "
-    modalcim.appendChild(span)
-    modalcim.innerText += id
+    let p = document.getElementsByClassName('modal_valasz')
+    p[0].innerText = ""
+    p[0].style.border = "none"
+    //let modalcim = document.getElementById('modal_cim')
+    //modalcim.innerText = "Lakás módosítása "
+    let span = document.getElementById('modal_lakas_id')
+    span.innerText = ""
+    span.innerText = id
     let label = document.createElement('label')
     label.classList.add('form-label')
     label.innerText = "Lakástulajdonos e-mail címe"
@@ -86,7 +92,7 @@ async function modositas(){
     else{
         try {
             let kuldendo = {
-                "id": document.getElementById('id_helye').innerText,
+                "id": document.getElementById('modal_lakas_id').innerText,
                 "email": email.value
             }
             let eredmeny = await fetch('../php/lakasok.php/modositas', {
@@ -99,6 +105,8 @@ async function modositas(){
             if(eredmeny.ok){
                 let adatok = await eredmeny.json()
                 console.log(adatok)
+                valasz(adatok, false)
+                
             }
         } catch (error) {
             console.log(error)
@@ -110,8 +118,69 @@ function torlesModal(id){
     let idhely = document.getElementById('id_helye')
     idhely.innerText = ""
     idhely.innerText += id
+    let p = document.getElementsByClassName('modal_valasz')
+    p[1].innerText = ""
+    p[1].style.border = "none"
+}
+async function adattorles(){
+    try {
+        let kuldendo = {
+            "id": document.getElementById('id_helye').innerText
+        }
+        let eredmeny = await fetch('../php/lakasok.php/torles', {
+            method : "DELETE", 
+            headers : {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(kuldendo)
+        })
+        if(eredmeny.ok){
+            let adatok = await eredmeny.json()
+            console.log(adatok)
+            valasz(adatok, true)
+            
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+function valasz(adatok, torol){
+    //let modalBody = document.getElementsByClassName('modal-body')[0]
+    let p = document.getElementsByClassName('modal_valasz')
+    if(torol == false){
+        p[0].innerText = ""
+        if(adatok['valasz']== "Sikeres művelet!") {
+            p[0].innerText = adatok['valasz']
+            p[0].style.border = '2px solid green'
+            document.getElementById('mentes').disabled = true
+            adatokLekerese()
+            //modalBody.appendChild(p)
+        }
+        else{
+            p[0].innerText = adatok['valasz']
+            p[0].style.border = '2px solid red'
+            //modalBody.appendChild(p)
+        }
+    }
+    else{
+        p[1].innerText = ""
+        if(adatok['valasz']== "Sikeres művelet!") {
+            p[1].innerText = adatok['valasz']
+            p[1].style.border = '2px solid green'
+            document.getElementById('torles').disabled = true
+            adatokLekerese()
+            //modalBody.appendChild(p)
+        }
+        else{
+            p[1].innerText = adatok['valasz']
+            p[1].style.border = '2px solid red'
+            //modalBody.appendChild(p)
+        }
+    }
+    
 }
 
 
 window.addEventListener('load', adatokLekerese)
 document.getElementById('mentes').addEventListener('click', modositas)
+document.getElementById('torles').addEventListener('click', adattorles)
