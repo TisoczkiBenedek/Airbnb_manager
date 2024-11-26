@@ -3,6 +3,7 @@ session_start();
 include "./sql_fuggvenyek.php";
 include "./eszkozFeltoltes.php";
 
+
 function profilBetoltese(){
     if(isset($_SESSION['emailcim'])){
         $emailcim = $_SESSION['emailcim'];
@@ -20,21 +21,6 @@ function profilBetoltese(){
         }
     } else {
         echo "<h5 id='nev'>Nincs bejelentkezve!</h5>";
-    }
-}
-
-function eszkozokBetoltese(){
-    $eszkoz_sql = "SELECT eszkoz.Id, eszkoz.nev, eszkoz.kiszereles, eszkoz.keszletenDB FROM eszkoz";
-    $eszkoz = adatokLekerese($eszkoz_sql);
-    if(is_array($eszkoz)){
-        foreach ($eszkoz as $adat) {
-            echo "<div id='eszkoz'><h1>".htmlspecialchars($adat['nev'])."</h1><br><p>A(z) ".htmlspecialchars($adat['nev'])." kiszerelése: ".htmlspecialchars($adat['kiszereles'])."<br>Jelenleg készleten: ";
-            echo "<input type='number' id='darab' value='".htmlspecialchars($adat['keszletenDB'])."' name='darab_" . htmlspecialchars($adat['Id']) . "'>";
-            echo "<input type='hidden' value='".htmlspecialchars($adat['Id'])."' name='eszkozId_" . htmlspecialchars($adat['Id']) . "'>";
-            echo "</p></div><hr>";
-        }
-    } else {
-        echo "<h1 id='eszkoz'>Nem találtunk eszközöket!</h1><hr>";
     }
 }
 
@@ -103,9 +89,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eszkozFelvitele'])) {
             <input type='submit' value='Raktár frissítése' id='frissites'>
             <input type='submit' value='Eszköz felvitele' id='eszkozFelvitele'>
             <hr>
-            <?php eszkozokBetoltese(); ?>
+            <?php  
+                include "./eszkozBetoltes.php";
+
+                eszkozokBetoltese();
+            ?>
         </form>
     </div>
-    <script src="adminOldal.js"></script>
 </body>
 </html>

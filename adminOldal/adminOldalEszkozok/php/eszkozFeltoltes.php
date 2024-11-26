@@ -8,7 +8,6 @@ function feltoltes($keszletenDB, $id) {
     }
 
     $query = $db->prepare("UPDATE `eszkoz` SET `keszletenDB`=? WHERE Id=?");
-
     $query->bind_param("ii", $keszletenDB, $id);
 
     try {
