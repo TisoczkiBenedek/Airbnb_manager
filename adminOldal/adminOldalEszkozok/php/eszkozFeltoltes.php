@@ -13,14 +13,26 @@ function feltoltes($keszletenDB, $id) {
     try {
         $query->execute();
         if ($query->affected_rows > 0) {
-            echo "Sikeres művelet!";
             return true;
+            sikeres();
         } else {
-            echo "Nem történt változás!";
+           sikertelen();
         }
     } catch (Exception $e) {
         echo "Hiba: " . $e->getMessage();
     }
+}
+
+function sikeres(){
+    echo "<script type='text/javascript'>
+         let valasz = prompt('A feltöltés sikeres volt!')
+         </scipt>";
+}
+
+function sikertelen(){
+    echo "<script type='text/javascript'>
+         let valasz = prompt('Hiba a feltöltés során!')
+         </scipt>";
 }
 
 ?>

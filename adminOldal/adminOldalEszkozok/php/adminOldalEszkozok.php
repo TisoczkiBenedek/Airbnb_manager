@@ -24,24 +24,8 @@ function profilBetoltese(){
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['frissites'])) {
-    foreach ($_POST as $kulcs => $ertek) { 
-        if (strpos($kulcs, 'darab_') === 0) { 
-            $eszkozId = str_replace('darab_', '', $kulcs); 
-            $darab = $ertek;
-            feltoltes($darab, $eszkozId);
-        } 
-    }
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eszkozFelvitele'])) {
-
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="hu">
