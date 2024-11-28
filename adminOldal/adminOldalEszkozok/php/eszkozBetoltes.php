@@ -26,22 +26,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             if(strpos($kulcs, 'darab_') === 0) { 
                 $Id = str_replace('darab_', '', $kulcs); 
                 $keszletenDB = $ertek; 
-                feltoltes($keszletenDB, $Id); 
+                frissites($keszletenDB, $Id); 
             } 
         } 
     } 
-    
-    if (isset($_POST['eszkozFelvitele'])) { 
-        $eszkozNev = $_POST['eszkozNev'] ?? ''; 
-        $eszkozKiszereles = $_POST['eszkozKiszereles'] ?? ''; 
-        $eszkozDarabszam = $_POST['eszkozDarabszam'] ?? ''; 
-
-        if (!empty($eszkozNev) && !empty($eszkozKiszereles) && !empty($eszkozDarabszam)) { 
-            $muvelet = "INSERT INTO eszkoz (nev, kiszereles, keszletenDB) VALUES ('$eszkozNev', '$eszkozKiszereles', $eszkozDarabszam)"; 
-            adatokLekerese($muvelet); 
-            echo "<p>Az új eszköz sikeresen felvitelre került.</p>"; 
-        } else { 
-            echo "<p>Hiba! Minden mezőt ki kell tölteni.</p>"; 
-        } 
-    }
 }

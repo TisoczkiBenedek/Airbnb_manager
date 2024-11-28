@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "./sql_fuggvenyek.php";
-include "./eszkozFeltoltes.php";
+include "./eszkozFrissites.php";
 
 
 function profilBetoltese(){
@@ -64,14 +64,31 @@ function profilBetoltese(){
             <h2 id="cim">főoldal</h2>
             <div class="navbar-right" id="profilAdatok">
                 <?php profilBetoltese(); ?> 
-            </div>          
+            </div>         
         </nav>
     </div>
     <div id="eszkozTarolo">
         <form method="post" action="">
             <input type='hidden' name='frissites' value='1'>
             <input type='submit' value='Raktár frissítése' id='frissites'>
+
+
             <input type='submit' value='Eszköz felvitele' id='eszkozFelvitele'>
+
+
+            <div id="felvitel" class="modal"> 
+                <div class="modal-content"> 
+                    <span class="close">&times;</span> 
+                    <h2>Adatbevitel</h2> 
+                    <form id="popupForm" method="post" action="ujEszkoz.php"> 
+                        <label for="nev">Név:</label> <input type="text" id="nev" name="nev" required><br><br>
+                        <label for="kiszereles">Kiszerelés:</label> <input type="text" id="kiszereles" name="kiszereles" required><br><br>
+                        <label for="db">Darab:</label> <input type="number" id="db" name="db" required><br><br>
+                        <button type="submit">Beküldés</button> 
+                    </form> 
+                </div> 
+            </div>
+
             <hr>
             <?php  
                 include "./eszkozBetoltes.php";
@@ -80,5 +97,6 @@ function profilBetoltese(){
             ?>
         </form>
     </div>
+    <script src="../js/adminOldalEszkozok.js"></script>
 </body>
 </html>
