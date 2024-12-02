@@ -182,6 +182,7 @@ function valasz(adatok, torol){
             p[1].style.border = '2px solid red'
             //modalBody.appendChild(p)
         }
+        p[1].style.padding = '5px'
         p[1].hidden = false
     }
     
