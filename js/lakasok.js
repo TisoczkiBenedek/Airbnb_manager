@@ -63,6 +63,7 @@ function modositasModal(id){
     let p = document.getElementsByClassName('modal_valasz')
     p[0].innerText = ""
     p[0].style.border = "none"
+    p[0].hidden = true
     //let modalcim = document.getElementById('modal_cim')
     //modalcim.innerText = "Lakás módosítása "
     let span = document.getElementById('modal_lakas_id')
@@ -121,6 +122,7 @@ function torlesModal(id){
     let p = document.getElementsByClassName('modal_valasz')
     p[1].innerText = ""
     p[1].style.border = "none"
+    p[1].hidden = true
 }
 async function adattorles(){
     try {
@@ -152,6 +154,8 @@ function valasz(adatok, torol){
         if(adatok['valasz']== "Sikeres művelet!") {
             p[0].innerText = adatok['valasz']
             p[0].style.border = '2px solid green'
+            p[0].style.padding = '5px'
+            
             document.getElementById('mentes').disabled = true
             adatokLekerese()
             //modalBody.appendChild(p)
@@ -159,8 +163,10 @@ function valasz(adatok, torol){
         else{
             p[0].innerText = adatok['valasz']
             p[0].style.border = '2px solid red'
+            p[0].style.padding = '5px'
             //modalBody.appendChild(p)
         }
+        p[0].hidden = false
     }
     else{
         p[1].innerText = ""
@@ -176,6 +182,7 @@ function valasz(adatok, torol){
             p[1].style.border = '2px solid red'
             //modalBody.appendChild(p)
         }
+        p[1].hidden = false
     }
     
 }
