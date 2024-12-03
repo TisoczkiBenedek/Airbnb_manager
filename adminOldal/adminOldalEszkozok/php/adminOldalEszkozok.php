@@ -1,7 +1,8 @@
 <?php
 session_start();
 include "./sql_fuggvenyek.php";
-include "./eszkozFrissites.php";
+include "./eszkozFeltoltes.php";
+
 
 function profilBetoltese(){
     if(isset($_SESSION['emailcim'])){
@@ -24,44 +25,25 @@ function profilBetoltese(){
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["frissites"])) {
-        foreach ($_POST as $kulcs => $ertek) {
-            if (strpos($kulcs, 'darab_') === 0) {
-                $Id = str_replace('darab_', '', $kulcs);
-                $keszletenDB = (int)$ertek; // Biztosítsd, hogy szám legyen
-                if ($keszletenDB >= 0) {  // Készleten szám nem lehet negatív
-                    $uzenet = frissites($keszletenDB, $Id);
-                } else {
-                    echo "<script>alert('A készlet szám nem lehet negatív!');</script>";
-                }
-            }
-        }
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['frissites'])) {
+    foreach ($_POST as $kulcs => $ertek) { 
+        if (strpos($kulcs, 'darab_') === 0) { 
+            $eszkozId = str_replace('darab_', '', $kulcs); 
+            $darab = $ertek;
+            feltoltes($darab, $eszkozId);
+        } 
     }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["feltoltes"])) {  // Check if the form has been submitted
-        // Get data from the form
-        $nev = isset($_POST['nev']) ? $_POST['nev'] : '';  // Name of the item
-        $kiszereles = isset($_POST['kiszereles']) ? $_POST['kiszereles'] : '';  // Packaging
-        $keszletenDB = isset($_POST['keszletenDB']) ? (int)$_POST['keszletenDB'] : 0;  // Stock quantity
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eszkozFelvitele'])) {
 
-        // Validate the data
-        if (!empty($nev) && !empty($kiszereles) && $keszletenDB >= 0) {
-            // Call the function to insert the data into the database
-            $uzenet = feltoltes($nev, $kiszereles, $keszletenDB);
-            if ($uzenet) {
-                echo "<script>alert('Sikeres adatfeltöltés!');</script>";
-            } else {
-                echo "<script>alert('Hiba történt az adatfeltöltés során!');</script>";
-            }
-        } else {
-            echo "<script>alert('Kérjük, töltsd ki a kötelező mezőket, és győződj meg róla, hogy a készlet szám pozitív!');</script>";
-        }
-    }
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="hu">
@@ -96,30 +78,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <h2 id="cim">főoldal</h2>
             <div class="navbar-right" id="profilAdatok">
-               
-            </div>
+                <?php profilBetoltese(); ?> 
+            </div>          
         </nav>
     </div>
     <div id="eszkozTarolo">
-        <form method="post">
-            <!--<input type='hidden' name='frissites' value='1'>-->
-            <input type='submit' value='Raktár frissítése' id='frissites' name='frissites'>
+        <form method="post" action="">
+            <input type='hidden' name='frissites' value='1'>
+            <input type='submit' value='Raktár frissítése' id='frissites'>
             <input type='submit' value='Eszköz felvitele' id='eszkozFelvitele'>
-            <div id="felvitel" class="modal"> 
-                <div class="modal-content"> 
-                    <span class="close">&times;</span> 
-                    <h2>Adatbevitel</h2> 
-                    <form id="popupForm" method="post" action="ujEszkoz.php"> 
-                        <label for="nev">Név:</label>
-                        <input type="text" id="nev" name="nev" required><br><br>
-                        <label for="kiszereles">Kiszerelés:</label>
-                        <input type="text" id="kiszereles" name="kiszereles" required><br><br>
-                        <label for="db">Darab:</label>
-                        <input type="number" id="db" name="db" required><br><br>
-                        <button type="submit" name="feltoltes" id="feltoltes" >Feltöltés</button>
-                    </form>
-                </div>
-            </div>
             <hr>
             <?php  
                 include "./eszkozBetoltes.php";
@@ -127,5 +94,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ?>
         </form>
     </div>
+    <script src="../js/adminOldalEszkozok.js"></script>
 </body>
 </html>

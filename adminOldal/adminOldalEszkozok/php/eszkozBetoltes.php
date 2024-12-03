@@ -19,4 +19,3 @@ function eszkozokBetoltese(){
         echo "<h1>Hiba! Nem találtunk eszközöket!</h1>";
     }
 }
-?>

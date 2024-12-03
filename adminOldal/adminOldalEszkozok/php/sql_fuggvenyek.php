@@ -26,6 +26,7 @@ function adatokLekerese($muvelet){
         return $db->connect_error;
     }
 }
+
 function adatokValtoztatasa($muvelet){
     $db = new mysqli ('localhost', 'root', '', 'vizsgaremek_takaritas');
     if($db->connect_errno==0){
