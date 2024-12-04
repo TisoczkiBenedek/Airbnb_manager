@@ -6,21 +6,41 @@ function feltoltes($nev, $kiszereles, $keszletenDB) {
         die("Connection failed: " . $db->connect_error);
     }
 
-    $query = $db->prepare("INSERT INTO `eszkoz`(`nev`, `kiszereles`, `keszletenDB`) VALUES ('?','?','?')");
-    $query->bind_param("sss", $keszletenDB, $id);
+    $query = $db->prepare("INSERT INTO `eszkoz`(`nev`, `kiszereles`, `keszletenDB`) VALUES (?, ?, ?)");
+    $query->bind_param("ssi", $nev, $kiszereles, $keszletenDB);
 
     if ($query->execute()) {
         if ($query->affected_rows > 0) {
-            //echo "<script>alert('Sikeres művelet');</script>";
-            return true; 
-        } else { 
-            //echo "<script>alert('Hiba történt a művelet során');</script>";
+            return true;
+        } else {
+            return false;
         }
     } else {
-       // echo "<script>alert('Hiba: " . $query->error . "');</script>";
+        return false;
     }
 
     $query->close();
     $db->close();
-    return false;
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["feltoltes"]) && !empty($_POST['nev']) && !empty($_POST['kiszereles']) && isset($_POST['keszletenDB'])) {
+        $nev = $_POST['nev'];
+        $kiszereles = $_POST['kiszereles'];
+        $keszletenDB = (int)$_POST['keszletenDB'];
+
+        if ($keszletenDB >= 0) {
+            $uzenet = feltoltes($nev, $kiszereles, $keszletenDB);
+            if ($uzenet) {
+                echo "<script>alert('Sikeres adatfeltöltés!');</script>";
+            } else {
+                echo "<script>alert('Hiba történt az adatfeltöltés során!');</script>";
+            }
+        } else {
+            echo "<script>alert('Kérjük, győződj meg róla, hogy a készlet szám pozitív!');</script>";
+        }
+    } else {
+        echo "<script>alert('Kérjük, töltsd ki a kötelező mezőket!');</script>";
+    }
+}
+?>

@@ -84,7 +84,7 @@ h2{
     color:white;
 }
 
-#nev{
+#felhNev{
     color: white;
     margin: auto
 }
@@ -107,4 +107,26 @@ h2{
 #frissites{
     margin: 25px;
     margin-bottom: 15px;
+}
+
+#feltoltes{
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 2%;
+    text-align: center;
+}
+
+#db {
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+#kiszereles {
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+#nev {
+    margin-left: 30%;
+    margin-right: 30%;
 }
