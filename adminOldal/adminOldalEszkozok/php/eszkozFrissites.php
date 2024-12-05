@@ -23,19 +23,22 @@ function frissites($keszletenDB, $Id) {
     $db->close();
 }
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    if(isset($_POST["frissites"])) {
-        foreach ($_POST as $kulcs => $ertek) {
-            if(strpos($kulcs, 'darab_') === 0) {
-                $Id = str_replace('darab_', '', $kulcs);
-                $keszletenDB = (int)$ertek;
-                if ($keszletenDB >= 0) {
-                    $uzenet = frissites($keszletenDB, $Id);
-                } else {
-                    echo "<script>alert('A készlet szám nem lehet negatív!');</script>";
+if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frissites"])) {
+    foreach ($_POST as $kulcs => $ertek) {
+        if(strpos($kulcs, 'darab_') === 0) {
+            $Id = str_replace('darab_', '', $kulcs);
+            $keszletenDB = (int)$ertek;
+            if ($keszletenDB >= 0) {
+                $uzenet = frissites($keszletenDB, $Id);
+                if($uzenet){
+                    echo "<script>alert('Sikeres frissítés!')</script>";
+                }else{
+                    echo "<script>alert('Hiba történt a frissítés során!')</script>";
                 }
+            } else {
+                echo "<script>alert('A készlet szám nem lehet negatív!');</script>";
             }
         }
-    }
+    } 
 }
 ?>

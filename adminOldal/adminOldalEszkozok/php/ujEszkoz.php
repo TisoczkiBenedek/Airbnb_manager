@@ -23,8 +23,8 @@ function feltoltes($nev, $kiszereles, $keszletenDB) {
     $db->close();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["feltoltes"]) && !empty($_POST['nev']) && !empty($_POST['kiszereles']) && isset($_POST['keszletenDB'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["feltoltes"])) {
+    if (!empty($_POST['nev']) && !empty($_POST['kiszereles']) && isset($_POST['keszletenDB'])) {
         $nev = $_POST['nev'];
         $kiszereles = $_POST['kiszereles'];
         $keszletenDB = (int)$_POST['keszletenDB'];
@@ -32,15 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($keszletenDB >= 0) {
             $uzenet = feltoltes($nev, $kiszereles, $keszletenDB);
             if ($uzenet) {
-                echo "<script>alert('Sikeres adatfeltöltés!');</script>";
+                echo "<script>alert('Sikeres adatfeltöltés!'); window.location.href = 'adminOldalEszkozok.php';</script>";
             } else {
-                echo "<script>alert('Hiba történt az adatfeltöltés során!');</script>";
+                echo "<script>alert('Hiba történt az adatfeltöltés során!'); window.location.href = 'adminOldalEszkozok.php';</script>";
             }
         } else {
-            echo "<script>alert('Kérjük, győződj meg róla, hogy a készlet szám pozitív!');</script>";
+            echo "<script>alert('Kérjük, győződj meg róla, hogy a készlet szám pozitív!'); window.location.href = 'adminOldalEszkozok.php';</script>";
         }
     } else {
-        echo "<script>alert('Kérjük, töltsd ki a kötelező mezőket!');</script>";
+        echo "<script>alert('Kérjük, töltsd ki a kötelező mezőket!'); window.location.href = 'adminOldalEszkozok.php';</script>";
     }
 }
 ?>

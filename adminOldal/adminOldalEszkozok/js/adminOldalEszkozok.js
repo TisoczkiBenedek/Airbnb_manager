@@ -19,3 +19,10 @@ window.onclick = function(event) {
         felvitel.style.display = "none"; 
     } 
 }
+
+form.onsubmit = function() { 
+    setTimeout(() => { 
+        form.reset(); 
+        felvitel.style.display = "none"; 
+    }, 100); 
+}
