@@ -16,7 +16,7 @@ function profilBetoltese(){
             echo "<h5 id='felhNev'>Hiba a profil betöltésekor!</h5>";
         }
     } else {
-        echo "<h5 id='nev'>Nincs bejelentkezve!</h5>";
+        echo "<h5 id='felhNev'>Nincs bejelentkezve!</h5>";
     }
 }
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 function eszkozokBetoltese(){
     $eszkozLekeres_sql = "SELECT eszkoz.Id, eszkoz.nev, eszkoz.kiszereles AS kisze, eszkoz.keszletenDB AS darab FROM eszkoz";
     $eszkozLekeres = adatokLekerese($eszkozLekeres_sql);

@@ -49,7 +49,7 @@
     color: white;
 } 
 
-#nev {  
+#felhNev {  
     margin-top: 10px;
     margin-right: 10; 
     color: white; 
@@ -82,11 +82,6 @@ a {
 
 h2{
     color:white;
-}
-
-#felhNev{
-    color: white;
-    margin: auto
 }
 
 #kiszeMod{
@@ -129,4 +124,5 @@ h2{
 #nev {
     margin-left: 30%;
     margin-right: 30%;
+    color: black;
 }

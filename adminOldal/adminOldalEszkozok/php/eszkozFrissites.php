@@ -1,21 +1,36 @@
 <?php
+/*
 function frissites($keszletenDB, $Id) {
     $db = new mysqli('localhost', 'root', '', 'vizsgaremek_takaritas');
+
+    var_dump("fasz3");
 
     if ($db->connect_error) {
         die("Connection failed: " . $db->connect_error);
     }
 
     $query = $db->prepare("UPDATE `eszkoz` SET `keszletenDB`=? WHERE Id=?");
-    $query->bind_param("ii", $keszletenDB, $Id);
+    if ($query === false) {
+        echo "<script>console.log('Prepare failed: " . $db->error . "');</script>";
+        return false;
+    }
 
-    if ($query->execute()) {
-        if ($query->affected_rows > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    $bind = $query->bind_param("ii", $keszletenDB, $Id);
+    if ($bind === false) {
+        echo "<script>console.log('Bind param failed: " . $query->error . "');</script>";
+        return false;
+    }
+
+    $execute = $query->execute();
+    if ($execute === false) {
+        echo "<script>console.log('Execute failed: " . $query->error . "');</script>";
+        return false;
+    }
+
+    if ($query->affected_rows > 0) {
+        return true;
     } else {
+        echo "<script>console.log('No rows affected');</script>";
         return false;
     }
 
@@ -23,22 +38,89 @@ function frissites($keszletenDB, $Id) {
     $db->close();
 }
 
-if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frissites"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frissites"])) {
+    var_dump("fasz1");
     foreach ($_POST as $kulcs => $ertek) {
-        if(strpos($kulcs, 'darab_') === 0) {
+        var_dump("fasz2");
+        if (strpos($kulcs, 'darab_') === 0) {
+            var_dump("fasz2");
             $Id = str_replace('darab_', '', $kulcs);
             $keszletenDB = (int)$ertek;
             if ($keszletenDB >= 0) {
                 $uzenet = frissites($keszletenDB, $Id);
-                if($uzenet){
-                    echo "<script>alert('Sikeres frissítés!')</script>";
-                }else{
-                    echo "<script>alert('Hiba történt a frissítés során!')</script>";
+                if ($uzenet) {
+                    echo "<script>alert('Sikeres frissítés!');</script>";
+                } else {
+                    echo "<script>alert('Hiba történt a frissítés során!');</script>";
                 }
             } else {
                 echo "<script>alert('A készlet szám nem lehet negatív!');</script>";
             }
         }
-    } 
+    }
 }
+    */
 ?>
+
+
+<?php
+function frissites($keszletenDB, $Id) {
+    $db = new mysqli('localhost', 'root', '', 'vizsgaremek_takaritas');
+
+    var_dump("pina");
+
+    if ($db->connect_error) {
+        die("Connection failed: " . $db->connect_error);
+    }
+
+    $query = $db->prepare("UPDATE `eszkoz` SET `keszletenDB`=? WHERE Id=?");
+    if ($query === false) {
+        echo "<script>console.log('Prepare failed: " . $db->error . "');</script>";
+        return false;
+    }
+
+    $bind = $query->bind_param("ii", $keszletenDB, $Id);
+    if ($bind === false) {
+        echo "<script>console.log('Bind param failed: " . $query->error . "');</script>";
+        return false;
+    }
+
+    $execute = $query->execute();
+    if ($execute === false) {
+        echo "<script>console.log('Execute failed: " . $query->error . "');</script>";
+        return false;
+    }
+
+    if ($query->affected_rows > 0) {
+        return true;
+    } else {
+        echo "<script>console.log('No rows affected');</script>";
+        return false;
+    }
+
+    $query->close();
+    $db->close();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frissites"])) {
+    var_dump("fasz1");
+    foreach ($_POST as $kulcs => $ertek) {
+        echo "<script>console.log('Kulcs: " . $kulcs . "');</script>";
+        var_dump("fasz2");
+        if (strpos($kulcs, 'darab_') === 0) {
+            var_dump("fasz3");
+            $Id = str_replace('darab_', '', $kulcs);
+            $keszletenDB = (int)$ertek;
+            if ($keszletenDB >= 0) {
+                $uzenet = frissites($keszletenDB, $Id);
+                if ($uzenet) {
+                    echo "<script>alert('Sikeres frissítés!');</script>";
+                } else {
+                    echo "<script>alert('Hiba történt a frissítés során!');</script>";
+                }
+            } else {
+                echo "<script>alert('A készlet szám nem lehet negatív!');</script>";
+            }
+        }
+    }
+}

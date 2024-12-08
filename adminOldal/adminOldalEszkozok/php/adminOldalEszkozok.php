@@ -22,22 +22,12 @@ include "./eszkozFrissites.php";
 </head>
 <body>
     <div class="pos-f-t">
-        <div class="navbar-right">
-            <div class="collapse" id="navbarToggleExternalContent">
-                <div class="bg-dark p-4">
-                    <h4 class="text-white">Collapsed content</h4>
-                    <span class="text-muted">Toggleable via the navbar brand.</span>
-                </div>
-            </div>
-        </div>
-
         <nav class="navbar navbar-dark bg-dark">
             <div id="oldalLinkek">
                 <a href="#">Felhasználók</a>
                 <a href="#">Lakások</a>
                 <p id="jelenlegiOldal">Eszközök</p>
             </div>
-
             <h2 id="cim">főoldal</h2>
             <div class="navbar-right" id="profilAdatok">
                 <?php profilBetoltese(); ?>
@@ -45,34 +35,38 @@ include "./eszkozFrissites.php";
         </nav>
     </div>
     <div id="eszkozTarolo">
+        <!-- Frissítés űrlap -->
         <form method="post" action="">
-            <input type='submit' value='Raktár frissítése' id='frissites' name='frissites'>
+            <input type='hidden' name='frissites' value='1'>
+            <button type='submit' id='frissites' name='frissites'>Raktár frissítése</button>
             <button type='button' id='eszkozFelvitele'>Eszköz felvitele</button>
-            <div id="felvitel" class="modal"> 
-                <div class="modal-content"> 
-                    <span class="close">&times;</span> 
-                    <h2>Adatbevitel</h2> 
-                    <form id="popupForm" method="post" action="feltoltes.php"> 
-                        <label for="nev">Név:</label>
-                        <input type="text" id="nev" name="nev" required><br> 
-                        <label for="kiszereles">Kiszerelés:</label> 
-                        <input type="text" id="kiszereles" name="kiszereles" required><br> 
-                        <label for="db">Darab:</label> 
-                        <input type="number" id="db" name="keszletenDB" required><br>
-                        <button type="submit" name="feltoltes" id="feltoltes">Feltöltés</button> 
-                    </form> 
-                </div> 
-            </div> 
-            <hr> 
-            <?php eszkozokBetoltese(); ?> 
-            </form> 
-            <div> 
-                <?php 
-                    if (isset($uzenet)) { 
-                        echo "<p>$uzenet</p>"; 
-                    } 
-                ?> 
+        </form>
+        
+        <!-- Feltöltés gomb és modal -->
+        <div id="felvitel" class="modal"> 
+            <div class="modal-content"> 
+                <span class="close">&times;</span> 
+                <h2>Adatbevitel</h2> 
+                <form id="popupForm" method="post" action="ujEszkoz.php"> 
+                    <label for="nev">Név:</label>
+                    <input type="text" id="nev" name="nev" required><br> 
+                    <label for="kiszereles">Kiszerelés:</label> 
+                    <input type="text" id="kiszereles" name="kiszereles" required><br> 
+                    <label for="keszletenDB">Darab:</label> 
+                    <input type="number" id="keszletenDB" name="keszletenDB" required><br>
+                    <button type="submit" name="feltoltes" id="feltoltes">Feltöltés</button> 
+                </form> 
             </div> 
         </div> 
-    </body> 
+        <hr> 
+        <?php eszkozokBetoltese(); ?> 
+        <div> 
+            <?php 
+                if (isset($uzenet)) { 
+                    echo "<p>$uzenet</p>"; 
+                } 
+            ?> 
+        </div> 
+    </div> 
+</body> 
 </html>
