@@ -37,10 +37,32 @@
         </nav>
     </div>
     <div class="container">
+      
+        <h4>Lakások szűrése</h4>
+        <form id="form">
+          <div class="row">
+          <div class="col-6">
+          
+            <label for="megye" class="form-label">Megye</label>
+            <select id="megye" class="form-select w-100" value = "">
+                <option value=""></option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label for="tulaj" class="form-label">Tulajdonos</label>
+            <select id="tulaj" class="form-select w-100" value = "">
+              <option value=""></option>
+            </select>
+          </div>
+        </div>
+        </form>
+        
+        <hr class="mt-2">
+      </div>
         <div class="row" id="valasz">
             
         </div>
-    </div>
+    
 
     <!---Modal elem módosítás-->
     <div class="modal fade" id="modal_modosit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

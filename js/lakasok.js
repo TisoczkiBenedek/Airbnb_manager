@@ -5,9 +5,46 @@ async function adatokLekerese() {
             let adatok = await eredmeny.json();
             console.log(adatok)
             kiiras(adatok)
+            tulajokKiiras(adatok)
         }
     } catch (error) {
         console.log(error)
+    }
+}
+async function megyelekeres(){
+    try {
+        let eredmeny = await fetch('../php/lakasok.php/megyek')
+        if(eredmeny.ok){
+            let adatok = await eredmeny.json()
+            feltoltes(adatok)
+        }
+        else{
+            throw new error
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+function feltoltes(adatok){
+    let select = document.getElementById('megye')
+    for (let adat of adatok) {
+        let opt = document.createElement('option')
+        opt.innerText = adat['megyeNev']
+        opt.value = adat['Id']
+        select.appendChild(opt)
+    }
+}
+function tulajokKiiras(adatok){
+    const tulajok = new Set()
+    for (let adat of adatok) {
+        tulajok.add(adat['tulajdonosEmail'])
+    }
+    let tulaj = document.getElementById('tulaj')
+    for (let t of tulajok) {
+        let opt = document.createElement('option')
+        opt.innerText = t
+        opt.value = t
+        tulaj.appendChild(opt)
     }
 }
 function kiiras(adatok){
@@ -15,7 +52,7 @@ function kiiras(adatok){
     valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3")
+        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['tulajdonosEmail'])
         let card = document.createElement('div')
         card.classList.add("card")
         let img = document.createElement('img')
@@ -187,8 +224,26 @@ function valasz(adatok, torol){
     }
     
 }
-
+function szures(){
+    
+    let megye = document.getElementById('megye')
+    let azon = document.getElementById('tulaj')
+    let card = document.getElementsByClassName('col-sm-12')
+    let cardtext = document.getElementsByClassName('card-text')
+    if(megye.value != "" || azon.value != ""){
+        for (let i = 0; i<card.length; i++) {
+            if(!card[i].className.includes(azon.value)){
+                card[i].hidden = true
+            }
+            else{
+                card[i].hidden = false
+            }
+        }
+    }
+}
 
 window.addEventListener('load', adatokLekerese)
+window.addEventListener('load', megyelekeres)
 document.getElementById('mentes').addEventListener('click', modositas)
 document.getElementById('torles').addEventListener('click', adattorles)
+document.getElementById('form').addEventListener('input', szures)

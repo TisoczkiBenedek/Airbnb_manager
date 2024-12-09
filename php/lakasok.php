@@ -11,6 +11,9 @@ switch (end($teljesURL)) {
     case 'torles':
         torles();
         break;
+    case 'megyek':
+        megyebetoltes();
+        break;
     default:
         # code...
         break;
@@ -66,6 +69,12 @@ function torles(){
         echo json_encode(["valasz"=>"Hibás metódus"], JSON_UNESCAPED_UNICODE);
     }
 }
+function megyebetoltes(){
+    $muvelet = "SELECT * FROM megye;";
+    $eredmeny = adatokLekerese($muvelet);
+    echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+}
+
 
 
 
