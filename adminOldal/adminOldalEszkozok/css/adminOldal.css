@@ -111,18 +111,30 @@ h2{
     text-align: center;
 }
 
-#db {
-    margin-left: 30%;
-    margin-right: 30%;
-}
-
-#kiszereles {
-    margin-left: 30%;
-    margin-right: 30%;
-}
-
 #nev {
-    margin-left: 30%;
-    margin-right: 30%;
     color: black;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+#kiszereles{
+    margin-bottom: 20px;
+}
+
+#keszletenDB{
+    margin-bottom: 20px;
+}
+
+#adatfelvitel{
+    color: black;
+}
+
+#felvitel{
+    display: flex;
+    text-align: center;
+}
+
+#adatfelvitel{
+    margin-right: 35%;
+    margin-left: 35%;
 }
