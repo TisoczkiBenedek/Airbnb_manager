@@ -40,6 +40,8 @@ include "./eszkozFrissites.php";
             <input type='hidden' name='frissites' value='1'>
             <button type='submit' id='frissites' name='frissites'>Raktár frissítése</button>
             <button type='button' id='eszkozFelvitele'>Eszköz felvitele</button>
+            <hr> 
+            <?php eszkozokBetoltese(); ?> 
         </form>
         
         <!-- Feltöltés gomb és modal -->
@@ -60,8 +62,6 @@ include "./eszkozFrissites.php";
                 </form> 
             </div> 
         </div> 
-        <hr> 
-            <?php eszkozokBetoltese(); ?> 
         <div> 
             <?php 
                 if (isset($uzenet)) { 
