@@ -40,35 +40,36 @@ include "./eszkozFrissites.php";
             <input type='hidden' name='frissites' value='1'>
             <button type='submit' id='frissites' name='frissites'>Raktár frissítése</button>
             <button type='button' id='eszkozFelvitele'>Eszköz felvitele</button>
-            <hr> 
-            <?php eszkozokBetoltese(); ?> 
+            <button type='button' id='eszkozTorlese'>Eszköz törlése</button>
+            <hr>
+            <?php eszkozokBetoltese(); ?>
         </form>
         
         <!-- Feltöltés gomb és modal -->
-        <div id="felvitel" class="modal"  style="display: none"> 
-            <div class="modal-content"> 
+        <div id="felvitel" class="modal"  style="display: none">
+            <div class="modal-content">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" id="close" class="bi bi-x" viewBox="0 0 16 16">
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708"/>
                 </svg>
-                <h2 id="adatfelvitel">Adatbevitel</h2> 
-                <form id="popupForm" method="post" action="ujEszkoz.php"> 
+                <h2 id="adatfelvitel">Adatbevitel</h2>
+                <form id="popupForm" method="post" action="ujEszkoz.php">
                     <label for="nev">Név:</label>
-                    <input type="text" id="nev" name="nev" required><br> 
-                    <label for="kiszereles">Kiszerelés:</label> 
-                    <input type="text" id="kiszereles" name="kiszereles" required><br> 
-                    <label for="keszletenDB">Darab:</label> 
+                    <input type="text" id="nev" name="nev" required><br>
+                    <label for="kiszereles">Kiszerelés:</label>
+                    <input type="text" id="kiszereles" name="kiszereles" required><br>
+                    <label for="keszletenDB">Darab:</label>
                     <input type="number" id="keszletenDB" name="keszletenDB" required><br>
-                    <button type="submit" name="feltoltes" id="feltoltes">Feltöltés</button> 
-                </form> 
-            </div> 
-        </div> 
-        <div> 
-            <?php 
-                if (isset($uzenet)) { 
-                    echo "<p>$uzenet</p>"; 
-                } 
-            ?> 
-        </div> 
-    </div> 
-</body> 
+                    <button type="submit" name="feltoltes" id="feltoltes">Feltöltés</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <?php
+                if (isset($uzenet)) {
+                    echo "<p>$uzenet</p>";
+                }
+            ?>
+        </div>
+    </div>
+</body>
 </html>
