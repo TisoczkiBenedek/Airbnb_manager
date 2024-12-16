@@ -30,7 +30,7 @@ function feltoltes(adatok){
     for (let adat of adatok) {
         let opt = document.createElement('option')
         opt.innerText = adat['megyeNev']
-        opt.value = adat['Id']
+        opt.value = adat['megyeNev']
         select.appendChild(opt)
     }
 }
@@ -230,15 +230,44 @@ function szures(){
     let azon = document.getElementById('tulaj')
     let card = document.getElementsByClassName('col-sm-12')
     let cardtext = document.getElementsByClassName('card-text')
-    if(megye.value != "" || azon.value != ""){
+    console.log(azon.value +"  "+ megye.value)
+    if(megye.value == "" && azon.value == ""){
         for (let i = 0; i<card.length; i++) {
-            if(!card[i].className.includes(azon.value)){
-                card[i].hidden = true
-            }
-            else{
-                card[i].hidden = false
+            card[i].hidden = false
+        }
+    }
+    else{
+        if(megye.value == ""){
+            for (let i = 0; i<card.length; i++) {
+                if(!card[i].className.includes(azon.value)){
+                    card[i].hidden = true
+                }
+                else{
+                    card[i].hidden = false
+                }
             }
         }
+        else if(azon.value== ""){
+            for (let i = 0; i<cardtext.length; i++) {
+                if(!cardtext[i].innerText.includes(megye.value)){
+                    card[i].hidden = true
+                }
+                else{
+                    card[i].hidden = false
+                }
+            }
+        }
+        else{
+            for (let i = 0; i<cardtext.length; i++) {
+                if(!cardtext[i].innerText.includes(megye.value) || !card[i].className.includes(azon.value)){
+                    card[i].hidden = true
+                }
+                else{
+                    card[i].hidden = false
+                }
+            }
+        }
+        
     }
 }
 

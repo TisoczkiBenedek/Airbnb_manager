@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Nov 25. 13:01
+-- Létrehozás ideje: 2024. Dec 16. 11:33
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -114,8 +114,13 @@ CREATE TABLE `lakas` (
 --
 
 INSERT INTO `lakas` (`Id`, `lakcim`, `terulet`, `medence`, `szauna`, `tulajdonosEmail`, `belepesiAdatok`, `megyeId`, `kepek`) VALUES
-(2, 'Szabadság utca 5/g', 150, 1, 0, 'eva@gmail.com', '5872', 12, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg'),
-(5, 'Petőfi utca 1/g', 150, 1, 0, 'eva@gmail.com', '5872', 6, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg');
+(5, 'Petőfi utca 1/g', 150, 1, 0, '12c-tisoczki@ipari.vein.hu', '5872', 6, 'https://www.novohome.hu/nh_2022/wp-content/uploads/2022/07/02-Galeria-Homedit.jpg'),
+(7, 'Andárssy 72/d', 50, 0, 0, '12c-tisoczki@ipari.vein.hu', '5810', 1, 'https://www.lakascentrum.hu/keptar/ingatlan/elado-lakas-budapest-viii-kerulet.ikir-26-2-600.webp'),
+(8, 'Mátyás király útja 50', 67, 0, 0, 'eva@gmail.com', '4321', 13, 'https://balazsepites.hu/sites/default/files/kepatmeretezes_hu_napalli_2.jpg'),
+(9, 'Hóvirág utca 25/d', 89, 1, 0, '12c-tisoczki@ipari.vein.hu', '5567', 9, 'https://m.blog.hu/il/ilovebuda/image/magazin_otthonterkep_hurakoczi_lakas-6457548718b8ff627467c697dedcb8547cffd006.jpg'),
+(10, 'Kossuth utca 13', 150, 0, 0, 'eva@gmail.com', '5567', 8, 'https://lakberinfo.hu/images/article/49/4977_1b43b.jpg'),
+(11, 'Kossuth Lajos utca 167', 254, 0, 0, '12c-tisoczki@ipari.vein.hu', '5567', 3, 'https://otthon.hu/data/files/10/10570.w.jpg'),
+(12, 'Sport utca 34', 200, 1, 0, 'eva@gmail.com', '5567', 19, 'https://www.barnes-hungary.com/photos/11/min/a4fe82e12108404c25e64b826faa645a_077ab11838_1920-original.jpg');
 
 -- --------------------------------------------------------
 
@@ -242,7 +247,7 @@ ALTER TABLE `foglaltsag`
 -- AUTO_INCREMENT a táblához `lakas`
 --
 ALTER TABLE `lakas`
-  MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT a táblához `megye`
