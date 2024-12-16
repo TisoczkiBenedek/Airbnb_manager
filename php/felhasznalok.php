@@ -19,7 +19,7 @@ switch (end($teljesURL)) {
         break;
 }
 function lekeres(){
-    $muvelet = "SELECT lakas.id, lakas.lakcim, lakas.tulajdonosEmail, lakas.kepek, megye.megyeNev FROM lakas INNER JOIN megye on megye.Id = lakas.megyeId;";
+    $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.vezetekNev, felhasznalo.keresztNev, felhasznalo.elerhetoseg, megye.megyeNev FROM felhasznalo INNER JOIN megye on megye.Id = felhasznalo.megyeId;";
     $eredmeny = adatokLekerese($muvelet);
     if(is_array($eredmeny)){
         echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
