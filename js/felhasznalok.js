@@ -52,7 +52,7 @@ function kiiras(adatok){
     valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['emailcim'])
+        div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1", adat['emailcim'])
         let card = document.createElement('div')
         card.classList.add("card")
         let cardb = document.createElement('div')
@@ -115,7 +115,8 @@ function modositasModal(id){
     span.innerText = id
     let label = document.createElement('label')
     label.classList.add('form-label')
-    label.innerText = "Lakástulajdonos e-mail címe"
+    label.innerText = "Felhasználó e-mail címe"
+    label.setAttribute("for", "email")
     modalform.appendChild(label)
     let cim = document.createElement("input")
     cim.id = "email"
@@ -127,6 +128,7 @@ function modositasModal(id){
     let label1 = document.createElement('label', 'mt-1')
     label1.classList.add('form-label')
     label1.innerText = "Felhasználó vezetékneve"
+    label1.setAttribute("for", "vnev")
     modalform.appendChild(label1)
     let vnev = document.createElement("input")
     vnev.id = "vnev"
@@ -134,6 +136,30 @@ function modositasModal(id){
     vnev.value = document.getElementsByClassName(id)[1].childNodes[1].innerText
     vnev.classList.add("form-control")
     modalform.appendChild(vnev)
+
+    let label2 = document.createElement('label', 'mt-1')
+    label2.classList.add('form-label')
+    label2.innerText = "Felhasználó keresztneve"
+    label2.setAttribute("for", "knev")
+    modalform.appendChild(label2)
+    let knev = document.createElement("input")
+    knev.id = "knev"
+    knev.type = "text"
+    knev.value = document.getElementsByClassName(id)[1].childNodes[2].innerText
+    knev.classList.add("form-control")
+    modalform.appendChild(knev)
+
+    let label3 = document.createElement('label', 'mt-1')
+    label3.classList.add('form-label')
+    label3.innerText = "Felhasználó telefonszáma"
+    label3.setAttribute("for", "telefon")
+    modalform.appendChild(label3)
+    let telefon = document.createElement("input")
+    telefon.id = "telefon"
+    telefon.type = "tel"
+    telefon.value = document.getElementsByClassName(id)[1].childNodes[3].innerText
+    telefon.classList.add("form-control")
+    modalform.appendChild(telefon)
 }
 async function modositas(){
     let email = document.getElementById('email')
@@ -148,7 +174,6 @@ async function modositas(){
     else{
         try {
             let kuldendo = {
-                "id": document.getElementById('modal_lakas_id').innerText,
                 "email": email.value
             }
             let eredmeny = await fetch('../php/felhasznalok.php/modositas', {

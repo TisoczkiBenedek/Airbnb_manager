@@ -32,10 +32,9 @@ function lekeres(){
 function modositas(){
     if($_SERVER['REQUEST_METHOD']== 'POST'){
         $adatok = json_decode(file_get_contents('php://input'), true);
-        if(!empty($adatok['id']) && !empty($adatok['email']) && isset($adatok['email']) && isset($adatok['id'])){
-            $id = $adatok['id'];
+        if(!empty($adatok['email']) && isset($adatok['email'])){
             $email = $adatok['email'];
-            $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
+            $muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}' WHERE `felhasznalo`.`emailcim` = '{$email}'";
             $eredmeny =adatokValtoztatasa($muvelet);
             echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
         }
@@ -55,7 +54,7 @@ function torles(){
         $adatok = json_decode(file_get_contents('php://input'), true);
         if(isset($adatok['id']) && !empty($adatok['id'])){
             $id = $adatok['id'];
-            $muvelet = "DELETE FROM lakas WHERE `lakas`.`Id` = $id";
+            $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
             $eredmeny = adatokValtoztatasa($muvelet);
             echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
         }
