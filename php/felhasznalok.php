@@ -54,9 +54,18 @@ function torles(){
         $adatok = json_decode(file_get_contents('php://input'), true);
         if(isset($adatok['id']) && !empty($adatok['id'])){
             $id = $adatok['id'];
-            $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
-            $eredmeny = adatokValtoztatasa($muvelet);
-            echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
+            $muvelet = "DELETE FROM lakas WHERE `lakas`.`tulajdonosEmail` = '$id'";
+            $valasz = adatokValtoztatasa($muvelet);
+            if($valasz == 'Sikeres művelet!'){
+                $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
+                $eredmeny = adatokValtoztatasa($muvelet);
+                echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                echo json_encode(["valasz"=>"Sikertelen művelet!"], JSON_UNESCAPED_UNICODE);
+            }
+            
         }
         else{
             header("BAD REQUEST", true, 400);
