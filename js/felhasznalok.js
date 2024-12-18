@@ -39,7 +39,7 @@ function tulajokKiiras(adatok){
     for (let adat of adatok) {
         tulajok.add(adat['emailcim'])
     }
-    let tulaj = document.getElementById('tulaj')
+    let tulaj = document.getElementById('felh')
     for (let t of tulajok) {
         let opt = document.createElement('option')
         opt.innerText = t
@@ -270,7 +270,7 @@ function valasz(adatok, torol){
 function szures(){
     
     let megye = document.getElementById('megye')
-    let azon = document.getElementById('tulaj')
+    let azon = document.getElementById('felh')
     let card = document.getElementsByClassName('col-sm-12')
     let cardtext = document.getElementsByClassName('card-text')
     console.log(azon.value +"  "+ megye.value)
