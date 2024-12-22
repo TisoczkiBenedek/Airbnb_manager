@@ -1,15 +1,12 @@
 .navbar {
-    height: 60px;
     display: flex;
-    position: relative;
-    align-content: center;
     align-items: center;
-    align-content: center;
-    justify-content: center;
-    /*justify-content: space-between;*/
+    justify-content: space-between;
+    background-color: #343a40;
 }
 
 .navbar-toggler {
+    margin-left: 10px;
     z-index: 1;
 }
 
@@ -23,19 +20,21 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    /*text-align: center;*/
     white-space: nowrap;
+    color: white;
 }
 
-.navbar-left{
+.navbar-left {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 }
 
-.navbar-right{
+.navbar-right {
     display: flex;
     align-items: center;
     margin-left: auto;
+    color: white;
 }
 
 #cim {
@@ -51,7 +50,7 @@
 
 #felhNev {  
     margin-top: 10px;
-    margin-right: 10; 
+    margin-right: 10px; 
     color: white; 
     white-space: nowrap;
     float: left;
@@ -65,7 +64,7 @@
     margin-left: 10px;
 }
 
-#oldalLinkek{
+#oldalLinkek {
     display: flex;
     justify-content: space-between;
 }
@@ -75,46 +74,46 @@ a {
     color: white;
 }
 
-#jelenlegiOldal{
+#jelenlegiOldal {
     color: rgb(92, 212, 92);
     margin: 0 20px;
 }
 
-h2{
-    color:white;
+h2 {
+    color: white;
 }
 
-#kiszeMod{
+#kiszeMod {
     margin: auto;
     margin-left: 20px;
     margin-right: 20px;
 }
 
-#eszkoz{
+#eszkoz {
     margin-left: 100px;
     margin-right: 100px;
 }
 
-#darab{
+#darab {
     margin-left: 30px;
 }
 
-#frissites{
+#frissites {
     margin: 25px;
     margin-bottom: 15px;
 }
 
-#eszkozFelvitele{
+#eszkozFelvitele {
     margin: 25px;
     margin-bottom: 15px;
 }
 
-#eszkozTorlese{
+#eszkozTorlese {
     margin: 25px;
     margin-bottom: 15px;
 }
 
-#feltoltes{
+#feltoltes {
     margin-left: 25%;
     margin-right: 25%;
     margin-bottom: 2%;
@@ -127,24 +126,24 @@ h2{
     margin-top: 20px;
 }
 
-#kiszereles{
+#kiszereles {
     margin-bottom: 20px;
 }
 
-#keszletenDB{
+#keszletenDB {
     margin-bottom: 20px;
 }
 
-#adatfelvitel{
+#adatfelvitel {
     color: black;
 }
 
-#felvitel{
+#felvitel {
     display: flex;
     text-align: center;
 }
 
-#adatfelvitel{
+#adatfelvitel {
     margin-right: 35%;
     margin-left: 35%;
 }
