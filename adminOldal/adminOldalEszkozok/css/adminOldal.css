@@ -1,4 +1,5 @@
 .navbar {
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -7,143 +8,48 @@
 
 .navbar-toggler {
     margin-left: 10px;
-    z-index: 1;
 }
 
-.navbar-content {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-        
 .navbar-brand {
+    color: white;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
-    color: white;
+    z-index: 1;
 }
 
-.navbar-left {
-    display: flex;
-    align-items: center;
+.navbar-collapse {
     justify-content: flex-start;
+}
+
+.navbar-nav {
+    background-color: #343a40;
+}
+
+.nav-item {
+    padding: 0.5rem 1rem;
 }
 
 .navbar-right {
     display: flex;
     align-items: center;
-    margin-left: auto;
+    color: white;
+    z-index: 1;
+}
+
+#profilAdatok {
+    white-space: nowrap;
     color: white;
 }
 
 #cim {
-    text-transform: uppercase; 
+    text-transform: uppercase;
     position: absolute;
     left: 50%;
-    margin-top: 8px;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
     white-space: nowrap;
     color: white;
-} 
-
-#felhNev {  
-    margin-top: 10px;
-    margin-right: 10px; 
-    color: white; 
-    white-space: nowrap;
-    float: left;
-} 
-
-#profilKep { 
-    height: 50px; 
-    width: 50px; 
-    border-radius: 100%; 
-    float: right;
-    margin-left: 10px;
-}
-
-#oldalLinkek {
-    display: flex;
-    justify-content: space-between;
-}
-
-a {
-    margin: 0 20px;
-    color: white;
-}
-
-#jelenlegiOldal {
-    color: rgb(92, 212, 92);
-    margin: 0 20px;
-}
-
-h2 {
-    color: white;
-}
-
-#kiszeMod {
-    margin: auto;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-#eszkoz {
-    margin-left: 100px;
-    margin-right: 100px;
-}
-
-#darab {
-    margin-left: 30px;
-}
-
-#frissites {
-    margin: 25px;
-    margin-bottom: 15px;
-}
-
-#eszkozFelvitele {
-    margin: 25px;
-    margin-bottom: 15px;
-}
-
-#eszkozTorlese {
-    margin: 25px;
-    margin-bottom: 15px;
-}
-
-#feltoltes {
-    margin-left: 25%;
-    margin-right: 25%;
-    margin-bottom: 2%;
-    text-align: center;
-}
-
-#nev {
-    color: black;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-#kiszereles {
-    margin-bottom: 20px;
-}
-
-#keszletenDB {
-    margin-bottom: 20px;
-}
-
-#adatfelvitel {
-    color: black;
-}
-
-#felvitel {
-    display: flex;
-    text-align: center;
-}
-
-#adatfelvitel {
-    margin-right: 35%;
-    margin-left: 35%;
 }
