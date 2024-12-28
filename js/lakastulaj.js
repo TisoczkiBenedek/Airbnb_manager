@@ -25,10 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
             day.className = 'day';
             day.textContent = i;
             day.addEventListener('click', () => {
-                const eventTitle = prompt('Esemény címe:');
-                if (eventTitle) {
-                    day.innerHTML += `<div class="event">${eventTitle} <span class="remove-event" onclick="removeEvent(this)">x</span></div>`;
-                }
+                const foglalas = prompt('Írja be ki várható a lakásba? (vendég/takarító)');
+                if (foglalas == "vendég") {
+                    const mettolMeddig = prompt('Mettől meddig lesz lefoglalva?')
+                    day.style.backgroundColor = 'red';
+                }else if(foglalas == "takarító"){
+                    day.style.backgroundColor = '#007bff';
+                }else{
+                    day.style.backgroundColor = '#e0e0e0';
+                }  
             });
             calendar.appendChild(day);
         }
