@@ -25,18 +25,53 @@ document.addEventListener('DOMContentLoaded', function() {
             day.className = 'day';
             day.textContent = i;
             day.addEventListener('click', () => {
-                const foglalas = prompt('Írja be ki várható a lakásba? (vendég/takarító)');
-                if (foglalas == "vendég") {
-                    const mettolMeddig = prompt('Mettől meddig lesz lefoglalva?')
-                    day.style.backgroundColor = 'red';
-                }else if(foglalas == "takarító"){
-                    day.style.backgroundColor = '#007bff';
-                }else{
-                    day.style.backgroundColor = '#e0e0e0';
-                }  
+                const computedStyle = window.getComputedStyle(day);
+                const bgColor = computedStyle.backgroundColor;
+                
+                if (bgColor === 'rgb(224, 224, 224)') {
+                    const foglalas = prompt('Írja be ki várható a lakásba? (vendég/takarító)');
+                    if (foglalas == "vendég") {
+        
+                        const mettol = i;
+                        const meddig = parseInt(prompt('Írja be az utolsó napot:'))
+        
+                        if (isNaN(meddig) || meddig > daysInMonth) { 
+                            alert('Érvénytelen dátumokat adott meg.'); 
+                        } else {
+                            for (let j = mettol; j <= meddig; j++) {
+                                const atSzinez = calendar.querySelector(`.day:nth-child(${j + firstDayOfMonth})`)
+                                if(atSzinez) {
+                                    atSzinez.style.backgroundColor = 'rgb(172, 62, 62)';
+                                }
+                            }
+                        }
+        
+                    } else if (foglalas == "takarító") {
+                        day.style.backgroundColor = '#007bff';
+                    }
+                } else {
+                    if (bgColor === 'rgb(0, 123, 255)') {
+                        day.style.backgroundColor = 'rgb(224, 224, 224)';
+                    } else {
+                        const modositasKezd = i;
+                        const modositasVeg = parseInt(prompt('Meddig módosították a foglalást?'));
+        
+                        if (isNaN(modositasVeg) || modositasVeg > daysInMonth || modositasKezd > modositasVeg) { 
+                            alert('Érvénytelen dátumokat adott meg.'); 
+                        } else {
+                            for (let k = modositasKezd; k <= modositasVeg; k++) {
+                                const atSzinez = calendar.querySelector(`.day:nth-child(${k + firstDayOfMonth})`);
+                                if (atSzinez) {
+                                    atSzinez.style.backgroundColor = 'rgb(224, 224, 224)';
+                                }
+                            }
+                        }
+                    }
+                }
             });
             calendar.appendChild(day);
         }
+        
     }
     
     prevMonthButton.addEventListener('click', () => {
