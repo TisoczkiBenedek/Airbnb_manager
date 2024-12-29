@@ -1,3 +1,9 @@
+<?php
+include 'sql_fuggvenyek.php';
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
