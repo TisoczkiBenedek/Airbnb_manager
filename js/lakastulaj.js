@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const week = document.getElementById('week');
     const calendarTitle = document.getElementById('calendar-title');
     const calendar = document.getElementById('calendar');
     const prevMonthButton = document.getElementById('prev-month');
@@ -14,6 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
+        week.innerHTML = `  <div class="daysOfWeek">Hétfő</div>
+                                <div class="daysOfWeek">Kedd</div>
+                                <div class="daysOfWeek">Szerda</div>
+                                <div class="daysOfWeek">Csütörtök</div>
+                                <div class="daysOfWeek">Péntek</div>
+                                <div class="daysOfWeek">Szombat</div>
+                                <div class="daysOfWeek">Vasárnap</div>`
+
+
         for (let i = 0; i < firstDayOfMonth; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.className = 'day';
