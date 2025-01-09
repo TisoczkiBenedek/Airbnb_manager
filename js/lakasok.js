@@ -47,6 +47,9 @@ function tulajokKiiras(adatok){
         tulaj.appendChild(opt)
     }
 }
+function naptarOldalra(){
+    window.location.href = "../html/naptar.html"
+}
 function kiiras(adatok){
     let valasz = document.getElementById('valasz')
     valasz.innerText = ""
@@ -69,7 +72,13 @@ function kiiras(adatok){
         p.classList.add('card-text')
         p.innerHTML = adat['lakcim']+"<br>"+adat['megyeNev']
         cardb.appendChild(p)
-        let button1 = document.createElement('input')
+        let button = document.createElement('input')
+        button.type = "button"
+        button.classList.add("btn","btn-danger")
+        button.value = "Szöveg"
+        button.setAttribute("onclick", "naptarOldalra()")
+        cardb.appendChild(button)
+        /*let button1 = document.createElement('input')
         button1.type = "button"
         button1.classList.add("btn","btn-info")
         button1.id = "gomb"
@@ -85,7 +94,7 @@ function kiiras(adatok){
         button.setAttribute("onclick", "torlesModal("+adat['id']+")")
         button.setAttribute("data-bs-toggle", "modal")
         button.setAttribute("data-bs-target", "#modal_torol")
-        cardb.appendChild(button)
+        cardb.appendChild(button)*/
         card.appendChild(cardb)
         div.appendChild(card)
         valasz.appendChild(div)
