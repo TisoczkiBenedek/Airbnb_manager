@@ -12,7 +12,8 @@ switch (end($teljesURL)) {
 }
 function bejelentkezes(){
     $adatok = json_decode(file_get_contents('php://input'), true);
-    $email = $adatok['email'];
+    if(!empty($adatok['email']) && isset($adatok['email'])){
+        $email = $adatok['email'];
     $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.tulajdonos, felhasznalo.takarito, felhasznalo.jelszo FROM felhasznalo WHERE felhasznalo.emailcim like '{$email}'";
     $eredmeny = adatokLekerese($muvelet);
     if(is_array($eredmeny)){
@@ -27,5 +28,10 @@ function bejelentkezes(){
     else{
         echo json_encode(["valasz"=>"Nem található ilyen emil cím és jelszó páros!"], JSON_UNESCAPED_UNICODE);
     }
+    }
+    else{
+        echo json_encode(["valasz"=>"Nem hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+    }
+    
 }
 ?>
