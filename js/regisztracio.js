@@ -120,7 +120,7 @@ function feltoltes(adatok){
     for (let adat of adatok) {
         let opt = document.createElement('option')
         opt.innerText = adat['megyeNev']
-        opt.value = adat['Id']
+        opt.value = adat['id']
         select.appendChild(opt)
     }
 }
