@@ -37,7 +37,7 @@ function feltoltes(adatok){
 function tulajokKiiras(adatok){
     const tulajok = new Set()
     for (let adat of adatok) {
-        tulajok.add(adat['tulajdonosEmail'])
+        tulajok.add(adat['emailcim'])
     }
     let tulaj = document.getElementById('tulaj')
     for (let t of tulajok) {
@@ -55,7 +55,7 @@ function kiiras(adatok){
     valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['tulajdonosEmail'])
+        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['emailcim'])
         let card = document.createElement('div')
         card.classList.add("card")
         let img = document.createElement('img')
@@ -66,19 +66,19 @@ function kiiras(adatok){
         cardb.classList.add('card-body')
         let h5 = document.createElement('h5')
         h5.classList.add("card-title", adat['id'])
-        h5.innerText = adat['tulajdonosEmail']
+        h5.innerText = adat['emailcim']
         cardb.appendChild(h5)
         let p = document.createElement('p')
         p.classList.add('card-text')
-        p.innerHTML = adat['lakcim']+"<br>"+adat['megyeNev']
+        p.innerHTML = adat['cim']+"<br>"+adat['megyeNev']
         cardb.appendChild(p)
-        let button = document.createElement('input')
+        /*let button = document.createElement('input')
         button.type = "button"
         button.classList.add("btn","btn-danger")
         button.value = "Szöveg"
         button.setAttribute("onclick", "naptarOldalra()")
-        cardb.appendChild(button)
-        /*let button1 = document.createElement('input')
+        cardb.appendChild(button)*/
+        let button1 = document.createElement('input')
         button1.type = "button"
         button1.classList.add("btn","btn-info")
         button1.id = "gomb"
@@ -94,7 +94,7 @@ function kiiras(adatok){
         button.setAttribute("onclick", "torlesModal("+adat['id']+")")
         button.setAttribute("data-bs-toggle", "modal")
         button.setAttribute("data-bs-target", "#modal_torol")
-        cardb.appendChild(button)*/
+        cardb.appendChild(button)
         card.appendChild(cardb)
         div.appendChild(card)
         valasz.appendChild(div)
@@ -155,6 +155,10 @@ async function modositas(){
                 valasz(adatok, false)
                 
             }
+            else if(eredmeny.status == 400){
+                let valaszer = await eredmeny.json()
+                valasz(valaszer, false)
+            }
         } catch (error) {
             console.log(error)
         }
@@ -186,7 +190,6 @@ async function adattorles(){
             let adatok = await eredmeny.json()
             console.log(adatok)
             valasz(adatok, true)
-            
         }
     } catch (error) {
         console.log(error)
