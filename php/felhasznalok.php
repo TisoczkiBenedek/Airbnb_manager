@@ -19,7 +19,7 @@ switch (end($teljesURL)) {
         break;
 }
 function lekeres(){
-    $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.vezetekNev, felhasznalo.keresztNev, felhasznalo.elerhetoseg, megye.megyeNev FROM felhasznalo INNER JOIN megye on megye.Id = felhasznalo.megyeId;";
+    $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.id, felhasznalo.vezetekNev, felhasznalo.keresztNev, felhasznalo.elerhetoseg, megye.megyeNev FROM felhasznalo INNER JOIN megye on megye.Id = felhasznalo.megyeId;";
     $eredmeny = adatokLekerese($muvelet);
     if(is_array($eredmeny)){
         echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
@@ -34,7 +34,11 @@ function modositas(){
         $adatok = json_decode(file_get_contents('php://input'), true);
         if(!empty($adatok['email']) && isset($adatok['email'])){
             $email = $adatok['email'];
-            $muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}' WHERE `felhasznalo`.`emailcim` = '{$email}'";
+            $muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = $email";
+            $valasz= adatokLekerese($muvelet);
+            echo $valasz;
+            //$id = $valasz[0]['id'];
+            //$muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}' WHERE `felhasznalo`.`id` = '{$id}'";
             $eredmeny =adatokValtoztatasa($muvelet);
             echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
         }
@@ -54,18 +58,9 @@ function torles(){
         $adatok = json_decode(file_get_contents('php://input'), true);
         if(isset($adatok['id']) && !empty($adatok['id'])){
             $id = $adatok['id'];
-            $muvelet = "DELETE FROM lakas WHERE `lakas`.`tulajdonosEmail` = '$id'";
-            $valasz = adatokValtoztatasa($muvelet);
-            if($valasz == 'Sikeres művelet!'){
-                $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
-                $eredmeny = adatokValtoztatasa($muvelet);
-                echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
-            }
-            else{
-                header("BAD REQUEST", true, 400);
-                echo json_encode(["valasz"=>"Sikertelen művelet!"], JSON_UNESCAPED_UNICODE);
-            }
-            
+            $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
+            $eredmeny = adatokValtoztatasa($muvelet);
+            echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
         }
         else{
             header("BAD REQUEST", true, 400);

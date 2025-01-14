@@ -65,6 +65,7 @@ function kiiras(adatok){
         p.classList.add('card-text')
         p.innerHTML = adat['vezetekNev']
         cardb.appendChild(p)
+        
         let p1 = document.createElement('p')
         p1.classList.add('card-text')
         p1.innerHTML = adat['keresztNev']
@@ -77,6 +78,11 @@ function kiiras(adatok){
         p3.classList.add('card-text')
         p3.innerHTML = adat['megyeNev']
         cardb.appendChild(p3)
+        let p0 = document.createElement('p')
+        p0.classList.add('card-text')
+        p0.innerHTML = adat['id']
+        p0.hidden = true
+        cardb.appendChild(p0)
         let button1 = document.createElement('input')
         button1.type = "button"
         button1.classList.add("btn","btn-info")
