@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/lakastulaj.css">
-    <script src="../js/lakastulaj.js" defer></script>
-    <title>Document</title>
+    <link rel="stylesheet" href="../css/naptar.css">
+    <script src="../js/naptar.js" defer></script>
+    <title>Naptár</title>
 </head>
 <body>
     <div id="calendar-container"> 
@@ -20,6 +20,15 @@
         </div> 
         <div id="week"></div>
         <div id="calendar">
+        </div>
+    </div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>Írja be ki várható a lakásba?</h1>
+            <input type="radio" id="vendeg" value="" name="name"><label for="vendeg">Vendég</label>
+            <input type="radio" id="takarito" value="" name="name"><label for="takarito">Takarító</label>
+            <input type="button" id="foglalas" value="elfogadás">
         </div>
     </div>
 </body>
