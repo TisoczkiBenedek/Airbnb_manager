@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.innerHTML = '';
         calendarTitle.textContent = `${year} ${new Intl.DateTimeFormat('hu', { month: 'long' }).format(new Date(year, month))}`;
         
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const firstDayOfMonth = (new Date(year, month, 1).getDay() + 6) % 7;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
         week.innerHTML = `  <div class="daysOfWeek">Hétfő</div>
@@ -34,54 +34,28 @@ document.addEventListener('DOMContentLoaded', function() {
             const day = document.createElement('div');
             day.className = 'day';
             day.textContent = i;
+    
             day.addEventListener('click', () => {
-                const computedStyle = window.getComputedStyle(day);
-                const bgColor = computedStyle.backgroundColor;
+                const modal = document.getElementById("myModal");
+                const span = document.getElementsByClassName("close")[0];
                 
-                if (bgColor === 'rgb(224, 224, 224)') {
-                    const foglalas = prompt('Írja be ki várható a lakásba? (vendég/takarító)');
-                    if (foglalas == "vendég") {
-        
-                        const mettol = i;
-                        const meddig = parseInt(prompt('Írja be az utolsó napot:'))
-        
-                        if (isNaN(meddig) || meddig > daysInMonth) { 
-                            alert('Érvénytelen dátumokat adott meg.'); 
-                        } else {
-                            for (let j = mettol; j <= meddig; j++) {
-                                const atSzinez = calendar.querySelector(`.day:nth-child(${j + firstDayOfMonth})`)
-                                if(atSzinez) {
-                                    atSzinez.style.backgroundColor = 'rgb(172, 62, 62)';
-                                }
-                            }
-                        }
-        
-                    } else if (foglalas == "takarító") {
-                        day.style.backgroundColor = '#007bff';
-                    }
-                } else {
-                    if (bgColor === 'rgb(0, 123, 255)') {
-                        day.style.backgroundColor = 'rgb(224, 224, 224)';
-                    } else {
-                        const modositasKezd = i;
-                        const modositasVeg = parseInt(prompt('Meddig módosították a foglalást?'));
-        
-                        if (isNaN(modositasVeg) || modositasVeg > daysInMonth || modositasKezd > modositasVeg) { 
-                            alert('Érvénytelen dátumokat adott meg.'); 
-                        } else {
-                            for (let k = modositasKezd; k <= modositasVeg; k++) {
-                                const atSzinez = calendar.querySelector(`.day:nth-child(${k + firstDayOfMonth})`);
-                                if (atSzinez) {
-                                    atSzinez.style.backgroundColor = 'rgb(224, 224, 224)';
-                                }
-                            }
-                        }
-                    }
+                fun
+
+                modal.style.display = "block";
+    
+                span.onclick = function() {
+                    modal.style.display = "none";
                 }
+                
+                window.addEventListener("click", (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
             });
+    
             calendar.appendChild(day);
         }
-        
     }
     
     prevMonthButton.addEventListener('click', () => {
@@ -106,3 +80,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function removeEvent(element) {
     element.parentElement.remove();
 }
+
+//modal
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById("myModal");
+    const span = document.getElementsByClassName("close")[0];
+    const openModal = document.getElementsByClassName("day")
+
+    openModal.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none"
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+})
+      */
