@@ -19,7 +19,7 @@ switch (end($teljesURL)) {
         break;
 }
 function lekeres(){
-    $muvelet = "SELECT lakas.id, lakas.lakcim, lakas.tulajdonosEmail, lakas.kepek, megye.megyeNev FROM lakas INNER JOIN megye on megye.Id = lakas.megyeId;";
+    $muvelet = "SELECT lakas.id, lakas.nev, lakas.cim, lakas.felhasznalo_id, felhasznalo.emailcim, lakas.kepek, megye.megyeNev FROM lakas INNER JOIN megye on megye.Id = lakas.megye_id INNER JOIN felhasznalo on felhasznalo.id = lakas.felhasznalo_id;";
     $eredmeny = adatokLekerese($muvelet);
     if(is_array($eredmeny)){
         echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
@@ -35,9 +35,19 @@ function modositas(){
         if(!empty($adatok['id']) && !empty($adatok['email']) && isset($adatok['email']) && isset($adatok['id'])){
             $id = $adatok['id'];
             $email = $adatok['email'];
-            $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
-            $eredmeny =adatokValtoztatasa($muvelet);
-            echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+            $muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = '{$email}'";
+            $van = adatokLekerese($muvelet);
+            if(is_array($van)){
+                $felh_id = $van[0]['id'];
+                $muvelet = "UPDATE `lakas` SET `felhasznalo_id` = '{$felh_id}' WHERE `lakas`.`id` = {$id}";
+                $eredmeny =adatokValtoztatasa($muvelet);
+                echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                echo json_encode(['valasz'=> "Nincs ilyen e-mail címmel felhasználó!"], JSON_UNESCAPED_UNICODE);
+            }
+            
         }
         else{
             header("BAD REQUEST", true, 400);
