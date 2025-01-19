@@ -1,97 +1,88 @@
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-  margin: 0;
-}
-
-/*nav bar*/
 .navbar {
-    height: 60px;
-    display: flex;
-    position: relative;
-    align-content: center;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    /*justify-content: space-between;*/
+  height: 60px;
+  display: flex;
+  position: relative;
+  align-content: center;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  /*justify-content: space-between;*/
 }
 
 .navbar-toggler {
-    z-index: 1;
+  z-index: 1;
 }
 
 .navbar-content {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
-        
+      
 .navbar-brand {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    /*text-align: center;*/
-    white-space: nowrap;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /*text-align: center;*/
+  white-space: nowrap;
 }
 
 .navbar-left{
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-right{
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
-/*
+
 #cim {
-    text-transform: uppercase; 
-    position: absolute;
-    left: 50%;
-    margin-top: 8px;
-    transform: translateX(-50%);
-    text-align: center;
-    white-space: nowrap;
-    color: white;
+  text-transform: uppercase; 
+  position: absolute;
+  left: 50%;
+  margin-top: 8px;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  color: white;
 } 
 
 #nev {  
-    margin-top: 10px;
-    margin-right: 10; 
-    color: white; 
-    white-space: nowrap;
-    float: left;
+  margin-top: 10px;
+  margin-right: 10; 
+  color: white; 
+  white-space: nowrap;
+  float: left;
 } 
 
 #profilKep { 
-    height: 50px; 
-    width: 50px; 
-    border-radius: 100%; 
-    float: right;
-    margin-left: 10px;
+  height: 50px; 
+  width: 50px; 
+  border-radius: 100%; 
+  float: right;
+  margin-left: 10px;
 }
 
 #oldalLinkek{
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 a {
-    margin: 0 20px;
-    color: white;
+  margin: 0 20px;
+  color: white;
 }
 
 #jelenlegiOldal{
-    color: rgb(92, 212, 92);
-    margin: 0 20px;
+  color: rgb(92, 212, 92);
+  margin: 0 20px;
 }
 
 h2{
-    color:white;
+  color:white;
 }
-*/
+#gomb{
+  margin-right: 5px;
+}
