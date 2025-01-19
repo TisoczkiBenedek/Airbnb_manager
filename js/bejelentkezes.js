@@ -44,10 +44,19 @@ async function adatKuldes(email, jelszo) {
     }
 }
 function felhasznaloInformalas(valasz){
-    if(Array.isArray(valasz)){
+    //if(Array.isArray(valasz)){
+    if (valasz.felhTipus) {
         console.log(valasz)
-        //window.open('../html/adminproba.html', '_parent')
-        window.open('../adminOldal/adminOldalEszkozok/php/adminOldalEszkozok.php', '_parent')
+        
+        const felhTipus = valasz.felhTipus; 
+
+        if (felhTipus == 'tulajdonos') { 
+            window.open('../html/lakasok.html', '_parent'); 
+        } else { 
+            window.open('../html/takarito.html', '_parent'); 
+        }
+
+
     }
     else{
         console.log(valasz)
