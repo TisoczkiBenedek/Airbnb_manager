@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const modal = document.getElementById("myModal");
                 const span = document.getElementsByClassName("close")[0];
                 
-                fun
 
                 modal.style.display = "block";
     
@@ -82,7 +81,7 @@ function removeEvent(element) {
 }
 
 //modal
-/*
+
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById("myModal");
     const span = document.getElementsByClassName("close")[0];
@@ -102,4 +101,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
 })
-      */
