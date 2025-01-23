@@ -32,13 +32,14 @@ function lekeres(){
 function modositas(){
     if($_SERVER['REQUEST_METHOD']== 'POST'){
         $adatok = json_decode(file_get_contents('php://input'), true);
-        if(!empty($adatok['email']) && isset($adatok['email'])){
+        if(!empty($adatok['email']) && isset($adatok['email']) && !empty("id")){
             $email = $adatok['email'];
-            $muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = $email";
-            $valasz= adatokLekerese($muvelet);
-            echo $valasz;
+            $id = $adatok['id'];
+            //$muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = '{$email}'";
+            //$valasz= adatokLekerese($muvelet);
+            //echo $valasz;
             //$id = $valasz[0]['id'];
-            //$muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}' WHERE `felhasznalo`.`id` = '{$id}'";
+            $muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}' WHERE `felhasznalo`.`id` = '{$id}'";
             $eredmeny =adatokValtoztatasa($muvelet);
             echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
         }

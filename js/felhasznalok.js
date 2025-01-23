@@ -79,7 +79,7 @@ function kiiras(adatok){
         p3.innerHTML = adat['megyeNev']
         cardb.appendChild(p3)
         let p0 = document.createElement('p')
-        p0.classList.add('card-text')
+        p0.classList.add('card-text', adat['emailcim'])
         p0.innerHTML = adat['id']
         p0.hidden = true
         cardb.appendChild(p0)
@@ -119,6 +119,13 @@ function modositasModal(id){
     let span = document.getElementById('modal_felh_email')
     span.innerText = ""
     span.innerText = id
+
+    let inputid = document.createElement('input')
+    inputid.setAttribute("type", "hidden")
+    inputid.value = document.getElementsByClassName(id)[1].childNodes[5].innerText
+    inputid.id = "felhasznalo_id"
+    modalform.appendChild(inputid)
+
     let label = document.createElement('label')
     label.classList.add('form-label')
     label.innerText = "Felhasználó e-mail címe"
@@ -169,6 +176,7 @@ function modositasModal(id){
 }
 async function modositas(){
     let email = document.getElementById('email')
+    let id = document.getElementById("felhasznalo_id")
     if(email.value == ""){
         alert("Kérem töltse ki az e-mail címet!")
         return
@@ -180,7 +188,8 @@ async function modositas(){
     else{
         try {
             let kuldendo = {
-                "email": email.value
+                "email": email.value,
+                "id": id.value
             }
             let eredmeny = await fetch('../php/felhasznalok.php/modositas', {
                 method : "POST", 
