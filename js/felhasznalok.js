@@ -11,11 +11,13 @@ async function adatokLekerese() {
         console.log(error)
     }
 }
+let megyek = []
 async function megyelekeres(){
     try {
         let eredmeny = await fetch('../php/felhasznalok.php/megyek')
         if(eredmeny.ok){
             let adatok = await eredmeny.json()
+            megyek = adatok
             feltoltes(adatok)
         }
         else{
@@ -173,23 +175,52 @@ function modositasModal(id){
     telefon.value = document.getElementsByClassName(id)[1].childNodes[3].innerText
     telefon.classList.add("form-control")
     modalform.appendChild(telefon)
+
+    let label4 = document.createElement('label', 'mt-1')
+    label4.classList.add('form-label')
+    label4.innerText = "Megye"
+    label4.setAttribute("for", "megye")
+    modalform.appendChild(label4)
+    let megye = document.createElement("select")
+    megye.id = "megye_modal"
+    megye.value = ""
+    megye.classList.add("form-control")
+    for (let adat of megyek) {
+        let opt = document.createElement('option')
+        opt.innerText = adat['megyeNev']
+        opt.value = adat['id']
+        if(adat['megyeNev'] == document.getElementsByClassName(id)[1].childNodes[4].innerText){
+            opt.selected = true
+        }
+        megye.appendChild(opt)
+    }
+
+    modalform.appendChild(megye)
 }
 async function modositas(){
     let email = document.getElementById('email')
     let id = document.getElementById("felhasznalo_id")
-    if(email.value == ""){
-        alert("Kérem töltse ki az e-mail címet!")
-        return
-    }
-    if(!email.value.includes("@")){
-        alert("Hibásan megadott e-mail cím!")
+    let telefonszam = document.getElementById("telefon")
+    let vnev = document.getElementById('vnev')
+    let knev = document.getElementById('knev')
+    let megyeid = document.getElementById('megye_modal')
+    if(email.value == "" || telefonszam.value == "" || vnev.value == "" || knev.value == ""){
+        let valaszhely = document.getElementsByClassName("modal_valasz")
+        valaszhely[0].innerText = "Kérem minden mezőt töltsön ki!"
+        valaszhely[0].style.border = "2px solid red"
+        valaszhely[0].style.padding = "5px"
+        valaszhely[0].hidden = false
         return
     }
     else{
         try {
             let kuldendo = {
                 "email": email.value,
-                "id": id.value
+                "id": id.value,
+                "tel": telefonszam.value,
+                "vnev": vnev.value,
+                "knev": knev.value,
+                "megye": megyeid.value
             }
             let eredmeny = await fetch('../php/felhasznalok.php/modositas', {
                 method : "POST", 
