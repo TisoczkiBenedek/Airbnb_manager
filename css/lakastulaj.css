@@ -1,12 +1,10 @@
+/* Navbar alap stílusok */
 .navbar {
   height: 60px;
   display: flex;
   position: relative;
-  align-content: center;
   align-items: center;
-  align-content: center;
   justify-content: center;
-  /*justify-content: space-between;*/
 }
 
 .navbar-toggler {
@@ -18,36 +16,47 @@
   align-items: center;
   margin-left: auto;
 }
-      
+
 .navbar-brand {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  /*text-align: center;*/
   white-space: nowrap;
 }
 
-.navbar-left{
+.navbar-left {
   display: flex;
   align-items: center;
 }
 
-.navbar-right{
+.navbar-right {
   display: flex;
   align-items: center;
   margin-left: auto;
 }
 
+/* Navbar linkek stílusa */
+.navbar .nav-link {
+  color: rgb(92, 212, 92) !important;
+  margin: 0 20px;
+}
+
+.navbar .nav-link:hover {
+  color: limegreen !important;
+}
+
+/* Cím stílusa */
 #cim {
-  text-transform: uppercase; 
+  text-transform: uppercase;
   position: absolute;
   left: 50%;
-  margin-top: 8px;
-  transform: translateX(-50%);
-  text-align: center;
+  top: 50%;
+  transform: translate(-50%, -50%);
   white-space: nowrap;
   color: white;
-} 
+  margin: 0;
+}
+
 
 #nev {  
   margin-top: 10px;
