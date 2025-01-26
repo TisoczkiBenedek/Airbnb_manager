@@ -1,0 +1,99 @@
+.navbar {
+    height: 60px;
+    display: flex;
+    position: relative;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navbar-toggler {
+    z-index: 1;
+  }
+  
+  .navbar-content {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+        
+  .navbar-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  /* Lakás linkek balra igazítása */
+#navbarNav ul {
+    margin-left: 0;
+    padding-left: 0;
+  }
+  
+  #navbarNav ul li {
+    text-align: left;
+  }
+  
+  
+  #cim {
+    text-transform: uppercase; 
+    position: absolute;
+    left: 50%;
+    margin-top: 8px;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+    color: white;
+  } 
+  
+  #nev {  
+    margin-top: 10px;
+    margin-right: 10px; 
+    color: white; 
+    white-space: nowrap;
+    float: left;
+  } 
+  
+  #profilKep { 
+    height: 50px; 
+    width: 50px; 
+    border-radius: 100%; 
+    float: right;
+    margin-left: 10px;
+  }
+  
+  #oldalLinkek {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  a {
+    margin: 0 20px;
+    text-decoration: none;
+    color: rgb(92, 212, 92);
+  }
+  
+  #jelenlegiOldal {
+    color: rgb(92, 212, 92);
+    margin: 0 20px;
+  }
+  
+  h2 {
+    color: white;
+  }
+  
+  #gomb {
+    margin-right: 5px;
+  }
+  

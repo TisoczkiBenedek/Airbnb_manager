@@ -72,7 +72,9 @@
 
 a {
   margin: 0 20px;
-  color: white;
+  /*color: white;*/
+  text-decoration: none;
+  color: rgb(92, 212, 92);
 }
 
 #jelenlegiOldal{
