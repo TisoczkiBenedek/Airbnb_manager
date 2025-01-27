@@ -45,7 +45,7 @@
   color: limegreen !important;
 }
 
-/* Cím stílusa */
+/* Cím, és egyéb más(navbar) */
 #cim {
   text-transform: uppercase;
   position: absolute;
@@ -74,6 +74,7 @@
   margin-left: 10px;
 }
 
+/*oldal css*/
 #oldalLinkek{
   display: flex;
   justify-content: space-between;
@@ -97,3 +98,4 @@ h2{
 #gomb{
   margin-right: 5px;
 }
+
