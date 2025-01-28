@@ -14,11 +14,12 @@ function bejelentkezes(){
     $adatok = json_decode(file_get_contents('php://input'), true);
     if(!empty($adatok['email']) && isset($adatok['email'])){
         $email = $adatok['email'];
-        $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.tulajdonos, felhasznalo.takarito, felhasznalo.jelszo FROM felhasznalo WHERE felhasznalo.emailcim like '{$email}'";
+        $muvelet = "SELECT felhasznalo.id, felhasznalo.emailcim, felhasznalo.tulajdonos, felhasznalo.takarito, felhasznalo.jelszo FROM felhasznalo WHERE felhasznalo.emailcim like '{$email}'";
         $eredmeny = adatokLekerese($muvelet);
         if(is_array($eredmeny)){
             if(password_verify($adatok['jelszo'], $eredmeny[0]['jelszo'])){
                 $_SESSION['emailcim'] = $eredmeny[0]['emailcim'];//email cím átküldése a főoldalra, a felhasználónév betöltésésnek céljából.
+                $_SESSION['id'] = $felhasznalo[0]['id'];
                 //echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
 
                 if($eredmeny[0]['tulajdonos'] == 1){//felhasználó típusának ellenőrzése(tulaj)

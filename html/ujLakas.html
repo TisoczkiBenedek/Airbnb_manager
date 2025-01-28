@@ -22,15 +22,15 @@
         <!-- Cím -->
         <h2 id="cim" class="text-white mb-0 mx-3">Főoldal</h2>
 
-        <!-- Hamburger ikon -->
+        <!-- Hamburger ikon
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Navigáció váltása">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Navigációs tartalom -->
+         Navigációs tartalom 
         <div class="collapse navbar-collapse" id="navbarContent">
           <ul class="navbar-nav me-auto">
-            <!-- Dropdown menü -->
+            Dropdown menü
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
@@ -50,11 +50,31 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </div>-->
       </div>
     </nav>
   </div>
-
+  <form>
+    <label for="lakasNev">A lakás neve</label>
+    <input type="text" name="lakasNev" id="lakasNev"><br />
+    <label for="lakcim">Lakcím</label>
+    <input type="text" name="lakcim" id="lakcim"><br />
+    <label for="terulet">A lakás területe (m<sup>2</sup>)</label>
+    <input type="number" name="terulet" id="terulet"><br />
+    <label for="medence">Medence</label>
+    <input type="checkbox" name="medence" id="medence"><br />
+    <label for="szauna">Szauna</label>
+    <input type="checkbox" name="szauna" id="szauna"><br />
+    <label for="megye" class="form-label">Megye</label>
+    <select id="megye" class="form-select" value="">
+    </select>
+    <label for="lakasAdatok"></label>
+    <input type="text" name="lakasAdatok" id="lakasAdatok"><br />
+    <label for="kepFeltoltes"></label>
+    <input type="file" name="kepFeltoltes" id="kepFeltoltes"><br />
+    <label for="naptarFeltoltes"></label>
+    <input type="file" name="naptarFeltoltes" id="naptarFeltoltes">
+  </form>
   <!-- Bootstrap JS és függőségek -->
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

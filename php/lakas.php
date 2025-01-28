@@ -1,5 +1,7 @@
 <?php
 include './sql_fuggvenyek.php';
+include './bejelentkezes.php';
+
 $teljesURL = explode('/', $_SERVER['REQUEST_URI']);
 switch (end($teljesURL)) {
     case 'lekeres':
@@ -19,15 +21,15 @@ switch (end($teljesURL)) {
         break;
 }
 function lekeres(){
-    $muvelet = "SELECT lakas.id, lakas.lakcim, lakas.tulajdonosEmail, lakas.kepek, megye.megyeNev FROM lakas INNER JOIN megye on megye.Id = lakas.megyeId;";
-    $eredmeny = adatokLekerese($muvelet);
-    if(is_array($eredmeny)){
-        echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
-    }
-    else{
-        header("BAD REQUEST", true, 400);
-        echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
-    }
+        $muvelet = "SELECT lakas.lakcim, lakas.kepek, megye.megyeNev FROM lakas INNER JOIN megye on megye.Id = lakas.megyeId WHERE lakas.felhasznalo_id =  $_SESSION['id'];";
+        $eredmeny = adatokLekerese($muvelet);
+        if(is_array($eredmeny)){
+            echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            header("BAD REQUEST", true, 400);
+            echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
+        }
 }
 function modositas(){
     if($_SERVER['REQUEST_METHOD']== 'POST'){
