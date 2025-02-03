@@ -9,33 +9,47 @@
     <title>Felhasználók</title>
 </head>
 <body>
-    <div class="pos-f-t">
-        <div class="navbar-right">
-            <div class="collapse" id="navbarToggleExternalContent">
-                <div class="bg-dark p-4">
-                    <h4 class="text-white">Collapsed content</h4>
-                    <span class="text-muted">Toggleable via the navbar brand.</span>
-                </div>
-            </div>
+  <div class="pos-f-t">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <!-- Cím -->
+        <h2 id="cim" class="text-white mb-0 mx-3">Főoldal</h2>
+
+        <!-- Hamburger ikon -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigációs tartalom -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <!-- Dropdown menü -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Főmenü
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark bg-dark" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="../html/ujLakas.html">Felhasználók</a></li>
+                <li><a class="dropdown-item" href="#">Lakások</a></li>
+                <li><a class="dropdown-item" href="#">Eszközök</a></li>
+              </ul>
+            </li>
+          </ul>
+          <div class="navbar-right" id="profilAdatok">
+              <?php profilBetoltese(); ?> 
+          </div>
         </div>
-
-        <nav class="navbar navbar-dark bg-dark">
-            <div id="oldalLinkek">
-                <a href=#>Lakások</a>
-                <p href=# id="jelenlegiOldal">Felhasználók</p>
-                <a href="#" >Eszközök</a>
-            </div>
-
-            <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>-->
-
-            <h2 id="cim">Felhasználók</h2>
-            <div class="navbar-right" id="profilAdatok">
-                <!--<?php profilBetoltese(); ?> -->
-            </div>          
-        </nav>
-    </div>
+      </div>
+    </nav>
+  </div>
     <div class="container">
       
         <h4>Felhasználók szűrése</h4>
