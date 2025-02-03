@@ -1,69 +1,79 @@
+/* Navbar alap stílusok */
 .navbar {
     height: 60px;
     display: flex;
     position: relative;
-    align-content: center;
     align-items: center;
-    align-content: center;
     justify-content: center;
-    /*justify-content: space-between;*/
-}
-
-.navbar-toggler {
+  }
+  
+  .navbar-toggler {
     z-index: 1;
-}
-
-.navbar-content {
+  }
+  
+  .navbar-content {
     display: flex;
     align-items: center;
     margin-left: auto;
-}
-        
-.navbar-brand {
+  }
+  
+  .navbar-brand {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    /*text-align: center;*/
     white-space: nowrap;
-}
-
-.navbar-left{
+  }
+  
+  .navbar-left {
     display: flex;
     align-items: center;
-}
-
-.navbar-right{
+  }
+  
+  .navbar-right {
     display: flex;
     align-items: center;
     margin-left: auto;
-}
-
-#cim {
-    text-transform: uppercase; 
+  }
+  
+  /* Navbar linkek stílusa */
+  .navbar .nav-link {
+    color: rgb(92, 212, 92) !important;
+    margin: 0 20px;
+  }
+  
+  .navbar .nav-link:hover {
+    color: limegreen !important;
+  }
+  
+  /* Cím, és egyéb más(navbar) */
+  #cim {
+    text-transform: uppercase;
     position: absolute;
     left: 50%;
-    margin-top: 8px;
-    transform: translateX(-50%);
-    text-align: center;
+    top: 50%;
+    transform: translate(-50%, -50%);
     white-space: nowrap;
     color: white;
-} 
-
-#nev {  
+    margin: 0;
+  }
+  
+  
+  #nev {  
     margin-top: 10px;
     margin-right: 10; 
     color: white; 
     white-space: nowrap;
     float: left;
-} 
-
-#profilKep { 
+  } 
+  
+  #profilKep { 
     height: 50px; 
     width: 50px; 
     border-radius: 100%; 
     float: right;
     margin-left: 10px;
-}
+  }
+  
 
 #oldalLinkek{
     display: flex;
