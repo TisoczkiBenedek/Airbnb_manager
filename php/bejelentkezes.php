@@ -1,4 +1,5 @@
 <?php
+session_start();
 include './sql_fuggvenyek.php';
 $teljesURL = explode('/', $_SERVER['REQUEST_URI']);
 switch (end($teljesURL)) {
@@ -19,7 +20,7 @@ function bejelentkezes(){
         if(is_array($eredmeny)){
             if(password_verify($adatok['jelszo'], $eredmeny[0]['jelszo'])){
                 $_SESSION['emailcim'] = $eredmeny[0]['emailcim'];//email cím átküldése a főoldalra, a felhasználónév betöltésésnek céljából.
-                $_SESSION['id'] = $felhasznalo[0]['id'];
+                $_SESSION['id'] = $eredmeny[0]['id'];
                 //echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
 
                 if($eredmeny[0]['tulajdonos'] == 1){//felhasználó típusának ellenőrzése(tulaj)
