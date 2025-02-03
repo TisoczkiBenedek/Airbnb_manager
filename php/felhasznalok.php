@@ -19,15 +19,30 @@ switch (end($teljesURL)) {
         break;
 }
 function lekeres(){
-    $muvelet = "SELECT felhasznalo.emailcim, felhasznalo.id, felhasznalo.vezetekNev, felhasznalo.keresztNev, felhasznalo.elerhetoseg, megye.megyeNev FROM felhasznalo INNER JOIN megye on megye.Id = felhasznalo.megyeId;";
-    $eredmeny = adatokLekerese($muvelet);
-    if(is_array($eredmeny)){
-        echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        $adatok = json_decode(file_get_contents('php://input'), true);
+        if(!empty($adatok['id'])){
+            $id = $adatok['id'];
+            $muvelet = "SELECT * FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id;";
+            $eredmeny = adatokLekerese($muvelet);
+            if(is_array($eredmeny)){
+                echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
+            }
+        }
+        else{
+            header("BAD REQUEST", true, 400);
+            echo json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        }
     }
     else{
         header("BAD REQUEST", true, 400);
-        echo json_encode(["valasz"=>"Nincsenek találatok"], JSON_UNESCAPED_UNICODE);
+        echo json_encode(["valasz"=>"Hibás metódus"], JSON_UNESCAPED_UNICODE);
     }
+    
 }
 function modositas(){
     if($_SERVER['REQUEST_METHOD']== 'POST'){

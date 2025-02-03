@@ -1,11 +1,20 @@
 async function adatokLekerese() {
+    let adatkuld = {
+        "id": 3
+    }
     try {
-        let eredmeny = await fetch('../php/felhasznalok.php/lekeres')
+        let eredmeny = await fetch('../php/felhasznalok.php/lekeres', {
+            method : "POST", 
+            headers : {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(adatkuld)
+        })
         if(eredmeny.ok){
             let adatok = await eredmeny.json();
             console.log(adatok)
             kiiras(adatok)
-            tulajokKiiras(adatok)
+            //tulajokKiiras(adatok)
         }
     } catch (error) {
         console.log(error)
@@ -54,23 +63,23 @@ function kiiras(adatok){
     valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1", adat['emailcim'])
+        div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1")
         let card = document.createElement('div')
         card.classList.add("card")
         let cardb = document.createElement('div')
-        cardb.classList.add('card-body', adat['emailcim'])
+        cardb.classList.add('card-body')
         let h5 = document.createElement('h5')
         h5.classList.add("card-title")
-        h5.innerText = adat['emailcim']
+        h5.innerText = adat['nev']
         cardb.appendChild(h5)
         let p = document.createElement('p')
         p.classList.add('card-text')
-        p.innerHTML = adat['vezetekNev']
+        p.innerHTML = adat['cim']
         cardb.appendChild(p)
         
         let p1 = document.createElement('p')
         p1.classList.add('card-text')
-        p1.innerHTML = adat['keresztNev']
+        p1.innerHTML = adat['belepesi_adatok']
         cardb.appendChild(p1)
         let p2 = document.createElement('p')
         p2.classList.add('card-text')
@@ -78,16 +87,16 @@ function kiiras(adatok){
         cardb.appendChild(p2)
         let p3 = document.createElement('p')
         p3.classList.add('card-text')
-        p3.innerHTML = adat['megyeNev']
+        p3.innerHTML = adat['takaritoErkezes']
         cardb.appendChild(p3)
         let p0 = document.createElement('p')
-        p0.classList.add('card-text', adat['emailcim'])
+        p0.classList.add('card-text')
         p0.innerHTML = adat['id']
         p0.hidden = true
         cardb.appendChild(p0)
         let button1 = document.createElement('input')
         button1.type = "button"
-        button1.classList.add("btn","btn-info")
+        button1.classList.add("btn","btn-success")
         button1.id = "gomb"
         button1.setAttribute("onclick", "modositasModal("+"'"+adat['emailcim']+"'"+")")
         button1.setAttribute("data-bs-toggle", "modal")
@@ -95,7 +104,7 @@ function kiiras(adatok){
         cardb.appendChild(button1)
         let button = document.createElement('input')
         button.type = "button"
-        button1.value = "Módosítás"
+        button1.value = "Befejezve"
         button.classList.add("btn","btn-danger")
         button.value = "Törlés"
         button.setAttribute("onclick", "torlesModal("+"'"+adat['emailcim']+"'"+")")
