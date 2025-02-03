@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
             }
 
             // Kép feltöltése
-            $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['image/png', 'image/jpeg'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
+            $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['png', 'jpg', 'jpeg'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
             if (isset($kepFeltoltes['error'])) {
                 echo json_encode($kepFeltoltes);
                 exit;
@@ -75,14 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
 
             // Naptár fájl feltöltése (ha van)
             if (!empty($_FILES['naptarFeltoltes']['name'])) {
-                $naptarFeltoltes = handleFileUpload($_FILES['naptarFeltoltes'], ['text/calendar'], 5 * 1024 * 1024, "{$lakasMappa}/naptar");
-
-                // Ellenőrizzük a fájl kiterjesztését is
-                $fileExtension = strtolower(pathinfo($_FILES['naptarFeltoltes']['name'], PATHINFO_EXTENSION));
-                if ($fileExtension !== 'ics') {
-                    echo json_encode(['error' => "Csak iCal (.ics) fájlok engedélyezettek."]);
-                    exit;
-                }
+                $naptarFeltoltes = handleFileUpload($_FILES['naptarFeltoltes'], ['ics'], 5 * 1024 * 1024, "{$lakasMappa}/naptar");
 
                 if (isset($naptarFeltoltes['error'])) {
                     echo json_encode($naptarFeltoltes);
@@ -107,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
 
 echo json_encode(["error" => "Érvénytelen kérés."]);
 
-// Fájlfeltöltés kezelése
-function handleFileUpload($file, $allowedTypes, $maxFileSize, $targetDir) {
+// Fájlfeltöltés kezelése (csak kiterjesztés ellenőrzése)
+function handleFileUpload($file, $allowedExtensions, $maxFileSize, $targetDir) {
     if (!empty($file['name'])) {
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
@@ -117,32 +110,13 @@ function handleFileUpload($file, $allowedTypes, $maxFileSize, $targetDir) {
         // Fájl kiterjesztés ellenőrzése
         $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-        // Engedélyezett kiterjesztések
-        $allowedExtensions = [];
-        foreach ($allowedTypes as $mimeType) {
-            if ($mimeType === 'text/calendar') {
-                $allowedExtensions[] = 'ics';
-            } elseif ($mimeType === 'image/png') {
-                $allowedExtensions[] = 'png';
-            } elseif ($mimeType === 'image/jpeg') {
-                $allowedExtensions[] = 'jpg';
-                $allowedExtensions[] = 'jpeg';
-            }
-        }
-
         if (!in_array($fileExtension, $allowedExtensions)) {
-            return ["error" => "Csak a következő fájltípusok engedélyezettek: " . implode(", ", $allowedTypes)];
+            return ["error" => "Csak a következő fájltípusok engedélyezettek: " . implode(", ", $allowedExtensions)];
         }
 
         // Fájl méret ellenőrzése
         if ($file['size'] > $maxFileSize) {
             return ["error" => "A fájl mérete túl nagy. Maximális méret: " . ($maxFileSize / 1024 / 1024) . " MB."];
-        }
-
-        // Fájl MIME típus ellenőrzése
-        $fileType = mime_content_type($file['tmp_name']);
-        if (!in_array($fileType, $allowedTypes)) {
-            return ["error" => "Csak a következő fájltípusok engedélyezettek: " . implode(", ", $allowedTypes)];
         }
 
         // Fájl mentése

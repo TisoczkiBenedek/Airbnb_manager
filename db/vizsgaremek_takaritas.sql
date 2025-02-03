@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Jan 21. 10:22
+-- Létrehozás ideje: 2025. Feb 03. 22:31
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `vizsgaremek_takaritas`
 --
-CREATE DATABASE IF NOT EXISTS `vizsgaremek_takaritas` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci;
-USE `vizsgaremek_takaritas`;
 
 -- --------------------------------------------------------
 
@@ -71,6 +69,14 @@ CREATE TABLE `felhasznalo` (
   `TakaritoSzabadsagVeg` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
+--
+-- A tábla adatainak kiíratása `felhasznalo`
+--
+
+INSERT INTO `felhasznalo` (`id`, `emailcim`, `jelszo`, `Vezeteknev`, `Keresztnev`, `elerhetoseg`, `megyeid`, `tulajdonos`, `takarito`, `admin`, `TakaritoSzabadsagKezd`, `TakaritoSzabadsagVeg`) VALUES
+(1, 'csabaTeszt1@gmail.com', '$2y$10$f9yttAm/zLYDme6X2b4N/u0MGHxUC9zvZ9GwKaAEvXVHK5OYAubne', 'Kis', 'Pista', '+36201112222', 5, 0, 1, 0, '0000-00-00', '0000-00-00'),
+(2, 'csabaTeszt2@gmail.com', '$2y$10$r7iRjGrHEwja6OzH7bXVxONW0xabLPxTDXnUPgk9W3wyJmGygJDCy', 'Csaba', 'Csaba', '+36201112223', 19, 1, 0, 0, '0000-00-00', '0000-00-00');
+
 -- --------------------------------------------------------
 
 --
@@ -101,8 +107,16 @@ CREATE TABLE `lakas` (
   `felhasznalo_id` int(11) NOT NULL,
   `megye_id` int(11) NOT NULL,
   `belepesi_adatok` varchar(100) NOT NULL,
-  `kepek` int(255) NOT NULL
+  `kepek` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `lakas`
+--
+
+INSERT INTO `lakas` (`id`, `nev`, `cim`, `terulet`, `medence`, `szauna`, `felhasznalo_id`, `megye_id`, `belepesi_adatok`, `kepek`) VALUES
+(11, 'asf', 'afsd3', 23131, 1, 0, 2, 18, '4141', 'uploads/lakas_11/kepek/1738617955_remnant.jpg'),
+(12, 'asf', 'afsd3', 3424, 0, 0, 2, 3, '324123', 'uploads/lakas_12/kepek/1738618119_remnant.jpg');
 
 -- --------------------------------------------------------
 
@@ -140,6 +154,25 @@ INSERT INTO `megye` (`id`, `megyeNev`) VALUES
 (18, 'Vas vármegye'),
 (19, 'Veszprém vármegye'),
 (20, 'Zala vármegye');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `naptarak`
+--
+
+CREATE TABLE `naptarak` (
+  `id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `lakas_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `naptarak`
+--
+
+INSERT INTO `naptarak` (`id`, `file_name`, `lakas_id`) VALUES
+(1, '1738618119_ical_jan_feb_events.ics', 12);
 
 -- --------------------------------------------------------
 
@@ -203,6 +236,12 @@ ALTER TABLE `megye`
   ADD PRIMARY KEY (`id`);
 
 --
+-- A tábla indexei `naptarak`
+--
+ALTER TABLE `naptarak`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- A tábla indexei `takaritas`
 --
 ALTER TABLE `takaritas`
@@ -230,7 +269,7 @@ ALTER TABLE `eszkozszukseglet`
 -- AUTO_INCREMENT a táblához `felhasznalo`
 --
 ALTER TABLE `felhasznalo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `foglaltsag`
@@ -242,13 +281,19 @@ ALTER TABLE `foglaltsag`
 -- AUTO_INCREMENT a táblához `lakas`
 --
 ALTER TABLE `lakas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT a táblához `megye`
 --
 ALTER TABLE `megye`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT a táblához `naptarak`
+--
+ALTER TABLE `naptarak`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT a táblához `takaritas`
