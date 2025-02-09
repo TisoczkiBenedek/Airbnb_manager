@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
             $kepFeltoltes = $kepFeltoltes['success'];
 
             // Kép elérési útjának frissítése az adatbázisban
-            $muvelet = "UPDATE lakas SET kepek = '$lakasMappa/kepek/$kepFeltoltes' WHERE id = $lakasId";
+            $muvelet = "UPDATE lakas SET kepek = '../php/$lakasMappa/kepek/$kepFeltoltes' WHERE id = $lakasId";
             adatokValtoztatasa($muvelet);
 
             // Naptár fájl feltöltése (ha van)
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
                 $naptarFileName = $naptarFeltoltes['success'];
 
                 // Naptár adatainak beszúrása az adatbázisba
-                $muvelet = "INSERT INTO naptarak (file_name, file_content, lakas_id) VALUES ('$naptarFileName', '', $lakasId)";
+                $muvelet = "INSERT INTO naptarak (file_name, lakas_id) VALUES ('../php/$lakasMappa/naptar/$naptarFileName', $lakasId)";
                 adatokValtoztatasa($muvelet);
             }
 
@@ -128,3 +128,4 @@ function handleFileUpload($file, $allowedExtensions, $maxFileSize, $targetDir) {
     }
     return ["success" => ""];
 }
+?>

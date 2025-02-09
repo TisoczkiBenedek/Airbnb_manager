@@ -37,23 +37,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             });
-
+            
             if (!response.ok) {
                 throw new Error(`HTTP hiba! Státusz: ${response.status}`);
             }
-
-            // Ellenőrizd, hogy a válasz JSON formátumú-e
+            
+            // Olvasd el a választ szövegként
+            const responseText = await response.text();
+            
+            // Próbáld JSON-ként értelmezni
             let result;
             try {
-                result = await response.json();
-                console.log("Válasz a szervertől:", result); // Hibakeresés: írd ki a választ
+                result = JSON.parse(responseText); // JSON-ként értelmezzük
+                console.log("Válasz a szervertől:", result);
             } catch (jsonError) {
-                const text = await response.text();
-                console.error('Hibás JSON válasz:', text);
+                console.error('Hibás JSON válasz:', responseText);
                 alert('Váratlan hiba történt! Kérjük, próbálja újra később.');
                 return;
             }
-
+            
             if (result.success) {
                 alert(result.success);
                 form.reset();

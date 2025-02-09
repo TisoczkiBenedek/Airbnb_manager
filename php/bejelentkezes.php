@@ -31,6 +31,9 @@ function bejelentkezes(){
                     $_SESSION['felhTipus'] = 'admin';
                 }
 
+                // Ellenőrzés
+                error_log("Bejelentkezés sikeres: " . print_r($_SESSION, true));
+
                 echo json_encode([ 'emailcim' => $eredmeny[0]['emailcim'], 'felhTipus' => $_SESSION['felhTipus'] ], JSON_UNESCAPED_UNICODE);
             }
             else{
@@ -38,12 +41,11 @@ function bejelentkezes(){
             }
         }
         else{
-            echo json_encode(["valasz"=>"Nem található ilyen emil cím és jelszó páros!"], JSON_UNESCAPED_UNICODE);
+            echo json_encode(["valasz"=>"Nem található ilyen email cím és jelszó páros!"], JSON_UNESCAPED_UNICODE);
         }
     }
     else{
-        echo json_encode(["valasz"=>"Nem hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        echo json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
     }
-    
 }
 ?>
