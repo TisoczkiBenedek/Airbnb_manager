@@ -62,20 +62,22 @@ function kiiras(adatok) {
         button1.setAttribute("data-bs-target", "#modal_modosit");
         cardb.appendChild(button1);
 
-        // Törlés gomb
+        // Naptár gomb
         let button = document.createElement('input');
         button.type = "button";
         button.classList.add("btn", "btn-success", "mt-2", "ms-2");
         button.value = "Naptár";
-        button.setAttribute("onclick", "naptarModal(" + adat.id + ")");
-        button.setAttribute("data-bs-toggle", "modal");
-        button.setAttribute("data-bs-target", "#modal_naptar");
+        button.setAttribute('onclick', 'naptarOldalra()');
         cardb.appendChild(button);
 
         card.appendChild(cardb);
         div.appendChild(card);
         valasz.appendChild(div);
     }
+}
+
+function naptarOldalra() {
+    window.location.href = "../html/naptar.html";
 }
 
 function modositasModal(id){
