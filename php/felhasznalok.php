@@ -5,8 +5,8 @@ switch (end($teljesURL)) {
     case 'lekeres':
         lekeres();
         break;
-    case 'modositas':
-        modositas();
+    case 'mentes':
+        mentes();
         break;
     case 'torles':
         torles();
@@ -23,7 +23,7 @@ function lekeres(){
         $adatok = json_decode(file_get_contents('php://input'), true);
         if(!empty($adatok['id'])){
             $id = $adatok['id'];
-            $muvelet = "SELECT * FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id;";
+            $muvelet = "SELECT takaritas.id, takaritas.lakasId, takaritas.felhasznalo_id, takaritas.takaritoErkezes, takaritas.befejezve, takaritas.megjegyzes, lakas.nev, lakas.cim, lakas.terulet, lakas.medence, lakas.szauna, lakas.belepesi_adatok, felhasznalo.elerhetoseg FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id and DATE(takaritas.takaritoErkezes) = DATE(NOW()) and takaritas.befejezve = 0;";
             $eredmeny = adatokLekerese($muvelet);
             if(is_array($eredmeny)){
                 echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
@@ -44,21 +44,18 @@ function lekeres(){
     }
     
 }
-function modositas(){
-    if($_SERVER['REQUEST_METHOD']== 'POST'){
+function mentes(){
+    if($_SERVER['REQUEST_METHOD']== 'PUT'){
         $adatok = json_decode(file_get_contents('php://input'), true);
-        if(!empty($adatok['email']) && isset($adatok['email']) && !empty("id") && !empty($adatok['tel']) && !empty($adatok['knev']) && !empty($adatok['vnev']) && !empty($adatok['megye'])){
-            $email = $adatok['email'];
+        if( !empty("id") ){
             $id = $adatok['id'];
-            $vnev = $adatok['vnev'];
-            $knev = $adatok['knev'];
-            $tel = $adatok['tel'];
-            $megyeid = $adatok['megye'];
+            $megjegyzes = $adatok["megjegyzes"];
+            
             //$muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = '{$email}'";
             //$valasz= adatokLekerese($muvelet);
             //echo $valasz;
             //$id = $valasz[0]['id'];
-            $muvelet = "UPDATE `felhasznalo` SET `emailcim` = '{$email}', `Vezeteknev`= '{$vnev}', `Keresztnev`= '{$knev}', `elerhetoseg`= '{$tel}', `megyeid`= '{$megyeid}' WHERE `felhasznalo`.`id` = '{$id}'";
+            $muvelet = "UPDATE `takaritas` SET `befejezve` = '1', `megjegyzes`= '$megjegyzes', `takaritoTavozas`= NOW() WHERE `takaritas`.`id` = '{$id}'";
             $eredmeny =adatokValtoztatasa($muvelet);
             echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
         }

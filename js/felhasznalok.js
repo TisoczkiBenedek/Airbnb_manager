@@ -16,6 +16,10 @@ async function adatokLekerese() {
             kiiras(adatok)
             //tulajokKiiras(adatok)
         }
+        else{
+            let valasz = await eredmeny.json()
+            kijelzes(valasz)
+        }
     } catch (error) {
         console.log(error)
     }
@@ -34,6 +38,16 @@ async function megyelekeres(){
         }
     } catch (error) {
         console.log(error)
+    }
+}
+function kijelzes(valasz){
+    console.log(valasz)
+    if(valasz["valasz"]== "Nincsenek találatok"){
+        
+        let div = document.getElementById('valasz')
+        div.innerText = ""
+        div.innerHTML = "<h1>Nincsenek a mai napra takarítások!</h1>"
+        div.classList.add("mx-auto", "text-center", "mt-5")
     }
 }
 function feltoltes(adatok){
@@ -61,6 +75,7 @@ function tulajokKiiras(adatok){
 function kiiras(adatok){
     let valasz = document.getElementById('valasz')
     valasz.innerText = ""
+    valasz.classList = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
         div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1")
@@ -89,6 +104,10 @@ function kiiras(adatok){
         p3.classList.add('card-text')
         p3.innerHTML = adat['takaritoErkezes']
         cardb.appendChild(p3)
+        let p4 = document.createElement('p')
+        p4.classList.add('card-text')
+        p4.innerHTML = adat['terulet']
+        cardb.appendChild(p4)
         let p0 = document.createElement('p')
         p0.classList.add('card-text')
         p0.innerHTML = adat['id']
@@ -98,19 +117,11 @@ function kiiras(adatok){
         button1.type = "button"
         button1.classList.add("btn","btn-success")
         button1.id = "gomb"
-        button1.setAttribute("onclick", "modositasModal("+"'"+adat['emailcim']+"'"+")")
+        button1.setAttribute("onclick", "modositasModal("+"'"+adat['id']+"'"+")")
         button1.setAttribute("data-bs-toggle", "modal")
-        button1.setAttribute("data-bs-target", "#modal_modosit")
-        cardb.appendChild(button1)
-        let button = document.createElement('input')
-        button.type = "button"
+        button1.setAttribute("data-bs-target", "#modal_bef")
         button1.value = "Befejezve"
-        button.classList.add("btn","btn-danger")
-        button.value = "Törlés"
-        button.setAttribute("onclick", "torlesModal("+"'"+adat['emailcim']+"'"+")")
-        button.setAttribute("data-bs-toggle", "modal")
-        button.setAttribute("data-bs-target", "#modal_torol")
-        cardb.appendChild(button)
+        cardb.appendChild(button1)
         card.appendChild(cardb)
         div.appendChild(card)
         valasz.appendChild(div)
@@ -127,112 +138,35 @@ function modositasModal(id){
     p[0].hidden = true
     //let modalcim = document.getElementById('modal_cim')
     //modalcim.innerText = "Lakás módosítása "
-    let span = document.getElementById('modal_felh_email')
-    span.innerText = ""
-    span.innerText = id
+    //let span = document.getElementById('modal_felh_email')
+    //span.innerText = ""
+    //span.innerText = id
 
     let inputid = document.createElement('input')
     inputid.setAttribute("type", "hidden")
-    inputid.value = document.getElementsByClassName(id)[1].childNodes[5].innerText
-    inputid.id = "felhasznalo_id"
+    inputid.value = id
+    inputid.id = "takaritas_id"
     modalform.appendChild(inputid)
 
-    let label = document.createElement('label')
-    label.classList.add('form-label')
-    label.innerText = "Felhasználó e-mail címe"
-    label.setAttribute("for", "email")
-    modalform.appendChild(label)
-    let cim = document.createElement("input")
-    cim.id = "email"
-    cim.type = "text"
-    cim.value = id
-    cim.classList.add("form-control")
-    modalform.appendChild(cim)
     
-    let label1 = document.createElement('label', 'mt-1')
-    label1.classList.add('form-label')
-    label1.innerText = "Felhasználó vezetékneve"
-    label1.setAttribute("for", "vnev")
-    modalform.appendChild(label1)
-    let vnev = document.createElement("input")
-    vnev.id = "vnev"
-    vnev.type = "text"
-    vnev.value = document.getElementsByClassName(id)[1].childNodes[1].innerText
-    vnev.classList.add("form-control")
-    modalform.appendChild(vnev)
-
-    let label2 = document.createElement('label', 'mt-1')
-    label2.classList.add('form-label')
-    label2.innerText = "Felhasználó keresztneve"
-    label2.setAttribute("for", "knev")
-    modalform.appendChild(label2)
-    let knev = document.createElement("input")
-    knev.id = "knev"
-    knev.type = "text"
-    knev.value = document.getElementsByClassName(id)[1].childNodes[2].innerText
-    knev.classList.add("form-control")
-    modalform.appendChild(knev)
-
-    let label3 = document.createElement('label', 'mt-1')
-    label3.classList.add('form-label')
-    label3.innerText = "Felhasználó telefonszáma"
-    label3.setAttribute("for", "telefon")
-    modalform.appendChild(label3)
-    let telefon = document.createElement("input")
-    telefon.id = "telefon"
-    telefon.type = "tel"
-    telefon.value = document.getElementsByClassName(id)[1].childNodes[3].innerText
-    telefon.classList.add("form-control")
-    modalform.appendChild(telefon)
-
-    let label4 = document.createElement('label', 'mt-1')
-    label4.classList.add('form-label')
-    label4.innerText = "Megye"
-    label4.setAttribute("for", "megye")
-    modalform.appendChild(label4)
-    let megye = document.createElement("select")
-    megye.id = "megye_modal"
-    megye.value = ""
-    megye.classList.add("form-control")
-    for (let adat of megyek) {
-        let opt = document.createElement('option')
-        opt.innerText = adat['megyeNev']
-        opt.value = adat['id']
-        if(adat['megyeNev'] == document.getElementsByClassName(id)[1].childNodes[4].innerText){
-            opt.selected = true
-        }
-        megye.appendChild(opt)
-    }
-
-    modalform.appendChild(megye)
+    
+    let megjegyzes = document.createElement("textarea")
+    megjegyzes.classList.add("form-control")
+    megjegyzes.id = "megj"
+    megjegyzes.rows = "5"
+    megjegyzes.cols = "50"
+    modalform.appendChild(megjegyzes)
 }
-async function modositas(){
-    let email = document.getElementById('email')
-    let id = document.getElementById("felhasznalo_id")
-    let telefonszam = document.getElementById("telefon")
-    let vnev = document.getElementById('vnev')
-    let knev = document.getElementById('knev')
-    let megyeid = document.getElementById('megye_modal')
-    if(email.value == "" || telefonszam.value == "" || vnev.value == "" || knev.value == ""){
-        let valaszhely = document.getElementsByClassName("modal_valasz")
-        valaszhely[0].innerText = "Kérem minden mezőt töltsön ki!"
-        valaszhely[0].style.border = "2px solid red"
-        valaszhely[0].style.padding = "5px"
-        valaszhely[0].hidden = false
-        return
-    }
-    else{
+async function mentes(){
+    let megjegyzes = document.getElementById('megj')
+    let tak_id = document.getElementById("takaritas_id")
         try {
             let kuldendo = {
-                "email": email.value,
-                "id": id.value,
-                "tel": telefonszam.value,
-                "vnev": vnev.value,
-                "knev": knev.value,
-                "megye": megyeid.value
+                "id": tak_id.value,
+                "megjegyzes": megjegyzes.value
             }
-            let eredmeny = await fetch('../php/felhasznalok.php/modositas', {
-                method : "POST", 
+            let eredmeny = await fetch('../php/felhasznalok.php/mentes', {
+                method : "PUT", 
                 headers : {
                     "Content-Type": "application/json"
                 },
@@ -248,39 +182,6 @@ async function modositas(){
             console.log(error)
         }
     }
-    
-}
-function torlesModal(id){
-    let idhely = document.getElementById('id_helye')
-    idhely.innerText = ""
-    idhely.innerText += id
-    let p = document.getElementsByClassName('modal_valasz')
-    p[1].innerText = ""
-    p[1].style.border = "none"
-    p[1].hidden = true
-}
-async function adattorles(){
-    try {
-        let kuldendo = {
-            "id": document.getElementById('id_helye').innerText
-        }
-        let eredmeny = await fetch('../php/felhasznalok.php/torles', {
-            method : "DELETE", 
-            headers : {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(kuldendo)
-        })
-        if(eredmeny.ok){
-            let adatok = await eredmeny.json()
-            console.log(adatok)
-            valasz(adatok, true)
-            
-        }
-    } catch (error) {
-        console.log(error)
-    }
-}
 function valasz(adatok, torol){
     //let modalBody = document.getElementsByClassName('modal-body')[0]
     let p = document.getElementsByClassName('modal_valasz')
@@ -371,6 +272,5 @@ function szures(){
 
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
-document.getElementById('mentes').addEventListener('click', modositas)
-document.getElementById('torles').addEventListener('click', adattorles)
+document.getElementById('mentes').addEventListener('click', mentes)
 document.getElementById('form').addEventListener('input', szures)
