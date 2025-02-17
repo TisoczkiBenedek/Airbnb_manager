@@ -8,11 +8,11 @@ switch (end($teljesURL)) {
     case 'mentes':
         mentes();
         break;
-    case 'torles':
-        torles();
-        break;
     case 'megyek':
         megyebetoltes();
+        break;
+    case 'eszkoz':
+        eszkozleker();
         break;
     default:
         # code...
@@ -70,29 +70,17 @@ function mentes(){
     }
     
 }
-function torles(){
-    if($_SERVER['REQUEST_METHOD']== 'DELETE'){
-        $adatok = json_decode(file_get_contents('php://input'), true);
-        if(isset($adatok['id']) && !empty($adatok['id'])){
-            $id = $adatok['id'];
-            $muvelet = "DELETE FROM felhasznalo WHERE `felhasznalo`.`emailcim` = '$id'";
-            $eredmeny = adatokValtoztatasa($muvelet);
-            echo json_encode(["valasz"=>$eredmeny], JSON_UNESCAPED_UNICODE);
-        }
-        else{
-            header("BAD REQUEST", true, 400);
-            echo json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
-        }
-    }
-    else{
-        header("BAD REQUEST", true, 400);
-        echo json_encode(["valasz"=>"Hibás metódus"], JSON_UNESCAPED_UNICODE);
-    }
-}
 function megyebetoltes(){
     $muvelet = "SELECT * FROM megye;";
     $eredmeny = adatokLekerese($muvelet);
     echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+}
+function eszkozleker(){
+    if($_SERVER["REQUEST_METHOD"] == "GET"){
+        $muvelet = "SELECT * FROM `eszkoz`";
+        $eredmeny = adatokLekerese($muvelet);
+        echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+    }
 }
 
 
