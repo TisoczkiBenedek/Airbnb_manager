@@ -1,0 +1,20 @@
+{
+    "name": "projekt/airbnb_manager",
+    "type": "project",
+    "require": {
+        "eluceo/ical": "^0.16.0",
+        "sabre/vobject": "^4.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Projekt\\AirbnbManager\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "grezsucsaba",
+            "email": "8200grezsucsaba@gmail.com"
+        }
+    ]
+}

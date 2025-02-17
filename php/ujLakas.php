@@ -58,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
             if (!is_dir($lakasMappa)) {
                 mkdir($lakasMappa, 0777, true);
                 mkdir("{$lakasMappa}/kepek", 0777, true);
-                mkdir("{$lakasMappa}/naptar", 0777, true);
             }
 
             // Kép feltöltése
@@ -73,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
             $muvelet = "UPDATE lakas SET kepek = '../php/$lakasMappa/kepek/$kepFeltoltes' WHERE id = $lakasId";
             adatokValtoztatasa($muvelet);
 
-            // Naptár fájl feltöltése (ha van)
+            // Naptár fájl tartalmának feltöltése az adatbázisba (ha van)
             if (!empty($_FILES['naptarFeltoltes']['name'])) {
                 $naptarFeltoltes = handleFileUpload($_FILES['naptarFeltoltes'], ['ics'], 5 * 1024 * 1024, "{$lakasMappa}/naptar");
 
@@ -81,10 +80,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['feltoltes'])) {
                     echo json_encode($naptarFeltoltes);
                     exit;
                 }
+
+                // .ics fájl tartalmának beolvasása
                 $naptarFileName = $naptarFeltoltes['success'];
+                $naptarFilePath = "{$lakasMappa}/naptar/{$naptarFileName}";
+                $naptarFileContent = file_get_contents($naptarFilePath);
 
                 // Naptár adatainak beszúrása az adatbázisba
-                $muvelet = "INSERT INTO naptarak (file_name, lakas_id) VALUES ('../php/$lakasMappa/naptar/$naptarFileName', $lakasId)";
+                $muvelet = "INSERT INTO naptarak (file_name, file_content, lakas_id, felhasznalo_id) 
+                            VALUES ('$naptarFileName', '$naptarFileContent', $lakasId, $felhasznaloId)";
                 adatokValtoztatasa($muvelet);
             }
 

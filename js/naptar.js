@@ -1,38 +1,82 @@
-document.addEventListener('DOMContentLoaded', function () {
-    $(document).ready(function(){
-        $('#calendar').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            defaultView: 'month', // Alapértelmezett nézet: hónap
-            events: function (start, end, timezone, callback) {
-                // .ics fájl betöltése és feldolgozása
-                fetch('../uploads/lakas_13/naptar/1739137973_ical_jan_feb_eventsics')
-                    .then(response => response.text())
-                    .then(icsData => {
-                        const jcalData = ICAL.parse(icsData);
-                        const comp = new ICAL.Component(jcalData);
+// document.addEventListener('DOMContentLoaded', function() {
+//     const calendarEl = document.getElementById('calendar');
+//     const calendar = new FullCalendar.Calendar(calendarEl, {
+//         initialView: 'dayGridMonth',
+//         locale: 'hu',
+//         firstDay: 1,
+//         events: [], // Kezdetben üres események
+//     });
 
-                        // Események kinyerése
-                        const events = comp.getAllSubcomponents('vevent').map(vevent => {
-                            const event = new ICAL.Event(vevent);
-                            return {
-                                title: event.summary,
-                                start: event.startDate.toJSDate(),
-                                end: event.endDate.toJSDate(),
-                                description: event.description
-                            };
-                        });
+//     calendar.render();
 
-                        // Események hozzáadása a naptárhoz
-                        callback(events);
-                    })
-                    .catch(error => {
-                        console.error('Hiba az .ics fájl betöltésekor:', error);
-                    });
-            }
-        });
-    }) 
+//     // URL paraméterek kiolvasása
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const lakasId = urlParams.get('lakas_id');
+
+//     if (lakasId) {
+//         // Események lekérése a PHP backendről
+//         fetch(`../php/naptar.php?lakas_id=${lakasId}`)
+//             .then(response => {
+//                 if (!response.ok) {
+//                     throw new Error(`HTTP hiba: ${response.status} ${response.statusText}`);
+//                 }
+//                 return response.json();
+//             })
+//             .then(events => {
+//                 if (events.error) {
+//                     console.error("Hiba a válaszban:", events.error);
+//                 } else {
+//                     // Események hozzáadása a FullCalendarhoz
+//                     calendar.addEventSource(events);
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error("Hiba történt:", error);
+//                 alert("Nem sikerült betölteni az eseményeket. Kérlek, próbáld újra később.");
+//             });
+//     } else {
+//         console.error("Nincs lakas_id az URL-ben.");
+//         alert("Nincs lakás azonosító megadva. Kérlek, ellenőrizd az URL-t.");
+//     }
+// });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'hu',
+        firstDay: 1,
+        events: [],
+    });
+
+    calendar.render();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const lakasId = urlParams.get('lakas_id');
+
+    if (lakasId) {
+        console.log("A lakasId az URL-ben:", lakasId); //Ellenőrzés
+        fetch(`../php/naptar.php?lakas_id=${lakasId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP hiba: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(events => {
+                if (events.error) {
+                    console.error("Hiba a válaszban:", events.error);
+                    alert("Hiba történt: " + events.error); // felhasználó tájékoztatása
+                } else {
+                    calendar.addEventSource(events);
+                }
+            })
+            .catch(error => {
+                console.error("Hiba történt:", error);
+                alert("Nem sikerült betölteni az eseményeket. Kérlek, próbáld újra később: " + error.message);
+            });
+    } else {
+        console.error("Nincs lakas_id az URL-ben.");
+        alert("Nincs lakás azonosító megadva. Kérlek, ellenőrizd az URL-t.");
+    }
 });
