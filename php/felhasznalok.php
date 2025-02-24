@@ -14,6 +14,9 @@ switch (end($teljesURL)) {
     case 'eszkoz':
         eszkozleker();
         break;
+    case 'eszkozIgeny':
+        eszkozIgenyHoz();
+        break;
     default:
         # code...
         break;
@@ -80,6 +83,12 @@ function eszkozleker(){
         $muvelet = "SELECT * FROM `eszkoz`";
         $eredmeny = adatokLekerese($muvelet);
         echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
+    }
+}
+function eszkozIgenyHoz(){
+    if($_SERVER["REQUEST_METHOD"]== "POST"){
+        $erekezett = json_decode(file_get_contents('php://input'), true);
+        echo json_encode(["valasz"=>"Megérekezett"], JSON_UNESCAPED_UNICODE);
     }
 }
 
