@@ -9,19 +9,25 @@
     <title>Bejelentkezés</title>
 </head>
 <body>
-    <header class="mt-5 mb-5" id="infok">
+    <header class="mt-5" id="infok">
         <p>Üdvözöljük az Airbnb Manager oldalán</p>
         <p>Kérem töltse ki az alábbi mezőket a bejelentkezéshez!</p>
     </header>
-    <div class="d-flex justify-content-center mt-5 mb-5" id="urlap">
+    <div class="row justify-content-center">
+    <div class="justify-content-center mt-3 mb-5 col-lg-4 col-sm-10 mx-sm-2 col-md-6" id="urlap">
         <form>
             <label for="email" class="form-label">E-mail cím</label>
             <input type="email" class="form-control" id="email">
             <label for="jelszo" class="form-label">Jelszó</label>
             <input type="password" class="form-control" id="jelszo" >
+            <h6 class="mx-2 text-danger text-center" hidden id="vhely">
+
+            </h6>
             <button type="button" id="gomb" class="btn btn-info mt-3 d-grid mx-auto">Bejelentkezés</button>
         </form>
+        
     </div>
+</div>
     <script src="../js/bejelentkezes.js"></script>
 </body>
 </html>
