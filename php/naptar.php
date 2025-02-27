@@ -1,28 +1,50 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+ini_set('display_errors', 0); // Hibák ne jelenjenek meg
+error_reporting(0); // Minden hiba jelzés kikapcsolása
 
 require __DIR__ . '/../vendor/autoload.php';
 use Sabre\VObject\Reader;
 
-include 'sql_fuggvenyek.php';
+include 'parameterezett_sql_fuggvenyek.php';
 
 header('Content-Type: application/json');
 
+$action = $_GET['action'] ?? null;
+
+if ($action === 'getProfilNev') {
+    session_start();
+    if (!isset($_SESSION['emailcim'])) {
+        echo json_encode(['error' => 'Nincs bejelentkezve']);
+        exit;
+    }
+
+    $email = $_SESSION['emailcim'];
+    $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
+    $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);
+
+    if (is_array($nevEredmeny) && count($nevEredmeny) > 0) {
+        $vezeteknev = $nevEredmeny[0]['Vezeteknev'];
+        $keresztnev = $nevEredmeny[0]['Keresztnev'];
+        $profilNev = $vezeteknev . ' ' . $keresztnev;
+    } else {
+        $profilNev = "Ismeretlen felhasználó";
+    }
+
+    echo json_encode(['profilNev' => $profilNev]);
+    exit;
+}
+
 try {
-    // Lakas_id kiolvasása a kérésből
     $lakas_id = $_GET['lakas_id'] ?? null;
 
     if (!$lakas_id) {
         throw new Exception("Nincs lakas_id megadva");
     }
 
-    // Ellenőrizd, hogy a lakas_id szám-e
     if (!is_numeric($lakas_id)) {
         throw new Exception("Érvénytelen lakas_id");
     }
 
-    // ICS tartalom lekérése az adatbázisból
     $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = " . $lakas_id;
     $eredmeny = adatokLekerese($muvelet);
 
@@ -36,25 +58,28 @@ try {
 
     $icsContent = $eredmeny[0]['file_content'];
 
-    // ICS tartalom feldolgozása
     try {
         $vcalendar = Reader::read($icsContent);
         $events = [];
+        $ma = new DateTime();
 
         foreach ($vcalendar->VEVENT as $vevent) {
-            $events[] = [
-                'title' => (string)$vevent->SUMMARY,
-                'start' => $vevent->DTSTART->getDateTime()->format('c'), // ISO 8601 formátum
-                'end' => $vevent->DTEND->getDateTime()->format('c'),
-            ];
+            $start = $vevent->DTSTART->getDateTime();
+            $end = $vevent->DTEND->getDateTime();
+
+            if ($start >= $ma || $end >= $ma) {
+                $events[] = [
+                    'title' => (string)$vevent->SUMMARY,
+                    'start' => $start->format('c'),
+                    'end' => $end->format('c'),
+                ];
+            }
         }
     } catch (Exception $e) {
         throw new Exception("Hiba az ICS tartalom feldolgozásakor: " . $e->getMessage());
     }
 
-    // JSON válasz küldése
     echo json_encode($events, JSON_THROW_ON_ERROR);
-
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);

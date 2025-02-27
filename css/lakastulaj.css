@@ -99,3 +99,17 @@ h2{
   margin-right: 5px;
 }
 
+/*toaster*/
+/* Egységes toast stílus */
+.toast-body {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}

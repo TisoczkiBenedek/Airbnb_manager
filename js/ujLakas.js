@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const adatok = await response.json();
-            console.log("Válasz a szervertől:", adatok); // Hibakeresés: írd ki a választ
+            console.log("Válasz a szervertől:", adatok);
 
             const select = document.getElementById('megye');
             select.innerHTML = '<option value="">Válasszon megyét</option>';
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } catch (error) {
             console.error('Hiba a megyék betöltése során:', error);
-            alert('Hiba történt a megyék betöltése során: ' + error.message);
         }
     }
 
@@ -31,37 +30,47 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-
+    
         try {
             const response = await fetch('../php/ujLakas.php?feltoltes', {
                 method: 'POST',
                 body: formData
             });
-            
+    
             if (!response.ok) {
                 throw new Error(`HTTP hiba! Státusz: ${response.status}`);
             }
-            
-            // Olvasd el a választ szövegként
+    
             const responseText = await response.text();
-            
-            // Próbáld JSON-ként értelmezni
+            console.log("Szerver válasza:", responseText); // Hibakereséshez
+    
             let result;
             try {
-                result = JSON.parse(responseText); // JSON-ként értelmezzük
-                console.log("Válasz a szervertől:", result);
+                result = JSON.parse(responseText); // Próbáljuk értelmezni a JSON-t
             } catch (jsonError) {
                 console.error('Hibás JSON válasz:', responseText);
-                alert('Váratlan hiba történt! Kérjük, próbálja újra később.');
+                alert('A szerver hibás választ adott. Kérjük, próbálja újra később.');
                 return;
             }
+    
+            if (result.error) {
+                document.getElementById('toast-body').textContent = result.error;
+            } else if (result.success) {
+                document.getElementById('toast-body').textContent = result.success;
+                form.style.display = 'none'; // Űrlap eltűntetése
             
-            if (result.success) {
-                alert(result.success);
-                form.reset();
+                // Oldal frissítése 2 másodperc múlva
+                setTimeout(() => {
+                    location.reload(); // Az oldal teljes frissítése
+                }, 1000); // 2000 ms = 2 másodperc
             } else {
-                alert(result.error);
+                document.getElementById('toast-body').textContent = "Ismeretlen hiba történt.";
             }
+    
+            const toastLiveExample = document.getElementById('liveToast');
+            const toast = new bootstrap.Toast(toastLiveExample);
+            toast.show();
+    
         } catch (error) {
             console.error('Hiba a feltöltés során:', error);
             alert('Hiba történt a feltöltés során: ' + error.message);

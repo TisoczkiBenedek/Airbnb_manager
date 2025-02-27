@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lakasId) {
         console.log("A lakasId az URL-ben:", lakasId); // Ellenőrzés
         fetch(`../php/naptar.php?lakas_id=${lakasId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP hiba: ${response.status} ${response.statusText}`);
+            .then(eredmeny => {
+                if (!eredmeny.ok) {
+                    throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
                 }
-                return response.json();
+                return eredmeny.json();
             })
             .then(events => {
                 if (events.error) {
@@ -37,4 +37,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 //alert("Nem sikerült betölteni az eseményeket. Kérlek, próbáld újra később: " + error.message);
             });
     }
+
+    
 });
+
+// Profilnév lekérése és megjelenítése
+function loadProfilNev() {
+    fetch('../php/naptar.php?action=getProfilNev')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.profilNev) {
+                document.getElementById('profilNev').innerText = data.profilNev;
+            }
+        })
+        .catch(error => {
+            console.error('Hiba a profilnév betöltésekor:', error);
+            document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
+        });
+}
+
+// Oldal betöltésekor futtatjuk
+document.addEventListener('DOMContentLoaded', loadProfilNev);
+
+function vissza(){
+    window.location.href = '../html/lakasok.html'; 
+}

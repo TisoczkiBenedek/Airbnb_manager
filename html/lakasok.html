@@ -14,7 +14,11 @@
       <div class="container-fluid">
         <h2 id="cim" class="text-white mb-0 mx-3">Főoldal</h2>
         <div class="navbar-right" id="profilAdatok">
-            <?php profilBetoltese(); ?> 
+          <span class="text-white" id="profilNev" style="margin-right: 10px;"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" style="color: white;">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+          </svg>
         </div>
       </div>
     </nav>
@@ -76,48 +80,80 @@
   <!-- Modal elem módosítás -->
   <div class="modal fade" id="modal_modosit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modal_cim">Lakás módosítása</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Lakás módosítása</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modositForm" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="lakasId">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Lakás neve</label>
+                        <input type="text" class="form-control" name="nev" id="lakasNev" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Cím</label>
+                        <input type="text" class="form-control" name="cim" id="lakcim" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Terület (m²)</label>
+                        <input type="number" class="form-control" name="terulet" id="terulet" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="medence" id="medence">
+                            <label class="form-check-label">Medence</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="szauna" id="szauna">
+                            <label class="form-check-label">Szauna</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Megye</label>
+                        <select class="form-select" name="megye" id="megye" required></select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Leírás</label>
+                        <textarea class="form-control" name="belepesi_adatok" id="lakasAdatok" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Új kép feltöltése</label>
+                        <input type="file" class="form-control" name="kepFeltoltes" accept="image/*">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Mentés</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>Kérem írja át a módosítani kívánt részeket</p>
-          <form id="lakasForm">
-            <label for="lakasNev" class="form-label">A lakás neve</label>
-            <input type="text" class="form-control" name="lakasNev" id="lakasNev" required><br />
-
-            <label for="lakcim" class="form-label">Lakcím</label>
-            <input type="text" class="form-control" name="lakcim" id="lakcim" required><br />
-
-            <label for="terulet" class="form-label">A lakás területe (m²)</label>
-            <input type="number" class="form-control" name="terulet" id="terulet" required><br />
-
-            <label for="medence" class="form-label">Medence</label>
-            <input type="checkbox" class="form-check-input" name="medence" id="medence"><br />
-
-            <label for="szauna" class="form-label">Szauna</label>
-            <input type="checkbox" class="form-check-input" name="szauna" id="szauna"><br />
-
-            <label for="megye" class="form-label">Megye</label>
-            <select id="megye" class="form-select" name="megye" required>
-                <option value="">Válasszon megyét</option>
-            </select><br />
-
-            <label for="lakasAdatok" class="form-label">Lakás leírása</label>
-            <textarea class="form-control" name="lakasAdatok" id="lakasAdatok" required></textarea><br />
-
-            <label for="kepFeltoltes" class="form-label">Lakás képe</label>
-            <input type="file" class="form-control" name="kepFeltoltes" id="kepFeltoltes" accept=".jpg, .png" required><br />
-
-          </form>
-        </div>
-      </div>
     </div>
   </div>
 
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Értesítés</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-body">
+            <!-- Ide kerül a hiba vagy siker üzenet -->
+        </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../js/lakastulaj.js"></script>
   <script src="../js/ujLakas.js"></script>
+  <script src="../js/lakasTorles.js"></script>
+  <script src="../js/lakasModositas.js"></script>
 </body>
 </html>

@@ -5,19 +5,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function adatokLekerese() {
     try {
-        console.log("Adatok lekérése elkezdődött");
-        const response = await fetch('../php/lakasok.php?action=lekeres');
+        const eredmeny = await fetch('../php/lakasok.php?action=lekeres', {
+            method: 'GET',
+            credentials: 'include' // Küldjük el a sütiket
+        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+        if (!eredmeny.ok) {
+            throw new Error(`HTTP hiba! Státusz: ${eredmeny.status}`);
         }
 
-        const adatok = await response.json();
-        console.log("Adatok érkeztek:", adatok);
-        kiiras(adatok); // Adatok megjelenítése
+        const adatok = await eredmeny.json();
+        kiiras(adatok);
     } catch (error) {
         console.error("Hiba:", error);
-        alert("Adatok betöltése sikertelen!");
+        showToast("Adatok betöltése sikertelen!", 'danger');
     }
 }
 
@@ -52,16 +53,6 @@ function kiiras(adatok) {
         p.innerHTML = adat.cim + "<br>Terület: " + adat.terulet + " m²<br>Medence: " + (adat.medence && adat.medence == 1 ? 'Van' : 'Nincs') + "<br>Szauna: " + (adat.szauna && adat.szauna == 1 ? 'Van' : 'Nincs') + "<br>Belépési adatok: <br>" + adat.belepesi_adatok;
         cardb.appendChild(p);
 
-        // Módosítás gomb
-        let button1 = document.createElement('input');
-        button1.type = "button";
-        button1.classList.add("btn", "btn-info", "mt-2");
-        button1.value = "Módosítás";
-        button1.setAttribute("onclick", "modositasModal(" + adat.id + ")");
-        button1.setAttribute("data-bs-toggle", "modal");
-        button1.setAttribute("data-bs-target", "#modal_modosit");
-        cardb.appendChild(button1);
-
         // Naptár gomb
         let button = document.createElement('input');
         button.type = "button";
@@ -69,6 +60,24 @@ function kiiras(adatok) {
         button.value = "Naptár";
         button.setAttribute('onclick', `naptarOldalra(${adat.id})`); // Átadjuk a lakasId-t
         cardb.appendChild(button);
+
+        // Módosítás gomb
+        let button1 = document.createElement('input');
+        button1.type = "button";
+        button1.classList.add("btn", "btn-info", "mt-2", "ms-2");
+        button1.value = "Módosítás";
+        button1.setAttribute("onclick", "modositasModal(" + adat.id + ")");
+        button1.setAttribute("data-bs-toggle", "modal");
+        button1.setAttribute("data-bs-target", "#modal_modosit");
+        cardb.appendChild(button1);
+
+        //törlés gomb
+        let button2 = document.createElement('input');
+        button2.type = "button";
+        button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
+        button2.value = "Törlés"
+        button2.setAttribute('onclick', `lakasTorles(${adat.id})`); // Átadjuk a lakasId-t
+        cardb.appendChild(button2);
 
         card.appendChild(cardb);
         div.appendChild(card);
@@ -145,3 +154,26 @@ async function modositas(){
         }
     }
 }
+
+// Profilnév lekérése és megjelenítése
+function loadProfilNev() {
+    fetch('../php/lakasok.php?action=getProfilNev')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.profilNev) {
+                document.getElementById('profilNev').innerText = data.profilNev;
+            }
+        })
+        .catch(error => {
+            console.error('Hiba a profilnév betöltésekor:', error);
+            document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
+        });
+}
+
+// Oldal betöltésekor futtatjuk
+document.addEventListener('DOMContentLoaded', loadProfilNev);

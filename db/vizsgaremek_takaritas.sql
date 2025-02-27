@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Feb 03. 22:31
+-- Létrehozás ideje: 2025. Feb 18. 21:12
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -115,8 +115,7 @@ CREATE TABLE `lakas` (
 --
 
 INSERT INTO `lakas` (`id`, `nev`, `cim`, `terulet`, `medence`, `szauna`, `felhasznalo_id`, `megye_id`, `belepesi_adatok`, `kepek`) VALUES
-(11, 'asf', 'afsd3', 23131, 1, 0, 2, 18, '4141', 'uploads/lakas_11/kepek/1738617955_remnant.jpg'),
-(12, 'asf', 'afsd3', 3424, 0, 0, 2, 3, '324123', 'uploads/lakas_12/kepek/1738618119_remnant.jpg');
+(27, 'ajfiowe', 'asd3', 23414, 1, 0, 2, 15, 'c3wr23', '../php/uploads/lakas_27/kepek/1739308585_DS.jpg');
 
 -- --------------------------------------------------------
 
@@ -164,15 +163,18 @@ INSERT INTO `megye` (`id`, `megyeNev`) VALUES
 CREATE TABLE `naptarak` (
   `id` int(11) NOT NULL,
   `file_name` varchar(255) NOT NULL,
-  `lakas_id` int(11) NOT NULL
+  `lakas_id` int(11) NOT NULL,
+  `felhasznalo_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `file_content` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
 -- A tábla adatainak kiíratása `naptarak`
 --
 
-INSERT INTO `naptarak` (`id`, `file_name`, `lakas_id`) VALUES
-(1, '1738618119_ical_jan_feb_events.ics', 12);
+INSERT INTO `naptarak` (`id`, `file_name`, `lakas_id`, `felhasznalo_id`, `created_at`, `file_content`) VALUES
+(2, '1739308585_ical_jan_feb_events.ics', 27, 2, '2025-02-11 21:16:25', '\nBEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//YourOrganization//YourApp//EN\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n\nBEGIN:VEVENT\nUID:uid1@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250105T090000Z\nDTEND:20250107T170000Z\nSUMMARY:Kétnapos esemény januárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid2@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250110T090000Z\nDTEND:20250113T170000Z\nSUMMARY:Háromnapos esemény januárban\nDESCRIPTION:Egy érdekes esemény 3 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid3@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250115T090000Z\nDTEND:20250117T170000Z\nSUMMARY:Kétnapos esemény januárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid4@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250120T090000Z\nDTEND:20250123T170000Z\nSUMMARY:Háromnapos esemény januárban\nDESCRIPTION:Egy érdekes esemény 3 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid5@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250127T090000Z\nDTEND:20250129T170000Z\nSUMMARY:Kétnapos esemény januárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid6@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250203T090000Z\nDTEND:20250205T170000Z\nSUMMARY:Kétnapos esemény februárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid7@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250208T090000Z\nDTEND:20250211T170000Z\nSUMMARY:Háromnapos esemény februárban\nDESCRIPTION:Egy érdekes esemény 3 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid8@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250213T090000Z\nDTEND:20250215T170000Z\nSUMMARY:Kétnapos esemény februárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid9@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250218T090000Z\nDTEND:20250221T170000Z\nSUMMARY:Háromnapos esemény februárban\nDESCRIPTION:Egy érdekes esemény 3 napos időtartammal.\nEND:VEVENT\n\nBEGIN:VEVENT\nUID:uid10@example.com\nDTSTAMP:20250123T120000Z\nDTSTART:20250225T090000Z\nDTEND:20250227T170000Z\nSUMMARY:Kétnapos esemény februárban\nDESCRIPTION:Egy érdekes esemény 2 napos időtartammal.\nEND:VEVENT\n\nEND:VCALENDAR\n');
 
 -- --------------------------------------------------------
 
@@ -239,7 +241,9 @@ ALTER TABLE `megye`
 -- A tábla indexei `naptarak`
 --
 ALTER TABLE `naptarak`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lakas_id` (`lakas_id`),
+  ADD KEY `felhasznalo_id` (`felhasznalo_id`);
 
 --
 -- A tábla indexei `takaritas`
@@ -281,7 +285,7 @@ ALTER TABLE `foglaltsag`
 -- AUTO_INCREMENT a táblához `lakas`
 --
 ALTER TABLE `lakas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT a táblához `megye`
@@ -293,7 +297,7 @@ ALTER TABLE `megye`
 -- AUTO_INCREMENT a táblához `naptarak`
 --
 ALTER TABLE `naptarak`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `takaritas`
@@ -329,6 +333,13 @@ ALTER TABLE `foglaltsag`
 ALTER TABLE `lakas`
   ADD CONSTRAINT `felhasznaloid` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalo` (`id`),
   ADD CONSTRAINT `megyeid` FOREIGN KEY (`megye_id`) REFERENCES `megye` (`id`);
+
+--
+-- Megkötések a táblához `naptarak`
+--
+ALTER TABLE `naptarak`
+  ADD CONSTRAINT `naptarak_ibfk_1` FOREIGN KEY (`lakas_id`) REFERENCES `lakas` (`id`),
+  ADD CONSTRAINT `naptarak_ibfk_2` FOREIGN KEY (`felhasznalo_id`) REFERENCES `felhasznalo` (`id`);
 
 --
 -- Megkötések a táblához `takaritas`
