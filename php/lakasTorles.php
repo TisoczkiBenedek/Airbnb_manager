@@ -25,6 +25,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Felhasználó nincs bejelentkezve.");
         }
 
+        // Lakáshoz tartozó mappa elérési útja
+        $mappa_ut = "uploads/lakas_$lakasId"; // Itt definiáljuk a $mappa_ut változót
+
+        // Rekurzív mappa törlése
+        function torolMappa($mappa) {
+            if (!is_dir($mappa)) {
+                return;
+            }
+
+            // Bejárjuk a mappa tartalmát
+            $tartalom = array_diff(scandir($mappa), array('.', '..'));
+            foreach ($tartalom as $elem) {
+                $elem_ut = "$mappa/$elem";
+                if (is_dir($elem_ut)) {
+                    torolMappa($elem_ut); // Rekurzívan töröljük az almappát
+                } else {
+                    unlink($elem_ut); // Fájl törlése
+                }
+            }
+
+            // Üres mappa törlése
+            rmdir($mappa);
+        }
+
+        // Mappa törlése
+        torolMappa($mappa_ut);
+
         // Lakás és naptár törlése
         $muvelet1 = "DELETE FROM naptarak WHERE lakas_id = $lakasId";
         $valasz1 = adatokValtoztatasa($muvelet1);
@@ -34,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($valasz2 === "Sikeres művelet!") {
             echo json_encode(["success" => "Lakás sikeresen törölve!", "lakasId" => $lakasId]);
         } else {
-            throw new Exception("Hiba történt a lakás törlése során: " . $valasz);
+            throw new Exception("Hiba történt a lakás törlése során: " . $valasz2); // Itt javítottam a $valasz változót $valasz2-re
         }
     } catch (Exception $e) {
         echo json_encode(["error" => $e->getMessage()]);

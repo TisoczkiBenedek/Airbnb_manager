@@ -38,6 +38,9 @@ function kiiras(adatok) {
         img.onerror = function() {
             this.src = '../images/default.jpg';
         };
+        img.onclick = function() {
+            nagyKepMegjelenites(this);
+        };
         card.appendChild(img);
 
         let cardb = document.createElement('div');
@@ -119,7 +122,7 @@ function modositasModal(id){
 async function modositas(){
     let email = document.getElementById('email')
     if(email.value == ""){
-        alert("Kérem töltse ki az e-mail címet!")
+        alert("Kérem jelentkezzen be!")
         return
     }
     if(!email.value.includes("@")){
@@ -155,6 +158,28 @@ async function modositas(){
     }
 }
 
+// A kép modal ablak megjelenítése
+function nagyKepMegjelenites(kep) {
+    const modal = document.getElementById("modal");
+    const modalKep = document.getElementById("modalKep");
+    modal.style.display = "block";
+    modalKep.src = kep.src;
+}
+
+// A kép modal ablak bezárása
+function modalBezaras() {
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
+}
+
+// A kép modal ablak bezárása a képen kívülre kattintva
+window.onclick = function(event) {
+    const modal = document.getElementById("modal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+};
+
 // Profilnév lekérése és megjelenítése
 function loadProfilNev() {
     fetch('../php/lakasok.php?action=getProfilNev')
@@ -171,7 +196,7 @@ function loadProfilNev() {
         })
         .catch(error => {
             console.error('Hiba a profilnév betöltésekor:', error);
-            document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
+            document.getElementById('profilNev').innerText = "Nincsen bejelentkezve";
         });
 }
 
