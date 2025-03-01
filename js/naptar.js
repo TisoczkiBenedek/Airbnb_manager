@@ -5,9 +5,69 @@ document.addEventListener('DOMContentLoaded', function() {
         locale: 'hu',
         firstDay: 1,
         events: [],
+        dateClick: function (info) {
+            modalNyitas(info.dateStr);
+        }
     });
 
     calendar.render();
+
+    function modalNyitas(date){
+        const modal = document.getElementById("ujEsemenyModal");
+        const closeButton = modal.querySelector('.close-button');
+        const form = document.getElementById('ujEsemenyForm');
+
+        //modal megjelenítés
+        modal.style.display = 'block';
+
+        //modal becsukás
+        closeButton.onclick = function () {
+            modal.style.display = 'none';
+        }
+
+        form.onsubmit = function (e) {
+            e.preventDefault();
+            const startTime = document.getElementById('start').value;
+            const endTime = document.getElementById('end').value;
+
+            // Dátum és idő összeállítása
+            const startDateTime = `${date}T${startTime}:00`;
+            const endDateTime = `${date}T${endTime}:00`;
+
+            // Esemény hozzáadása a naptárhoz
+            calendar.addEvent({
+                title: 'Takarítás',
+                start: startDateTime,
+                end: endDateTime,
+            });
+
+            // Modal bezárása
+            modal.style.display = 'none';
+
+            // Esemény mentése a backendre
+            saveEvent({ start: startDateTime, end: endDateTime });
+        }
+    }
+
+    function esemenyMentes(event){
+        fetch('../php/naptar.php?action=esemenyMentes', {
+            method: 'POST',
+            headers: {
+                'Content-Type':'application/json',
+            },
+        })
+        .then(eredmeny => eredmeny.json())
+        .then(adat => {
+            if(adat.success) {
+                console.log('Takarítás sikeresen megrendelve');
+            } else {
+                console.error('Hiba a takarítás megrendelése során: ', adat.error)
+            }
+        })
+        .catch(error => {
+            console.error('Hiba történt:', error);
+        });
+    }
 
     const urlParams = new URLSearchParams(window.location.search);
     const lakasId = urlParams.get('lakas_id');
