@@ -4,8 +4,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include './parameterezett_sql_fuggvenyek.php';
-
-// Minden válasz JSON formátumú
 header("Content-Type: application/json; charset=UTF-8");
 
 // Fájlfeltöltés kezelése
@@ -59,77 +57,78 @@ try {
         $szauna = isset($_POST['szauna']) ? 1 : 0;
         $felhasznaloId = $_SESSION['id'] ?? null;
 
-        if (!$felhasznaloId) {
-            echo json_encode(["error" => "Felhasználó nincs bejelentkezve."]);
+        // Hiányos adatok ellenőrzése
+        if (empty($lakasNev) || empty($lakcim) || empty($terulet) || empty($megyeId) || empty($lakasAdatok)) {
+            echo json_encode(['error' => "Kérem töltse ki az összes kötelező mezőt!"], JSON_UNESCAPED_UNICODE);
             exit;
         }
 
-        if (!$lakasNev || !$lakcim || !$terulet || !$megyeId || !$lakasAdatok) {
-            echo json_encode(['error' => "Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
+        // További feldolgozás...
+        try {
+            $ellenorzes = "SELECT lakas.cim FROM `lakas` WHERE LOWER(lakas.cim) = LOWER(?);";
+            $params = [trim($lakcim)];
+            $check = adatokLekerese($ellenorzes, $params);
 
-        $ellenorzes = "SELECT lakas.cim FROM `lakas` WHERE LOWER(lakas.cim) = LOWER(?);";
-        $params = [trim($lakcim)];
-        $check = adatokLekerese($ellenorzes, $params);
-
-        if (!empty($check)) {
-            echo json_encode(['error' => "Ez a lakcím már szerepel a rendszerünkben."], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-
-        $muvelet = "INSERT INTO lakas (nev, cim, terulet, medence, szauna, megye_id, belepesi_adatok, kepek, felhasznalo_id) 
-                    VALUES ('$lakasNev', '$lakcim', $terulet, $medence, $szauna, $megyeId, '$lakasAdatok', '', $felhasznaloId)";
-        $valasz = adatokValtoztatasa($muvelet);
-
-        if (strpos($valasz, 'Sikeres művelet!') !== false) {
-            $muvelet = "SELECT id FROM lakas WHERE nev = '$lakasNev' AND cim = '$lakcim' ORDER BY id DESC LIMIT 1";
-            $eredmeny = adatokLekerese($muvelet);
-            $lakasId = $eredmeny[0]['id'] ?? null;
-
-            if ($lakasId) {
-                $lakasMappa = "uploads/lakas_{$lakasId}";
-                if (!is_dir($lakasMappa)) {
-                    mkdir($lakasMappa, 0777, true);
-                    mkdir("{$lakasMappa}/kepek", 0777, true);
-                }
-
-                $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['png', 'jpg', 'jpeg'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
-                if (isset($kepFeltoltes['error'])) {
-                    echo json_encode($kepFeltoltes);
-                    exit;
-                }
-                $kepFeltoltes = $kepFeltoltes['success'];
-
-                $muvelet = "UPDATE lakas SET kepek = '../php/$lakasMappa/kepek/$kepFeltoltes' WHERE id = $lakasId";
-                adatokValtoztatasa($muvelet);
-
-                if (!empty($_FILES['naptarFeltoltes']['name'])) {
-                    $naptarFeltoltes = handleFileUpload($_FILES['naptarFeltoltes'], ['ics'], 5 * 1024 * 1024, "{$lakasMappa}/naptar");
-
-                    if (isset($naptarFeltoltes['error'])) {
-                        echo json_encode($naptarFeltoltes);
-                        exit;
-                    }
-
-                    $naptarFileName = $naptarFeltoltes['success'];
-                    $naptarFilePath = "{$lakasMappa}/naptar/{$naptarFileName}";
-                    $naptarFileContent = file_get_contents($naptarFilePath);
-
-                    $muvelet = "INSERT INTO naptarak (file_name, file_content, lakas_id, felhasznalo_id) 
-                                VALUES ('$naptarFileName', '$naptarFileContent', $lakasId, $felhasznaloId)";
-                    adatokValtoztatasa($muvelet);
-                }
-
-                echo json_encode(["success" => "Lakás sikeresen feltöltve!", "lakasId" => $lakasId]);
-                exit;
-            } else {
-                echo json_encode(["error" => "Hiba történt a lakás azonosító lekérése során."]);
+            if (!empty($check)) {
+                echo json_encode(['error' => "Ez a lakcím már szerepel a rendszerünkben."], JSON_UNESCAPED_UNICODE);
                 exit;
             }
-        } else {
-            echo json_encode(["error" => "Hiba történt a lakás feltöltése során: " . $valasz]);
-            exit;
+
+            $muvelet = "INSERT INTO lakas (nev, cim, terulet, medence, szauna, megye_id, belepesi_adatok, kepek, felhasznalo_id) 
+                        VALUES ('$lakasNev', '$lakcim', $terulet, $medence, $szauna, $megyeId, '$lakasAdatok', '', $felhasznaloId)";
+            $valasz = adatokValtoztatasa($muvelet);
+
+            if (strpos($valasz, 'Sikeres művelet!') !== false) {
+                $muvelet = "SELECT id FROM lakas WHERE nev = '$lakasNev' AND cim = '$lakcim' ORDER BY id DESC LIMIT 1";
+                $eredmeny = adatokLekerese($muvelet);
+                $lakasId = $eredmeny[0]['id'] ?? null;
+
+                if ($lakasId) {
+                    $lakasMappa = "uploads/lakas_{$lakasId}";
+                    if (!is_dir($lakasMappa)) {
+                        mkdir($lakasMappa, 0777, true);
+                        mkdir("{$lakasMappa}/kepek", 0777, true);
+                    }
+
+                    $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['png', 'jpg', 'jpeg'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
+                    if (isset($kepFeltoltes['error'])) {
+                        echo json_encode($kepFeltoltes);
+                        exit;
+                    }
+                    $kepFeltoltes = $kepFeltoltes['success'];
+
+                    $muvelet = "UPDATE lakas SET kepek = '../php/$lakasMappa/kepek/$kepFeltoltes' WHERE id = $lakasId";
+                    adatokValtoztatasa($muvelet);
+
+                    if (!empty($_FILES['naptarFeltoltes']['name'])) {
+                        $naptarFeltoltes = handleFileUpload($_FILES['naptarFeltoltes'], ['ics'], 5 * 1024 * 1024, "{$lakasMappa}/naptar");
+
+                        if (isset($naptarFeltoltes['error'])) {
+                            echo json_encode($naptarFeltoltes);
+                            exit;
+                        }
+
+                        $naptarFileName = $naptarFeltoltes['success'];
+                        $naptarFilePath = "{$lakasMappa}/naptar/{$naptarFileName}";
+                        $naptarFileContent = file_get_contents($naptarFilePath);
+
+                        $muvelet = "INSERT INTO naptarak (file_name, file_content, lakas_id, felhasznalo_id) 
+                                    VALUES ('$naptarFileName', '$naptarFileContent', $lakasId, $felhasznaloId)";
+                        adatokValtoztatasa($muvelet);
+                    }
+
+                    echo json_encode(["success" => "Lakás sikeresen feltöltve!", "lakasId" => $lakasId]);
+                    exit;
+                } else {
+                    echo json_encode(["error" => "Hiba történt a lakás azonosító lekérése során."]);
+                    exit;
+                }
+            } else {
+                echo json_encode(["error" => "Hiba történt a lakás feltöltése során: " . $valasz]);
+                exit;
+            }
+        } catch (Exception $e) {
+            echo json_encode(["error" => "Hiba történt: " . $e->getMessage()]);
         }
     }
 

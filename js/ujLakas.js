@@ -23,60 +23,72 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } catch (error) {
             console.error('Hiba a megyék betöltése során:', error);
+            showToast('Hiba történt a megyék betöltése során.', 'danger');
         }
     }
 
     // Űrlap beküldése
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const formData = new FormData(form);
-    
-        try {
-            const response = await fetch('../php/ujLakas.php?feltoltes', {
-                method: 'POST',
-                body: formData
-            });
-    
-            if (!response.ok) {
-                throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-            }
-    
-            const responseText = await response.text();
-            console.log("Szerver válasza:", responseText); // Hibakereséshez
-    
-            let result;
-            try {
-                result = JSON.parse(responseText); // Próbáljuk értelmezni a JSON-t
-            } catch (jsonError) {
-                console.error('Hibás JSON válasz:', responseText);
-                alert('A szerver hibás választ adott. Kérjük, próbálja újra később.');
+    if (form) {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Hiányos adatok ellenőrzése
+            const lakasNev = document.getElementById('lakasNev').value.trim();
+            const lakcim = document.getElementById('lakcim').value.trim();
+            const terulet = document.getElementById('terulet').value.trim();
+            const megye = document.getElementById('megye').value.trim();
+            const lakasAdatok = document.getElementById('lakasAdatok').value.trim();
+
+            if (!lakasNev || !lakcim || !terulet || !megye || !lakasAdatok) {
+                showToast("Kérem töltse ki az összes kötelező mezőt!", 'danger');
                 return;
             }
-    
-            if (result.error) {
-                document.getElementById('toast-body').textContent = result.error;
-            } else if (result.success) {
-                document.getElementById('toast-body').textContent = result.success;
-                form.style.display = 'none'; // Űrlap eltűntetése
-            
-                // Oldal frissítése 2 másodperc múlva
-                setTimeout(() => {
-                    location.reload(); // Az oldal teljes frissítése
-                }, 1000); // 2000 ms = 2 másodperc
-            } else {
-                document.getElementById('toast-body').textContent = "Ismeretlen hiba történt.";
-            }
-    
-            const toastLiveExample = document.getElementById('liveToast');
-            const toast = new bootstrap.Toast(toastLiveExample);
-            toast.show();
-    
-        } catch (error) {
-            console.error('Hiba a feltöltés során:', error);
-            alert('Hiba történt a feltöltés során: ' + error.message);
-        }
-    });
 
-    // Megyék betöltése az oldal betöltésekor
+            // Adatok elküldése
+            const formData = new FormData(form);
+            try {
+                const response = await fetch('../php/ujLakas.php?feltoltes', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+                const result = await response.json();
+
+                if (result.error) {
+                    showToast(result.error, 'danger');
+                } else if (result.success) {
+                    showToast(result.success, 'success');
+                    form.reset(); // Űrlap resetelése
+                    setTimeout(() => location.reload(), 1000); // Oldal frissítése
+                }
+            } catch (error) {
+                console.error('Hiba a feltöltés során:', error);
+                showToast('Hiba történt a feltöltés során.', 'danger');
+            }
+        });
+    }
+
+    // Megyék betöltése
     megyekBetoltese();
 });
+
+// Toaster üzenetek megjelenítése
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('liveToast');
+    const toastBody = toast.querySelector('.toast-body');
+    toastBody.textContent = message;
+
+    // Toaster stílus beállítása
+    toast.classList.remove('bg-info', 'bg-success', 'bg-danger');
+    toast.classList.add(`bg-${type}`);
+
+    // Toaster megjelenítése
+    const toastInstance = new bootstrap.Toast(toast);
+    toastInstance.show();
+
+    // Toaster eltüntetése 5 másodperc múlva
+    setTimeout(() => {
+        toastInstance.hide();
+    }, 5000);
+}

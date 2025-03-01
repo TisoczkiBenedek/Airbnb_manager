@@ -16,7 +16,7 @@ async function modositasModal(id) {
         
         // Megye dropdown feltöltése
         const megyeSelect = form.querySelector('#megye');
-        await populateMegyeDropdown(megyeSelect, lakas.megye_id);
+        await megyeDropdown(megyeSelect, lakas.megye_id);
 
     } catch (error) {
         console.error('Hiba:', error);
@@ -24,7 +24,7 @@ async function modositasModal(id) {
     }
 }
 
-async function populateMegyeDropdown(selectElement, selectedId) {
+async function megyeDropdown(selectElement, selectedId) {
     try {
         const response = await fetch('../php/megyeLista.php');
         const megyek = await response.json();
@@ -42,47 +42,32 @@ async function populateMegyeDropdown(selectElement, selectedId) {
     }
 }
 
-// Űrlap elküldése
+// Űrlap beküldése
 document.getElementById('modositForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
     formData.append('id', this.dataset.lakasId);
-    
+
     try {
         const response = await fetch('../php/lakasok.php?action=modositas', {
             method: 'POST',
             body: formData
         });
 
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const errorText = await response.text();
-            console.error("Nem JSON válasz:", errorText);
-            throw new Error("Hibás szerverválasz");
-        }
-
         const result = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(result.message || 'HTTP hiba');
-        }
 
         if (result.success) {
             showToast(result.message, 'success');
-            
-            // Modal bezárása Bootstrap 5 módon (jQuery nélkül)
-            const modalElement = document.getElementById('modal_modosit');
-            const modal = bootstrap.Modal.getInstance(modalElement);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modal_modosit'));
             modal.hide();
-            
-            await adatokLekerese();
+            setTimeout(() => location.reload(), 1000); // Oldal frissítése
         } else {
             showToast(result.message, 'danger');
         }
     } catch (error) {
         console.error('Hiba:', error);
-        showToast(error.message, 'danger');
+        showToast('Hiba történt a módosítás során.', 'danger');
     }
 });
 

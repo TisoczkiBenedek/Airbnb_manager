@@ -84,7 +84,17 @@ try {
                     exit;
                 }
         
-                // Kép feltöltés kezelése
+                // 2. RÉGI KÉP ELÉRÉSI ÚTJÁNAK LEKÉRÉSE
+                $muvelet = "SELECT kepek FROM lakas WHERE id = ?";
+                $eredmeny = adatokLekerese($muvelet, [$id]);
+                $regiKep = $eredmeny[0]['kepek'] ?? null;
+
+                // 3. RÉGI KÉP TÖRLÉSE, HA LÉTEZIK
+                if ($regiKep && file_exists($regiKep)) {
+                    unlink($regiKep); // Töröljük a régi képet
+                }
+
+                // 4. ÚJ KÉP FELTÖLTÉSE
                 if (!empty($_FILES['kepFeltoltes']['name'])) {
                     $uploadDir = "../php/uploads/lakas_$id/kepek/";
                     if (!file_exists($uploadDir)) {
@@ -95,7 +105,7 @@ try {
                     $data['kepek'] = $uploadDir . $fileName;
                 }
         
-                // SQL frissítés
+                // 5. SQL FRISSÍTÉS
                 $muvelet = "UPDATE lakas SET 
                     nev = ?, 
                     cim = ?, 

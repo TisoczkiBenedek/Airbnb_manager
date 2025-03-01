@@ -160,7 +160,7 @@ async function modositas(){
 
 // A kép modal ablak megjelenítése
 function nagyKepMegjelenites(kep) {
-    const modal = document.getElementById("modal");
+    const modal = document.getElementById("kepModal");
     const modalKep = document.getElementById("modalKep");
     modal.style.display = "block";
     modalKep.src = kep.src;
@@ -168,13 +168,13 @@ function nagyKepMegjelenites(kep) {
 
 // A kép modal ablak bezárása
 function modalBezaras() {
-    const modal = document.getElementById("modal");
+    const modal = document.getElementById("kepModal");
     modal.style.display = "none";
 }
 
-// A kép modal ablak bezárása a képen kívülre kattintva
+//A kép modal ablak bezárása a képen kívülre kattintva
 window.onclick = function(event) {
-    const modal = document.getElementById("modal");
+    const modal = document.getElementById("kepModal");
     if (event.target === modal) {
         modal.style.display = "none";
     }
