@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 0); // Hibák ne jelenjenek meg
-error_reporting(0); // Minden hiba jelzés kikapcsolása
+ini_set('display_errors', 1); // Hibák megjelenítése fejlesztés közben
+error_reporting(E_ALL); // Minden hiba jelzés bekapcsolása
 
 require __DIR__ . '/../vendor/autoload.php';
 use Sabre\VObject\Reader;
@@ -45,8 +45,8 @@ try {
         throw new Exception("Érvénytelen lakas_id");
     }
 
-    $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = " . $lakas_id;
-    $eredmeny = adatokLekerese($muvelet);
+    $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = ?";
+    $eredmeny = adatokLekerese($muvelet, [$lakas_id]);
 
     if (isset($eredmeny['error'])) {
         throw new Exception($eredmeny['error']);

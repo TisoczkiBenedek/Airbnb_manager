@@ -6,21 +6,31 @@ document.addEventListener('DOMContentLoaded', function() {
         firstDay: 1,
         events: [],
         dateClick: function (info) {
-            modalNyitas(info.dateStr);
+            const clickedDate = new Date(info.dateStr); // A kattintott dátum
+            const today = new Date(); // Az aktuális dátum
+            today.setHours(0, 0, 0, 0); // Az időpontot nullázd ki
+
+            // Csak akkor jelenítsd meg a modalt, ha a kattintott dátum nem korábbi, mint a mai
+            if (clickedDate >= today) {
+                modalNyitas(info.dateStr);
+            } else {
+                showToast("A múltbeli napokra nem lehet eseményt hozzáadni.", 'danger');
+            }
+
         }
     });
 
     calendar.render();
 
-    function modalNyitas(date){
+    function modalNyitas(date) {
         const modal = document.getElementById("ujEsemenyModal");
         const closeButton = modal.querySelector('.close-button');
         const form = document.getElementById('ujEsemenyForm');
 
-        //modal megjelenítés
+        // Modal megjelenítés
         modal.style.display = 'block';
 
-        //modal becsukás
+        // Modal becsukás
         closeButton.onclick = function () {
             modal.style.display = 'none';
         }
@@ -49,19 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function esemenyMentes(event){
+    function saveEvent(event) {
         fetch('../php/naptar.php?action=esemenyMentes', {
             method: 'POST',
             headers: {
-                'Content-Type':'application/json',
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify(event)
         })
         .then(eredmeny => eredmeny.json())
         .then(adat => {
-            if(adat.success) {
+            if (adat.success) {
                 console.log('Takarítás sikeresen megrendelve');
             } else {
-                console.error('Hiba a takarítás megrendelése során: ', adat.error)
+                console.error('Hiba a takarítás megrendelése során: ', adat.error);
             }
         })
         .catch(error => {
@@ -94,11 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error("Hiba történt:", error);
-                //alert("Nem sikerült betölteni az eseményeket. Kérlek, próbáld újra később: " + error.message);
             });
     }
-
-    
 });
 
 // Profilnév lekérése és megjelenítése
@@ -119,6 +127,19 @@ function loadProfilNev() {
             console.error('Hiba a profilnév betöltésekor:', error);
             document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
         });
+}
+
+// Toast inicializálása
+const toastElement = document.getElementById('toast');
+const toastBody = toastElement.querySelector('.toast-body');
+const toast = new bootstrap.Toast(toastElement);
+
+// Toast megjelenítése
+function showToast(message, type = 'danger') {
+    toastBody.textContent = message;
+    toastElement.classList.remove('bg-danger', 'bg-success');
+    toastElement.classList.add(`bg-${type}`);
+    toast.show();
 }
 
 // Oldal betöltésekor futtatjuk
