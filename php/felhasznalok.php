@@ -87,8 +87,33 @@ function eszkozleker(){
 }
 function eszkozIgenyHoz(){
     if($_SERVER["REQUEST_METHOD"]== "POST"){
-        $erekezett = json_decode(file_get_contents('php://input'), true);
-        echo json_encode(["valasz"=>"Megérekezett"], JSON_UNESCAPED_UNICODE);
+        $erkezett = json_decode(file_get_contents('php://input'), true);
+        if(empty($erkezett)){
+            header("BAD REQUEST", true, 400);
+            return json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            $db = 0;
+            foreach($erkezett as $adat){
+                //$felhid = $_SESSION["id"];
+                $eszkozid = $adat["id"];
+                $igenyeltdb = $adat["igenyelt"];
+                $muvelet = "INSERT INTO `eszkozszukseglet`(`eszkozId`, `felhasznalo_id`, `teljesitve`, `igenyeltDarab`) VALUES ('{$eszkozid}', '3', '0', '{$igenyeltdb}')";
+                $eredmeny = adatokValtoztatasa($muvelet);
+                if($eredmeny == "Sikeres művelet!"){
+                    $db++;
+                }
+            }
+            if($db == count($erkezett)){
+                echo json_encode(["valasz"=>"Az igénylését sikeresen rögzítettük!"]);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                echo json_encode(["valasz"=>"Sikertelen igénylés!"]);
+            }
+        }
+        
+        //echo json_encode(["valasz"=>"Megérekezett"], JSON_UNESCAPED_UNICODE);
     }
 }
 

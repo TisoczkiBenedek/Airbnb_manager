@@ -42,7 +42,7 @@ function formFelt(tovabbihoz) {
         if (tovabbihoz == false) {
             let button = document.createElement("button")
             button.type = "button"
-            button.classList.add("btn", "btn-secondary", "m-2")
+            button.classList.add("btn", "btn-success", "m-2")
             button.id = "gomb"
             button.innerText = "Igénylés leadása"
             let button1 = document.createElement("button")
@@ -54,11 +54,11 @@ function formFelt(tovabbihoz) {
             form.appendChild(select)
             form.appendChild(label2)
             form.appendChild(inputN)
-            form.appendChild(button)
             form.appendChild(button1)
+            form.appendChild(button)
         }
         else {
-            let elotte = document.getElementById("gomb")
+            let elotte = document.getElementById("tovabbi")
             form.insertBefore(label1, elotte)
             form.insertBefore(select, elotte)
             form.insertBefore(label2, elotte)
@@ -76,7 +76,7 @@ function formFelt(tovabbihoz) {
 function tovabbiFelt() {
     formFelt(true)
 }
-async function gomb() {
+async function eszkozIgeny() {
     let akt = document.getElementsByClassName("form-select")
     let aktdb = document.querySelectorAll("input")
     let kuldendo = []
@@ -95,10 +95,36 @@ async function gomb() {
         body : JSON.stringify(kuldendo)
     })
     let valasz = await eredmeny.json()
-
+    let siker = false
+    if(eredmeny.ok){
+        siker = true
+    }
+    valaszFelh(valasz, siker)
+}
+function valaszFelh(valasz, siker){
+    let vhely = document.getElementById("vhely")
+    let visszajelz = document.getElementById("visszajelz")
+    let tbody = document.getElementById("tbody")
+    let toast = document.getElementById("toast")
+    vhely.classList = ""
+    visszajelz.innerText = ""
+    tbody.innerText = ""
+    if(siker == true){
+        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "bg-success")
+        visszajelz.innerText = "Siker!"
+        tbody.innerText = valasz["valasz"];
+    }
+    else{
+        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "bg-danger")
+        visszajelz.innerText = "Hiba történt!"
+        tbody.innerText = valasz[0]["valasz"];
+    }
+    const toastBootstrap = new bootstrap.Toast(toast)
+    toastBootstrap.show()
+    setTimeout(()=> vhely.hidden = true, 5005)
 }
 
 window.addEventListener("load", eszkozLekeres)
 setTimeout(() => document.getElementById("tovabbi").addEventListener("click", tovabbiFelt), 500)
-setTimeout(() => document.getElementById("gomb").addEventListener("click", gomb), 500)
+setTimeout(() => document.getElementById("gomb").addEventListener("click", eszkozIgeny), 500)
 
