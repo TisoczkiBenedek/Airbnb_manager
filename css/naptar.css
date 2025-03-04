@@ -66,17 +66,21 @@ a {
     border-radius: 8px;
     max-width: 500px; /* Szélesség korlátozása */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* Szükséges a bezáró gomb pozicionálásához */
 }
 
 .close-button {
-    float: right;
+    position: absolute; /* Abszolút pozicionálás */
+    top: 10px; /* 10px-re a felső széltől */
+    right: 10px; /* 10px-re a jobb széltől */
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
+    color: #000; /* Alapértelmezett szín */
 }
 
 .close-button:hover {
-    color: #000;
+    color: #555; /* Szín változás hover esetén */
 }
 
 /* Toast stílusok */
@@ -99,4 +103,42 @@ a {
 
 .bg-success {
     background-color: #28a745 !important;
+}
+
+/*input time*/
+input[type="time"] {
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    color: #333;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    outline: none;
+    text-align: center; /* Szöveg középre igazítása */
+    width: 100%;
+    max-width: 200px;
+}
+
+input[type="time"]::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+input[type="time"]:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    background-color: #28a745;
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    background-color: #218838;
 }
