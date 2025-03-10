@@ -61,7 +61,7 @@ function kiiras(adatok) {
         button.type = "button";
         button.classList.add("btn", "btn-success", "mt-2", "ms-2");
         button.value = "Naptár";
-        button.setAttribute('onclick', `naptarOldalra(${adat.id})`); // Átadjuk a lakasId-t
+        button.setAttribute('onclick', `naptarOldalra(${adat.id}, ${adat.megye_id})`); // Átadjuk a lakasId-t
         cardb.appendChild(button);
 
         // Módosítás gomb
@@ -88,9 +88,10 @@ function kiiras(adatok) {
     }
 }
 
-function naptarOldalra(lakasId) {
+function naptarOldalra(lakasId, megyeId) {
     console.log("Átadott lakasId:", lakasId); // Ellenőrzés
-    window.location.href = `../html/naptar.html?lakas_id=${lakasId}`;
+    console.log("Átadott megyeId:", megyeId); // Ellenőrzés
+    window.location.href = `../html/naptar.html?lakas_id=${lakasId}&megye_id=${megyeId}`;
 }
 
 function modositasModal(id){

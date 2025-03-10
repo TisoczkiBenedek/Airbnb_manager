@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
+    //megyeId
+    function getSelectedMegyeId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const megyeId = urlParams.get('megye_id');
+
+        return megyeId
+    }
+
     function modalNyitas(date) {
         const modal = document.getElementById("ujEsemenyModal");
         const closeButton = modal.querySelector('.close-button');
@@ -29,6 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Modal megjelenítés
         modal.style.display = 'block';
+
+        //takarítók betöltése
+        const megyeId = getSelectedMegyeId();
+        loadTakaritok(megyeId);
 
         // Modal becsukás
         closeButton.onclick = function () {
@@ -127,6 +139,39 @@ function loadProfilNev() {
             console.error('Hiba a profilnév betöltésekor:', error);
             document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
         });
+}
+
+async function loadTakaritok(megyeId) {
+    try {
+        const valasz = await fetch(`../php/naptar.php?action=getTakaritok&megye_id=${megyeId}`);
+        
+        if (!valasz.ok) {
+            throw new Error(`HTTP hiba! Státusz: ${valasz.status}`);
+        }
+
+        const takaritok = await valasz.json();
+        const select = document.getElementById('takaritoSelect');
+        select.innerHTML = ''; // Töröljük a korábbi opciókat
+
+        // Ha nincsenek takarítók, egy üzenetet jelenítünk meg
+        if (takaritok.message) {
+            const option = document.createElement('option');
+            option.textContent = takaritok.message;
+            select.appendChild(option);
+            return;
+        }
+
+        // Takarítók hozzáadása a selecthez
+        takaritok.forEach(takarito => {
+            const option = document.createElement('option');
+            option.value = takarito.id;
+            option.textContent = takarito.nev;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Hiba a takarítók betöltésekor:', error);
+        alert('Hiba történt a takarítók betöltésekor.');
+    }
 }
 
 // Toast inicializálása

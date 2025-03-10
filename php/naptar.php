@@ -11,6 +11,25 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? null;
 
+if ($action === 'getTakaritok') {
+    $megyeId = (int)$_GET['megye_id'] ?? null;
+
+    try {
+        $muvelet = "SELECT id, CONCAT(Vezeteknev, ' ', Keresztnev) AS nev 
+                    FROM felhasznalo 
+                    WHERE megyeid = ? AND takarito = 1";
+        $takaritok = adatokLekerese($muvelet, [$megyeId]);
+
+        header('Content-Type: application/json');
+        echo json_encode($takaritok);
+        exit; // Kilépés a kódból, ne futtassa le a többi részt
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage()]);
+        exit;
+    }
+}
+
 if ($action === 'getProfilNev') {
     session_start();
     if (!isset($_SESSION['emailcim'])) {
