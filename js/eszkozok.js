@@ -15,7 +15,7 @@ let id_index = 1
 function formFelt(tovabbihoz) {
     let eszkozok_db = adatok.length
     if (id_index <= eszkozok_db) {
-        
+
         let form = document.getElementById("form")
         let select = document.createElement("select")
         let label1 = document.createElement("label")
@@ -23,20 +23,20 @@ function formFelt(tovabbihoz) {
         let inputN = document.createElement("input")
         inputN.type = "number"
         inputN.id = "darab" + id_index
-        inputN.classList.add("form-control", "w-50")
+        inputN.classList.add("form-control", "w-75")
         label1.innerText = "Kérem válasszon eszközt!"
         label1.htmlFor = "eszk" + id_index
         label1.classList.add("form-label", "mt-2")
         label2.innerText = "Kérem válassza ki a rendelni kívánt mennyiséget!"
         label2.htmlFor = "darab" + id_index
         label2.classList.add("form-label", "mt-2")
-        select.classList.add("form-select", "w-50")
+        select.classList.add("form-select", "w-75")
         select.id = "eszk" + id_index
         id_index++
         for (let adat of adatok) {
             let opt = document.createElement("option")
             opt.value = adat["id"]
-            opt.innerText = adat["nev"]+" "+adat["kiszereles"]
+            opt.innerText = adat["nev"] + " " + adat["kiszereles"]
             select.appendChild(opt)
         }
         if (tovabbihoz == false) {
@@ -65,7 +65,7 @@ function formFelt(tovabbihoz) {
             form.insertBefore(inputN, elotte)
         }
     }
-    if(id_index == eszkozok_db+1){
+    if (id_index == eszkozok_db + 1) {
         let gomb = document.getElementById("tovabbi")
         gomb.disabled = true
     }
@@ -80,28 +80,29 @@ async function eszkozIgeny() {
     let akt = document.getElementsByClassName("form-select")
     let aktdb = document.querySelectorAll("input")
     let kuldendo = []
-    for(let i = 0; i< akt.length; i++){
+    for (let i = 0; i < akt.length; i++) {
         let id_darab = {
             "id": akt[i].value,
-            "igenyelt": aktdb[i].value 
+            "igenyelt": aktdb[i].value
         }
         kuldendo.push(id_darab)
     }
     let eredmeny = await fetch("../php/felhasznalok.php/eszkozIgeny", {
-        method : "POST",
-        headers : {
+        method: "POST",
+        headers: {
             "Content-Type": "application/json"
         },
-        body : JSON.stringify(kuldendo)
+        body: JSON.stringify(kuldendo)
     })
     let valasz = await eredmeny.json()
     let siker = false
-    if(eredmeny.ok){
+    if (eredmeny.ok) {
         siker = true
     }
     valaszFelh(valasz, siker)
+    igenyeltEszkozLeker()
 }
-function valaszFelh(valasz, siker){
+function valaszFelh(valasz, siker) {
     let vhely = document.getElementById("vhely")
     let visszajelz = document.getElementById("visszajelz")
     let tbody = document.getElementById("tbody")
@@ -109,22 +110,63 @@ function valaszFelh(valasz, siker){
     vhely.classList = ""
     visszajelz.innerText = ""
     tbody.innerText = ""
-    if(siker == true){
-        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "bg-success")
+    if (siker == true) {
+        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "border-0", "bg-success")
         visszajelz.innerText = "Siker!"
         tbody.innerText = valasz["valasz"];
     }
-    else{
-        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "bg-danger")
+    else {
+        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "border-0", "bg-danger")
         visszajelz.innerText = "Hiba történt!"
         tbody.innerText = valasz[0]["valasz"];
     }
     const toastBootstrap = new bootstrap.Toast(toast)
     toastBootstrap.show()
-    setTimeout(()=> vhely.hidden = true, 5005)
+    setTimeout(() => vhely.hidden = true, 5005)
+}
+async function igenyeltEszkozLeker() {
+    try {
+        let id = 3
+        let eredmeny = await fetch("../php/felhasznalok.php/igenyek?id=" + id)
+        let adatok = await eredmeny.json()
+        eszkozEddigIgenyelt(adatok)
+        //console.log(adatok)
+    } catch (error) {
+        console.log(error)
+    }
+}
+function eszkozEddigIgenyelt(adatok) {
+    let div = document.getElementById("igenyek")
+    div.innerText = ""
+    if (adatok.valasz) {
+        div.innerHTML = "<h3 class='text-danger mt-5'>" + adatok["valasz"] + "</h1>"
+    }
+    else {
+        for (let adat of adatok) {
+            let divigeny = document.createElement("div")
+            divigeny.classList.add("col-12", "card", "mt-2", "mx-1")
+            let cardb = document.createElement('div')
+            cardb.classList.add('card-body')
+            let h5 = document.createElement('h5')
+            h5.classList.add("card-title")
+            h5.innerText = adat['nev']
+            cardb.appendChild(h5)
+            let p = document.createElement('p')
+            p.classList.add('card-text')
+            p.innerHTML = "Igényelt darabszám: " + adat['igenyeltDarab']
+            cardb.appendChild(p)
+            let p1 = document.createElement('p')
+            p1.classList.add('card-text')
+            p1.innerHTML = "Kiszerelés: " + adat['kiszereles']
+            cardb.appendChild(p1)
+            divigeny.appendChild(cardb)
+            div.appendChild(divigeny)
+        }
+    }
 }
 
 window.addEventListener("load", eszkozLekeres)
+window.addEventListener("load", igenyeltEszkozLeker)
 setTimeout(() => document.getElementById("tovabbi").addEventListener("click", tovabbiFelt), 500)
 setTimeout(() => document.getElementById("gomb").addEventListener("click", eszkozIgeny), 500)
 

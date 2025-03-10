@@ -76,9 +76,10 @@ function kiiras(adatok){
     let valasz = document.getElementById('valasz')
     valasz.innerText = ""
     valasz.classList = ""
+    valasz.classList.add("row")
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1")
+        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", "mx-1")
         let card = document.createElement('div')
         card.classList.add("card")
         let cardb = document.createElement('div')
@@ -89,24 +90,24 @@ function kiiras(adatok){
         cardb.appendChild(h5)
         let p = document.createElement('p')
         p.classList.add('card-text')
-        p.innerHTML = adat['cim']
+        p.innerHTML ="Cím: "+ adat['cim']
         cardb.appendChild(p)
         
         let p1 = document.createElement('p')
         p1.classList.add('card-text')
-        p1.innerHTML = adat['belepesi_adatok']
+        p1.innerHTML ="Belépsi adatok: "+ adat['belepesi_adatok']
         cardb.appendChild(p1)
         let p2 = document.createElement('p')
         p2.classList.add('card-text')
-        p2.innerHTML = adat['elerhetoseg']
+        p2.innerHTML ="Tulaj elérhetősége: "+ adat['elerhetoseg']
         cardb.appendChild(p2)
         let p3 = document.createElement('p')
         p3.classList.add('card-text')
-        p3.innerHTML = adat['takaritoErkezes']
+        p3.innerHTML ="Érkezési időpont: "+ adat['takaritoErkezes']
         cardb.appendChild(p3)
         let p4 = document.createElement('p')
         p4.classList.add('card-text')
-        p4.innerHTML = adat['terulet']
+        p4.innerHTML ="Lakás mérete: "+ adat['terulet']+" m<sup>2</sup>"
         cardb.appendChild(p4)
         let p0 = document.createElement('p')
         p0.classList.add('card-text')
@@ -273,4 +274,4 @@ function szures(){
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
 document.getElementById('mentes').addEventListener('click', mentes)
-document.getElementById('form').addEventListener('input', szures)
+//document.getElementById('form').addEventListener('input', szures)
