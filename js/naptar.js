@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
         events: [],
         dateClick: function (info) {
             const clickedDate = new Date(info.dateStr); // A kattintott dátum
-            const today = new Date(); // Az aktuális dátum
-            today.setHours(0, 0, 0, 0); // Az időpontot nullázd ki
+            const ma = new Date(); // Az aktuális dátum
+            ma.setHours(0, 0, 0, 0); // Az időpontot nullázd ki
 
             // Csak akkor jelenítsd meg a modalt, ha a kattintott dátum nem korábbi, mint a mai
-            if (clickedDate >= today) {
+            if (clickedDate >= ma) {
                 modalNyitas(info.dateStr);
             } else {
                 showToast("A múltbeli napokra nem lehet eseményt hozzáadni.", 'danger');
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 end: endDateTime,
             });
 
-            // Modal bezárása
+            // Modal 
             modal.style.display = 'none';
 
             // Esemény mentése a backendre
