@@ -14,7 +14,6 @@ async function adatokLekerese() {
             let adatok = await eredmeny.json();
             console.log(adatok)
             kiiras(adatok)
-            //tulajokKiiras(adatok)
         }
         else{
             let valasz = await eredmeny.json()
@@ -31,7 +30,6 @@ async function megyelekeres(){
         if(eredmeny.ok){
             let adatok = await eredmeny.json()
             megyek = adatok
-            feltoltes(adatok)
         }
         else{
             throw new error
@@ -48,28 +46,6 @@ function kijelzes(valasz){
         div.innerText = ""
         div.innerHTML = "<h1>Nincsenek a mai napra takarítások!</h1>"
         div.classList.add("mx-auto", "text-center", "mt-5")
-    }
-}
-function feltoltes(adatok){
-    let select = document.getElementById('megye')
-    for (let adat of adatok) {
-        let opt = document.createElement('option')
-        opt.innerText = adat['megyeNev']
-        opt.value = adat['megyeNev']
-        select.appendChild(opt)
-    }
-}
-function tulajokKiiras(adatok){
-    const tulajok = new Set()
-    for (let adat of adatok) {
-        tulajok.add(adat['emailcim'])
-    }
-    let tulaj = document.getElementById('felh')
-    for (let t of tulajok) {
-        let opt = document.createElement('option')
-        opt.innerText = t
-        opt.value = t
-        tulaj.appendChild(opt)
     }
 }
 function kiiras(adatok){
@@ -224,54 +200,7 @@ function valasz(adatok, torol){
     }
     
 }
-function szures(){
-    
-    let megye = document.getElementById('megye')
-    let azon = document.getElementById('felh')
-    let card = document.getElementsByClassName('col-sm-12')
-    let cardtext = document.getElementsByClassName('card-text')
-    console.log(azon.value +"  "+ megye.value)
-    if(megye.value == "" && azon.value == ""){
-        for (let i = 0; i<card.length; i++) {
-            card[i].hidden = false
-        }
-    }
-    else{
-        if(megye.value == ""){
-            for (let i = 0; i<card.length; i++) {
-                if(!card[i].className.includes(azon.value)){
-                    card[i].hidden = true
-                }
-                else{
-                    card[i].hidden = false
-                }
-            }
-        }
-        else if(azon.value== ""){
-            for (let i = 0; i<cardtext.length; i++) {
-                if(!cardtext[i].innerText.includes(megye.value)){
-                    card[i].hidden = true
-                }
-                else{
-                    card[i].hidden = false
-                }
-            }
-        }
-        else{
-            for (let i = 0; i<cardtext.length; i++) {
-                if(!cardtext[i].innerText.includes(megye.value) || !card[i].className.includes(azon.value)){
-                    card[i].hidden = true
-                }
-                else{
-                    card[i].hidden = false
-                }
-            }
-        }
-        
-    }
-}
 
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
 document.getElementById('mentes').addEventListener('click', mentes)
-//document.getElementById('form').addEventListener('input', szures)
