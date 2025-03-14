@@ -67,14 +67,14 @@ function kiiras(adatok) {
         // Módosítás gomb
         let button1 = document.createElement('input');
         button1.type = "button";
-        button1.classList.add("btn", "btn-info", "mt-2", "ms-2");
+        button1.classList.add("btn", "btn-warning", "mt-2", "ms-2");
         button1.value = "Módosítás";
         button1.setAttribute("onclick", "modositasModal(" + adat.id + ")");
         button1.setAttribute("data-bs-toggle", "modal");
         button1.setAttribute("data-bs-target", "#modal_modosit");
         cardb.appendChild(button1);
 
-        //törlés gomb
+        // Törlés gomb
         let button2 = document.createElement('input');
         button2.type = "button";
         button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
@@ -94,70 +94,77 @@ function naptarOldalra(lakasId, megyeId) {
     window.location.href = `../html/naptar.html?lakas_id=${lakasId}&megye_id=${megyeId}`;
 }
 
-function modositasModal(id){
-    console.log(id)
-    document.getElementById('mentes').disabled = false
-    document.getElementById('torles').disabled = false
-    let modalform = document.getElementById('modal_form')
-    modalform.innerText = ""
-    let p = document.getElementsByClassName('modal_valasz')
-    p[0].innerText = ""
-    p[0].style.border = "none"
-    p[0].hidden = true
-    //let modalcim = document.getElementById('modal_cim')
-    //modalcim.innerText = "Lakás módosítása "
-    let span = document.getElementById('modal_lakas_id')
-    span.innerText = ""
-    span.innerText = id
-    let label = document.createElement('label')
-    label.classList.add('form-label')
-    label.innerText = "Lakástulajdonos e-mail címe"
-    modalform.appendChild(label)
-    let cim = document.createElement("input")
-    cim.id = "email"
-    cim.type = "text"
-    cim.value = document.getElementsByClassName(id)[0].innerText
-    cim.classList.add("form-control")
-    modalform.appendChild(cim)
-}
-async function modositas(){
-    let email = document.getElementById('email')
-    if(email.value == ""){
-        alert("Kérem jelentkezzen be!")
-        return
-    }
-    if(!email.value.includes("@")){
-        alert("Hibásan megadott e-mail cím!")
-        return
-    }
-    else{
-        try {
-            let kuldendo = {
-                "id": document.getElementById('modal_lakas_id').innerText,
-                "email": email.value
-            }
-            let eredmeny = await fetch('../php/lakasok.php/modositas', {
-                method : "POST",
-                headers : {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(kuldendo)
-            })
-            if(eredmeny.ok){
-                let adatok = await eredmeny.json()
-                console.log(adatok)
-                valasz(adatok, false)
+function modositasModal(id) {
+    console.log(id);
+    document.getElementById('lakasId').value = id;
 
+    // Naptár tartalom betöltése, ha létezik
+    fetch(`../php/lakasok.php?action=getNaptar&id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.file_content) {
+                // Ha van naptár tartalom, betöltjük a modalba
+                document.getElementById('naptarFeltoltes').value = data.file_content;
             }
-            else if(eredmeny.status == 400){
-                let valaszer = await eredmeny.json()
-                valasz(valaszer, false)
+        })
+        .catch(error => console.error('Hiba a naptár betöltésekor:', error));
+
+    // További adatok betöltése a modalba
+    fetch(`../php/lakasok.php?action=getLakas&id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                document.getElementById('lakasNev').value = data.nev;
+                document.getElementById('lakcim').value = data.cim;
+                document.getElementById('terulet').value = data.terulet;
+                document.getElementById('medence').checked = data.medence === 1;
+                document.getElementById('szauna').checked = data.szauna === 1;
+                document.getElementById('megye').value = data.megye_id;
+                document.getElementById('lakasAdatok').value = data.belepesi_adatok;
             }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+        })
+        .catch(error => console.error('Hiba a lakás adatok betöltésekor:', error));
 }
+
+document.getElementById('modositForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this); // Az űrlap adatainak összegyűjtése
+    const lakasId = formData.get('id'); // Az ID kinyerése
+
+    try {
+        // Naptár fájl kezelése
+        const icsFile = formData.get('naptarFeltoltes');
+        if (icsFile && icsFile.size > 0) {
+            const icsContent = await icsFile.text();
+            formData.set('naptar_content', icsContent); // Naptár tartalom hozzáadása
+        }
+
+        // Kép fájl kezelése
+        const kepFile = formData.get('kepFeltoltes');
+        if (kepFile && kepFile.size > 0) {
+            formData.set('kepFeltoltes', kepFile); // Kép fájl hozzáadása
+        }
+
+        // Küldés a szervernek
+        const response = await fetch(`../php/lakasok.php?action=modositas`, {
+            method: 'POST',
+            body: formData // FormData küldése
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast("Sikeres módosítás!", 'success');
+            adatokLekerese(); // Lakások listájának frissítése
+            $('#modal_modosit').modal('hide'); // Modal bezárása
+        } else {
+            showToast(result.error || "Hiba történt", 'danger');
+        }
+    } catch (error) {
+        console.error('Hiba:', error);
+        showToast("Szerverhiba történt", 'danger');
+    }
+});
 
 // A kép modal ablak megjelenítése
 function nagyKepMegjelenites(kep) {
@@ -173,7 +180,7 @@ function modalBezaras() {
     modal.style.display = "none";
 }
 
-//A kép modal ablak bezárása a képen kívülre kattintva
+// A kép modal ablak bezárása a képen kívülre kattintva
 window.onclick = function(event) {
     const modal = document.getElementById("kepModal");
     if (event.target === modal) {
@@ -204,26 +211,33 @@ function loadProfilNev() {
 // Oldal betöltésekor futtatjuk
 document.addEventListener('DOMContentLoaded', loadProfilNev);
 
-async function kijelentkezes(){
+async function kijelentkezes() {
     try {
         const eredmeny = await fetch('../php/kijelentkezes.php', {
             method: 'POST',
             credentials: 'include'
-        }); 
+        });
 
-        if(eredmeny.ok){
+        if (eredmeny.ok) {
             const adat = await eredmeny.json();
 
-            if(adat.success) {
+            if (adat.success) {
                 window.location.href = '../html/bejelentkezes.html';
-            }else{
+            } else {
                 console.error('Hiba a kijelentkezés során:', adat.message);
             }
-        }else{
+        } else {
             throw new Error(`HTTP hiba! Státusz: ${eredmeny.status}`);
         }
     } catch (error) {
-        console.error('Hiba a kijelentkezés során: ', error)
+        console.error('Hiba a kijelentkezés során: ', error);
     }
-    
+}
+
+// Toast üzenet megjelenítése
+function showToast(message, type) {
+    const toastBody = document.getElementById('toast-body');
+    toastBody.innerText = message;
+    const toast = new bootstrap.Toast(document.getElementById('liveToast'));
+    toast.show();
 }

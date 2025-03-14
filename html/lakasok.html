@@ -31,47 +31,65 @@
     <div class="row" id="valasz"></div> <!-- Lakások megjelenítése itt történik -->
   </div>
 
-  <!-- Modal elem új lakás -->
+  <!-- Módosított új lakás modal -->
   <div class="modal fade" id="modal_ujLakas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Új Lakás Feltöltése</h1>
+          <h1 class="modal-title fs-5">Új Lakás Feltöltése</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>Kérem töltse ki az alábbi űrlapot az új lakás feltöltéséhez!</p>
-          <form id="lakasForm">
-            <label for="lakasNev" class="form-label">A lakás neve</label>
-            <input type="text" class="form-control" name="lakasNev" id="lakasNev" required><br />
+          <form id="lakasForm" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label">Lakás neve</label>
+              <input type="text" class="form-control" name="lakasNev" required>
+            </div>
 
-            <label for="lakcim" class="form-label">Lakcím</label>
-            <input type="text" class="form-control" name="lakcim" id="lakcim" required><br />
+            <div class="mb-3">
+              <label class="form-label">Cím</label>
+              <input type="text" class="form-control" name="lakcim" required>
+            </div>
 
-            <label for="terulet" class="form-label">A lakás területe (m²)</label>
-            <input type="number" class="form-control" name="terulet" id="terulet" required><br />
+            <div class="mb-3">
+              <label class="form-label">Terület (m²)</label>
+              <input type="number" class="form-control" name="terulet" required>
+            </div>
 
-            <label for="medence" class="form-label">Medence</label>
-            <input type="checkbox" class="form-check-input" name="medence" id="medence"><br />
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="medence" id="medence">
+                <label class="form-check-label">Medence</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="szauna" id="szauna">
+                <label class="form-check-label">Szauna</label>
+              </div>
+            </div>
 
-            <label for="szauna" class="form-label">Szauna</label>
-            <input type="checkbox" class="form-check-input" name="szauna" id="szauna"><br />
-
-            <label for="megye" class="form-label">Megye</label>
-            <select id="megye" class="form-select" name="megye" required>
+            <div class="mb-3">
+              <label class="form-label">Megye</label>
+              <select class="form-select" name="megye" required>
                 <option value="">Válasszon megyét</option>
-            </select><br />
+              </select>
+            </div>
 
-            <label for="lakasAdatok" class="form-label">Lakás leírása</label>
-            <textarea class="form-control" name="lakasAdatok" id="lakasAdatok" required></textarea><br />
+            <div class="mb-3">
+              <label class="form-label">Leírás</label>
+              <textarea class="form-control" name="lakasAdatok" rows="3" required></textarea>
+            </div>
 
-            <label for="kepFeltoltes" class="form-label">Lakás képe</label>
-            <input type="file" class="form-control" name="kepFeltoltes" id="kepFeltoltes" accept=".jpg, .png" required><br />
+            <div class="mb-3">
+              <label class="form-label">Képek feltöltése</label>
+              <input type="file" class="form-control" name="kepFeltoltes[]" accept="image/*" multiple>
+            </div>
 
-            <label for="naptarFeltoltes" class="form-label">Airbnb iCal fájl</label>
-            <input type="file" class="form-control" name="naptarFeltoltes" id="naptarFeltoltes" accept=".ics" required><br />
+            <div class="mb-3">
+              <label class="form-label">Naptár fájl (ICS)</label>
+              <input type="file" class="form-control" name="naptarFeltoltes" accept=".ics">
+            </div>
 
-            <button type="submit" class="btn btn-info mt-3">Feltöltés</button>
+            <button type="submit" class="btn btn-primary w-100">Feltöltés</button>
           </form>
         </div>
       </div>
@@ -130,7 +148,11 @@
                         <label class="form-label">Új kép feltöltése</label>
                         <input type="file" class="form-control" name="kepFeltoltes" accept="image/*">
                     </div>
-                    
+
+                    <div class="mb-3">
+                      <label for="naptarFeltoltes" class="form-label">Naptár frissítése (Airbnb iCal kiterjesztésű fájl)</label>
+                      <input type="file" class="form-control" name="naptarFeltoltes" id="naptarFeltoltes" accept=".ics" ><br />
+                    </div>
                     <button type="submit" class="btn btn-primary">Mentés</button>
                 </form>
             </div>

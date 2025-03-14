@@ -167,3 +167,12 @@ h2{
 #kepModal .close:hover {
   color: #ccc;
 }
+
+/*toast stílus*/
+#toast {
+  position: fixed !important; 
+  top: 70px !important;
+  right: 20px !important;
+  z-index: 9999;
+  min-width: 250px;
+}

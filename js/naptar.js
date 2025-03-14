@@ -6,19 +6,90 @@ document.addEventListener('DOMContentLoaded', function() {
         firstDay: 1,
         events: [],
         dateClick: function (info) {
-            const clickedDate = new Date(info.dateStr); // A kattintott dátum
-            const ma = new Date(); // Az aktuális dátum
-            ma.setHours(0, 0, 0, 0); // Az időpontot nullázd ki
-
-            // Csak akkor jelenítsd meg a modalt, ha a kattintott dátum nem korábbi, mint a mai
-            if (clickedDate >= ma) {
-                modalNyitas(info.dateStr);
-            } else {
+            const clickedDate = new Date(info.dateStr);
+            const ma = new Date();
+            ma.setHours(0, 0, 0, 0);
+        
+            // Múltbeli dátum letiltása
+            if (clickedDate < ma) {
                 showToast("A múltbeli napokra nem lehet eseményt hozzáadni.", 'danger');
+                return;
             }
 
+            
+        
+            // Események ellenőrzése
+            const existingEvents = calendar.getEvents();
+            const hasConflict = existingEvents.some(event => {
+                const eventStart = event.start ? new Date(event.start) : null;
+                const eventEnd = event.end ? new Date(event.end) : null;
+                
+                // Teljes dátum-ellenőrzés időpontokkal
+                return (
+                    (clickedDate >= eventStart && clickedDate <= eventEnd) ||
+                    (eventStart.toDateString() === clickedDate.toDateString())
+                );
+            });
+        
+            if (hasConflict) {
+                showToast("Erre a napra már van esemény.", 'danger');
+                return;
+            }
+        
+            modalNyitas(info.dateStr);
+
+            
+        },
+        eventClick: function(info) {
+            if(info.event.title === 'Takarítás') {
+                showDeleteModal(info.event);
+            }
+        },
+        eventDidMount: function(info) {
+            if(info.event.title === 'Takarítás') {
+                info.el.classList.add('fc-event-takaritas');
+            }
         }
     });
+
+    let selectedEvent = null;
+
+    function showDeleteModal(event){
+        const modal = document.getElementById('torlesModal');
+        selectedEvent = event;
+        modal.style.display = 'block';
+
+        document.getElementById('torlesIgen').onclick = function() {
+            deleteEvent(event.id);
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('torlesNem').onclick = function() {
+            modal.style.display = 'none';
+        }
+    }
+
+    async function deleteEvent(eventId) {
+        try {
+            const eredmeny = await fetch('../php/naptar.php?action=deleteTakaritas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({eventId:eventId})
+            })
+
+            const data = await eredmeny.json();
+            if(data.success) {
+                selectedEvent.remove();
+                showToast("Takarítás sikeresen törölve!", 'success');
+            } else {
+                showToast("Hiba történt a törlés során!", 'danger');
+            }
+        } catch (error) {
+            console.error('Hiba történt:', error);
+        }
+    }
 
     calendar.render();
 
@@ -51,10 +122,16 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
+            
+            if (startTime >= endTime) {
+                showToast("A kezdeti időpont nem lehet később, mint a végső!", 'danger');
+                return;
+            }
 
             // Dátum és idő összeállítása
             const startDateTime = `${date}T${startTime}:00`;
             const endDateTime = `${date}T${endTime}:00`;
+
 
             // Esemény hozzáadása a naptárhoz
             calendar.addEvent({
@@ -72,19 +149,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function saveEvent(event) {
+        const takaritoId = document.getElementById('takaritoSelect').value;
+        const lakasId = new URLSearchParams(window.location.search).get('lakas_id');
+        
+        if (!takaritoId) {
+            alert('Válassz takarítót!');
+            return;
+        }
+        
+
+        //adatok
+        const adat = {
+            start: event.start,
+            end: event.end,
+            lakas_id: lakasId,
+            takarito_id: takaritoId
+        }
+
         fetch('../php/naptar.php?action=esemenyMentes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(event)
+            body: JSON.stringify(adat)
         })
         .then(eredmeny => eredmeny.json())
         .then(adat => {
             if (adat.success) {
-                console.log('Takarítás sikeresen megrendelve');
+                console.log('Takarítás sikeresen megrendelve', 'success');
             } else {
-                console.error('Hiba a takarítás megrendelése során: ', adat.error);
+                console.error('Hiba a takarítás megrendelése során: ', adat.errorm, 'danger');
+            }
+        })
+        .then(adat => {
+            if (adat.success) {
+                calendar.refetchEvents(); // Frissítés hozzáadva
+                showToast("Takarítás sikeresen megrendelve!", 'success');
             }
         })
         .catch(error => {
@@ -108,10 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (events.error) {
                     console.error("Hiba a válaszban:", events.error);
                     alert("Hiba történt: " + events.error); // felhasználó tájékoztatása
-                } else {
-                    events.forEach(event => {
-                        event.allDay = true; // Egész napos beállítás
-                    });
+                } else {      
                     calendar.addEventSource(events);
                 }
             })

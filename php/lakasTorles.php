@@ -55,10 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Lakás és naptár törlése
         $muvelet1 = "DELETE FROM naptarak WHERE lakas_id = $lakasId";
         $valasz1 = adatokValtoztatasa($muvelet1);
-        $muvelet2 = "DELETE FROM lakas WHERE id = $lakasId";
+        $muvelet2 = "DELETE FROM takaritas WHERE lakasId = $lakasId";
         $valasz2 = adatokValtoztatasa($muvelet2);
+        $muvelet3 = "DELETE FROM lakas WHERE id = $lakasId";
+        $valasz3 = adatokValtoztatasa($muvelet3);
 
-        if ($valasz2 === "Sikeres művelet!") {
+        if ($valasz3 === "Sikeres művelet!") {
             echo json_encode(["success" => "Lakás sikeresen törölve!", "lakasId" => $lakasId]);
         } else {
             throw new Exception("Hiba történt a lakás törlése során: " . $valasz2); // Itt javítottam a $valasz változót $valasz2-re

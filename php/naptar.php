@@ -11,13 +11,31 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? null;
 
+
+//esemény törlése
+if($action === 'deleteTakaritas'){
+    session_start();
+
+    $json = file_get_contents('php://input');
+    $adat = json_decode($json, true);
+    $eventId = $adat['eventId'];
+
+    try {
+        $muvelet = "DELETE FROM takaritas WHERE id = ?";
+        $eredmeny = adatokValtoztatasa($muvelet, [$eventId]);
+        echo json_encode(['success' => $eredmeny]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
+//takarítók betöltése
 if ($action === 'getTakaritok') {
     $megyeId = (int)$_GET['megye_id'] ?? null;
 
     try {
-        $muvelet = "SELECT id, CONCAT(Vezeteknev, ' ', Keresztnev) AS nev 
-                    FROM felhasznalo 
-                    WHERE megyeid = ? AND takarito = 1";
+        $muvelet = "SELECT id, CONCAT(Vezeteknev, ' ', Keresztnev) AS nev FROM felhasznalo WHERE megyeid = ? AND takarito = 1 AND TakaritoSzabadsagKezd = '0000-00-00';";
         $takaritok = adatokLekerese($muvelet, [$megyeId]);
 
         header('Content-Type: application/json');
@@ -30,12 +48,9 @@ if ($action === 'getTakaritok') {
     }
 }
 
+//profilnév betöltése
 if ($action === 'getProfilNev') {
     session_start();
-    if (!isset($_SESSION['emailcim'])) {
-        echo json_encode(['error' => 'Nincs bejelentkezve']);
-        exit;
-    }
 
     $email = $_SESSION['emailcim'];
     $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
@@ -53,6 +68,48 @@ if ($action === 'getProfilNev') {
     exit;
 }
 
+//esemény mentése
+if($action === 'esemenyMentes') {
+    session_start();
+    $json = file_get_contents('php://input');
+    $adat = json_decode($json, true);
+
+    if(empty($adat['start']) || empty($adat['end']) || empty($adat['lakas_id']) || empty($adat['takarido_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Hiányzó adatok']);
+    }
+
+    $kezdoDatum = new DateTime($adat['start']);
+    $vegDatum = new DateTime($adat['end']);
+    $datum = $kezdoDatum->format('Y-m-d');
+
+    //van e már takarító rendelve erre a napra
+    try {
+        $rendelesEll = "Select id FROM takaritas WHERE lakasId = ? AND DATE(takaritoErkezes) = ?";
+        $ellenorzes = [$adat['lakas_id'], $datum];
+        $letezoEsemeny = adatokLekerese($rendelesEll, $ellenorzes);
+
+        if(!empty($letezoEsemeny)){
+            echo json_encode(['succes' => false, 'error' => 'Erre a napra már van takarítás rendelve']);
+            exit;
+        }
+
+        //esemény mentése adatbázisba
+        $felvitel = "INSERT INTO takaritas (lakasId, felhasznalo_id, takaritoErkezes, takaritoTavozas, befejezve) VALUES (?, ?, ?, ?, 0)";
+        $mentes = [$adat['lakas_id'], $adat['takarito_id'], $kezdoDatum->format('Y-m-d H:i:s'), $vegDatum->format('Y-m-d H:i:s')];
+
+        $mentesEredmeny = adatokValtoztatasa($felvitel, $mentes);
+
+        if($mentesEredmeny) {
+            echo json_encode(['success' => true]);
+        }else{
+            echo json_encode(['success' => false, 'error' => 'Adatbázis hiba']);
+        }
+    }catch(Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 try {
     $lakas_id = $_GET['lakas_id'] ?? null;
 
@@ -64,22 +121,14 @@ try {
         throw new Exception("Érvénytelen lakas_id");
     }
 
+    // ICS események betöltése
     $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = ?";
     $eredmeny = adatokLekerese($muvelet, [$lakas_id]);
 
-    if (isset($eredmeny['error'])) {
-        throw new Exception($eredmeny['error']);
-    }
-
-    if (empty($eredmeny) || empty($eredmeny[0]['file_content'])) {
-        throw new Exception("Nincs ICS tartalom ehhez a lakáshoz: " . $lakas_id);
-    }
-
-    $icsContent = $eredmeny[0]['file_content'];
-
-    try {
+    $events = [];
+    if (!empty($eredmeny) && !empty($eredmeny[0]['file_content'])) {
+        $icsContent = $eredmeny[0]['file_content'];
         $vcalendar = Reader::read($icsContent);
-        $events = [];
         $ma = new DateTime();
 
         foreach ($vcalendar->VEVENT as $vevent) {
@@ -94,8 +143,25 @@ try {
                 ];
             }
         }
-    } catch (Exception $e) {
-        throw new Exception("Hiba az ICS tartalom feldolgozásakor: " . $e->getMessage());
+    }
+
+    // Takarítási események betöltése
+    $takaritasMuvelet = "SELECT id, takaritoErkezes AS start, takaritoTavozas AS end, 'Takarítás' AS title FROM takaritas WHERE lakasId = ? AND befejezve = 0";
+    $takaritasEredmeny = adatokLekerese($takaritasMuvelet, [$lakas_id]);
+
+    foreach ($takaritasEredmeny as $event) {
+        try {
+            $start = new DateTime($event['start']);
+            $end = new DateTime($event['end']);
+            $events[] = [
+                'id' => $event['id'], 
+                'title' => 'Takarítás',
+                'start' => $start->format('c'),
+                'end' => $end->format('c'),
+            ];
+        } catch (Exception $e) {
+            continue;
+        }
     }
 
     echo json_encode($events, JSON_THROW_ON_ERROR);

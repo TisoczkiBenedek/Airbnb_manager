@@ -149,16 +149,6 @@ input[type="time"]:hover {
 }
 
 
-/* Legördülő mező középre igazítása */
-input[type="time"]::before {
-    content: attr(placeholder);
-    display: block;
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    padding: 12px 0;
-}
-
 input[type="time"]:hover::before {
     display: none;
 }
@@ -178,16 +168,50 @@ input[type="time"]::-webkit-time-picker::-webkit-calendar-picker-indicator {
     color: #1741ca;
 }
 
-/* Webkit time picker beállításai */
-input[type="time"]::-webkit-time-picker {
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    background: #f9f9f9;
-    color: #333;
-    text-align: center;
-    padding: 10px;
+/*toast stílus*/
+#toast {
+    position: fixed !important; 
+    top: 70px !important;
+    right: 20px !important;
+    z-index: 9999;
+    min-width: 250px;
 }
 
-input[type="time"]::-webkit-time-picker div {
-    display: none;
+/* Letiltott dátumok */
+.fc-day-disabled {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255,0,0,0.1),
+        rgba(255,0,0,0.1) 10px,
+        rgba(255,0,0,0.05) 10px,
+        rgba(255,0,0,0.05) 20px
+    ) !important;
+    pointer-events: none !important;
 }
+
+/* Takarítás események színe */
+.fc-event-takaritas {
+    background-color: #ff6b6b !important;
+    border-color: #ff5252 !important;
+}
+
+/* Törlés modal */
+#torlesModal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.torles-modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 5px;
+}
+
