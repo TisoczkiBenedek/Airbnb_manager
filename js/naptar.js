@@ -5,6 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
         locale: 'hu',
         firstDay: 1,
         events: [],
+        buttonText: {
+            today: 'Mai nap'
+        },
+        eventContent: function(info) {
+            // Ha az esemény címe "Takarítás", akkor hozzáadjuk a kezdő és végző időpontokat
+            if (info.event.title === 'Takarítás') {
+                const startTime = info.event.start ? info.timeText : '';
+                const endTime = info.event.end ? info.event.end.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }) : '';
+                return {
+                    html: `
+                        <div class="fc-event-takaritas">
+                            <div class="fc-event-title">${info.event.title}</div>
+                            <div class="fc-event-time">${startTime} - ${endTime}</div>
+                        </div>
+                    `
+                };
+            }
+            // Egyéb események esetén alapértelmezett megjelenítés
+            return { html: info.event.title };
+        },
         dateClick: function (info) {
             const clickedDate = new Date(info.dateStr);
             const ma = new Date();
@@ -16,8 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            
-        
             // Események ellenőrzése
             const existingEvents = calendar.getEvents();
             const hasConflict = existingEvents.some(event => {
@@ -37,8 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         
             modalNyitas(info.dateStr);
-
-            
         },
         eventClick: function(info) {
             if(info.event.title === 'Takarítás') {
@@ -51,45 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    let selectedEvent = null;
-
-    function showDeleteModal(event){
-        const modal = document.getElementById('torlesModal');
-        selectedEvent = event;
-        modal.style.display = 'block';
-
-        document.getElementById('torlesIgen').onclick = function() {
-            deleteEvent(event.id);
-            modal.style.display = 'none';
-        }
-
-        document.getElementById('torlesNem').onclick = function() {
-            modal.style.display = 'none';
-        }
-    }
-
-    async function deleteEvent(eventId) {
-        try {
-            const eredmeny = await fetch('../php/naptar.php?action=deleteTakaritas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json',
-                },
-                body: JSON.stringify({eventId:eventId})
-            })
-
-            const data = await eredmeny.json();
-            if(data.success) {
-                selectedEvent.remove();
-                showToast("Takarítás sikeresen törölve!", 'success');
-            } else {
-                showToast("Hiba történt a törlés során!", 'danger');
-            }
-        } catch (error) {
-            console.error('Hiba történt:', error);
-        }
-    }
 
     calendar.render();
 
@@ -120,18 +97,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         form.onsubmit = function (e) {
             e.preventDefault();
+            e.preventDefault();
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
+            // Kezdési időpont nem lehet később, mint a befejezési
             if (startTime >= endTime) {
                 showToast("A kezdeti időpont nem lehet később, mint a végső!", 'danger');
                 return;
             }
-
+            
             // Dátum és idő összeállítása
-            const startDateTime = `${date}T${startTime}:00`;
-            const endDateTime = `${date}T${endTime}:00`;
-
+            const startDateTime = new Date(`${date}T${startTime}:00`);
+            const endDateTime = new Date(`${date}T${endTime}:00`);
+            
+            // Ellenőrzés
+            if (startDateTime < new Date(`${date}T08:00:00`) && endDateTime > new Date(`${date}T17:00:00`)) {
+                showToast("A kezdeti időpont nem lehet korábban 8:00 óránál, és a végső időpont pedig nem lehet később 17:00 óránál!", 'danger');
+                return;
+            }
 
             // Esemény hozzáadása a naptárhoz
             calendar.addEvent({

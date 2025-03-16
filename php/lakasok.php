@@ -2,17 +2,20 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
+// Ellenőrizzük, hogy a felhasználó be van-e jelentkezve
 if (!isset($_SESSION['id'])) {
     http_response_code(401);
     die(json_encode(["valasz" => "Nincs bejelentkezve."]));
 }
 
+// SQL függvények betöltése
 include './parameterezett_sql_fuggvenyek.php';
 
+// Az action paraméter lekérése (pl. lekeres, getLakas, modositas, getNaptar)
 $action = $_GET['action'] ?? null;
 
+// Profilnév lekérése
 if ($action === 'getProfilNev') {
-    // Profilnév lekérése
     $email = $_SESSION['emailcim'];
     $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
     $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);
@@ -32,12 +35,14 @@ if ($action === 'getProfilNev') {
 try {
     switch ($action) {
         case 'lekeres':
+            // Lakások lekérése a felhasználóhoz
             $muvelet = "SELECT * FROM lakas WHERE felhasznalo_id = ?";
             $eredmeny = adatokLekerese($muvelet, [$_SESSION['id']]);
             
             if (is_array($eredmeny)) {
                 foreach ($eredmeny as &$lakas) {
-                    $lakas['kepek'] = [$lakas['kepek'] ?: '../images/default.jpg'];
+                    // Ha nincs kép megadva, alapértelmezett kép betöltése
+                    $lakas['kepek'] = [$lakas['kepek']];
                 }
                 echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);
             } else {
@@ -47,12 +52,14 @@ try {
             break;
 
         case 'getLakas':
+            // Egy adott lakás lekérése ID alapján
             $id = $_GET['id'];
             $muvelet = "SELECT * FROM lakas WHERE id = ? AND felhasznalo_id = ?";
             $eredmeny = adatokLekerese($muvelet, [$id, $_SESSION['id']]);
             
             if (is_array($eredmeny) && count($eredmeny) > 0) {
                 $lakas = $eredmeny[0];
+                // Ha nincs kép megadva, alapértelmezett kép betöltése
                 $lakas['kepek'] = [$lakas['kepek'] ?: '../images/default.jpg'];
                 echo json_encode($lakas, JSON_UNESCAPED_UNICODE);
             } else {
@@ -62,6 +69,7 @@ try {
             break;
 
         case 'modositas':
+            // Lakás módosítása
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     // Ellenőrizzük, hogy az ID létezik-e
@@ -74,8 +82,8 @@ try {
                         'nev' => $_POST['nev'] ?? '',
                         'cim' => $_POST['cim'] ?? '',
                         'terulet' => (int)($_POST['terulet'] ?? 0),
-                        'medence' => isset($_POST['medence']) ? 1 : 0,
-                        'szauna' => isset($_POST['szauna']) ? 1 : 0,
+                        'medence' => isset($_POST['medence']) ? 1 : 0, // Medence állapot kezelése
+                        'szauna' => isset($_POST['szauna']) ? 1 : 0,   // Szauna állapot kezelése
                         'megye_id' => (int)($_POST['megye'] ?? 0),
                         'belepesi_adatok' => $_POST['belepesi_adatok'] ?? ''
                     ];
@@ -95,8 +103,8 @@ try {
                     $eredmeny = adatokLekerese($muvelet, [$id]);
                     $regiKep = $eredmeny[0]['kepek'] ?? null;
         
-                    // 3. RÉGI KÉP TÖRLÉSE, HA LÉTEZIK
-                    if ($regiKep && file_exists($regiKep)) {
+                    // 3. RÉGI KÉP TÖRLÉSE, HA LÉTEZIK ÉS ÚJ KÉP VAN FELTÖLTVE
+                    if ($regiKep && file_exists($regiKep) && !empty($_FILES['kepFeltoltes']['name'])) {
                         unlink($regiKep);
                     }
         
@@ -109,6 +117,9 @@ try {
                         $fileName = uniqid() . '_' . basename($_FILES['kepFeltoltes']['name']);
                         move_uploaded_file($_FILES['kepFeltoltes']['tmp_name'], $uploadDir . $fileName);
                         $data['kepek'] = $uploadDir . $fileName;
+                    } else {
+                        // Ha nincs új kép feltöltve, megtartjuk a régi képet
+                        $data['kepek'] = $regiKep;
                     }
         
                     // 5. NAPTÁR FRISSÍTÉSE, HA KELL
@@ -135,8 +146,8 @@ try {
                         $data['nev'],
                         $data['cim'],
                         $data['terulet'],
-                        $data['medence'],
-                        $data['szauna'],
+                        $data['medence'], // Medence állapot
+                        $data['szauna'],  // Szauna állapot
                         $data['megye_id'],
                         $data['belepesi_adatok'],
                     ];
@@ -167,6 +178,7 @@ try {
             break;
 
         case 'getNaptar':
+            // Naptár tartalom lekérése
             $id = $_GET['id'];
             $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = ?";
             $eredmeny = adatokLekerese($muvelet, [$id]);
@@ -179,11 +191,13 @@ try {
             break;
 
         default:
+            // Érvénytelen művelet esetén hibaüzenet
             http_response_code(400);
             echo json_encode(["valasz" => "Érvénytelen művelet"]);
             break;
     }
 } catch (Exception $e) {
+    // Szerverhiba esetén hibaüzenet
     http_response_code(500);
     echo json_encode(["valasz" => "Szerverhiba: " . $e->getMessage()]);
 }

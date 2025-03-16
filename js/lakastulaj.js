@@ -33,11 +33,9 @@ function kiiras(adatok) {
 
         // Kép betöltése
         let img = document.createElement('img');
-        img.src = adat.kepek && adat.kepek.length > 0 ? adat.kepek[0] : '../images/default.jpg';
+        // Az adatbázisból lekérdezett kép elérési útja
+        img.src = adat.kepek
         img.classList.add("card-img-top");
-        img.onerror = function() {
-            this.src = '../images/default.jpg';
-        };
         img.onclick = function() {
             nagyKepMegjelenites(this);
         };
@@ -61,7 +59,7 @@ function kiiras(adatok) {
         button.type = "button";
         button.classList.add("btn", "btn-success", "mt-2", "ms-2");
         button.value = "Naptár";
-        button.setAttribute('onclick', `naptarOldalra(${adat.id}, ${adat.megye_id})`); // Átadjuk a lakasId-t
+        button.setAttribute('onclick', `naptarOldalra(${adat.id}, ${adat.megye_id})`);
         cardb.appendChild(button);
 
         // Módosítás gomb
@@ -79,7 +77,7 @@ function kiiras(adatok) {
         button2.type = "button";
         button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
         button2.value = "Törlés"
-        button2.setAttribute('onclick', `lakasTorles(${adat.id})`); // Átadjuk a lakasId-t
+        button2.setAttribute('onclick', `lakasTorles(${adat.id})`);
         cardb.appendChild(button2);
 
         card.appendChild(cardb);

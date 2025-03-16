@@ -27,7 +27,7 @@ async function lakasTorles(lakasId) {
             showToast(result.success, "success");
             setTimeout(() => {
                 location.reload(); // Oldal frissítése
-            }, 1000);
+            }, 300);
         } else {
             // Hiba esetén hibaüzenet megjelenítése
             showToast(result.error, "error");

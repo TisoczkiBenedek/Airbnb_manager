@@ -31,74 +31,74 @@
     <div class="row" id="valasz"></div> <!-- Lakások megjelenítése itt történik -->
   </div>
 
-  <!-- Módosított új lakás modal -->
+  <!-- új lakás modal -->
   <div class="modal fade" id="modal_ujLakas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5">Új Lakás Feltöltése</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="lakasForm" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label class="form-label">Lakás neve</label>
-              <input type="text" class="form-control" name="lakasNev" required>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Új Lakás Feltöltése</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="modal-body">
+                <form id="lakasForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Lakás neve</label>
+                        <input type="text" class="form-control" name="lakasNev" id="lakasNev" required>
+                    </div>
 
-            <div class="mb-3">
-              <label class="form-label">Cím</label>
-              <input type="text" class="form-control" name="lakcim" required>
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label">Cím</label>
+                        <input type="text" class="form-control" name="lakcim" id="lakcim" required>
+                    </div>
 
-            <div class="mb-3">
-              <label class="form-label">Terület (m²)</label>
-              <input type="number" class="form-control" name="terulet" required>
-            </div>
+                    <div class="mb-3">
+                        <label class="form-label">Terület (m²)</label>
+                        <input type="number" class="form-control" name="terulet" id="terulet" required>
+                    </div>
 
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="medence" id="medence">
-                <label class="form-check-label">Medence</label>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="medence" id="medence">
+                            <label class="form-check-label">Medence</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="szauna" id="szauna">
+                            <label class="form-check-label">Szauna</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Megye</label>
+                        <select class="form-select" name="megye" id="megye" required>
+                            <option value="">Válasszon megyét</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Leírás</label>
+                        <textarea class="form-control" name="lakasAdatok" id="lakasAdatok" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Új kép feltöltése</label>
+                        <input type="file" class="form-control" name="kepFeltoltes" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Naptár frissítése (Airbnb iCal kiterjesztésű fájl)</label>
+                        <input type="file" class="form-control" name="naptarFeltoltes" id="naptarFeltoltes" accept=".ics">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Feltöltés</button>
+                </form>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="szauna" id="szauna">
-                <label class="form-check-label">Szauna</label>
-              </div>
             </div>
-
-            <div class="mb-3">
-              <label class="form-label">Megye</label>
-              <select class="form-select" name="megye" required>
-                <option value="">Válasszon megyét</option>
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Leírás</label>
-              <textarea class="form-control" name="lakasAdatok" rows="3" required></textarea>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Képek feltöltése</label>
-              <input type="file" class="form-control" name="kepFeltoltes[]" accept="image/*" multiple>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Naptár fájl (ICS)</label>
-              <input type="file" class="form-control" name="naptarFeltoltes" accept=".ics">
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Feltöltés</button>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Modal elem módosítás -->
   <div class="modal fade" id="modal_modosit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Lakás módosítása</h1>

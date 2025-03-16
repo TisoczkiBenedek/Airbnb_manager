@@ -1,6 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('lakasForm');
 
+    if (!form) {
+        console.error("Az űrlap (#lakasForm) nem található az oldalon.");
+        return;
+    }
+    
     // Megyék betöltése
     async function megyekBetoltese() {
         try {
@@ -28,46 +33,59 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Űrlap beküldése
-    if (form) {
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+    
+        // Hiányos adatok ellenőrzése
+        const lakasNev = document.getElementById('lakasNev').value.trim();
+        const lakcim = document.getElementById('lakcim').value.trim();
+        const terulet = document.getElementById('terulet').value.trim();
+        const megye = document.getElementById('megye').value.trim();
+        const lakasAdatok = document.getElementById('lakasAdatok').value.trim();
+    
+        console.log("Lakás neve:", lakasNev);
+        console.log("Lakcím:", lakcim);
+        console.log("Terület:", terulet);
+        console.log("Megye:", megye);
+        console.log("Lakás adatok:", lakasAdatok);
+    
+        // Kötelező mezők ellenőrzése
+        if (!lakasNev || !lakcim || !terulet || !megye || !lakasAdatok) {
+            showToast("Kérem töltse ki az összes kötelező mezőt!", 'danger');
+            return;
+        }
+    
+        // Adatok elküldése
+        const formData = new FormData(form);
+        try {
+            const response = await fetch('../php/ujLakas.php?feltoltes', {
+                method: 'POST',
+                body: formData
+            });
 
-            // Hiányos adatok ellenőrzése
-            const lakasNev = document.getElementById('lakasNev').value.trim();
-            const lakcim = document.getElementById('lakcim').value.trim();
-            const terulet = document.getElementById('terulet').value.trim();
-            const megye = document.getElementById('megye').value.trim();
-            const lakasAdatok = document.getElementById('lakasAdatok').value.trim();
+            const text = await response.text();
+            console.log("Szerver válasza:", text);
 
-            if (!lakasNev || !lakcim || !terulet || !megye || !lakasAdatok) {
-                showToast("Kérem töltse ki az összes kötelező mezőt!", 'danger');
-                return;
-            }
-
-            // Adatok elküldése
-            const formData = new FormData(form);
             try {
-                const response = await fetch('../php/ujLakas.php?feltoltes', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-                const result = await response.json();
+                const result = JSON.parse(text);
 
                 if (result.error) {
                     showToast(result.error, 'danger');
                 } else if (result.success) {
                     showToast(result.success, 'success');
-                    form.reset(); // Űrlap resetelése
-                    setTimeout(() => location.reload(), 1000); // Oldal frissítése
+                    form.reset();
+                    setTimeout(() => location.reload(), 500);
                 }
-            } catch (error) {
-                console.error('Hiba a feltöltés során:', error);
-                showToast('Hiba történt a feltöltés során.', 'danger');
+            } catch (jsonError) {
+                console.error('Hiba a JSON feldolgozásánál:', jsonError);
+                console.error('Kapott válasz:', text);
+                showToast('Hiba történt a szerver válaszának feldolgozása során.', 'danger');
             }
-        });
-    }
+        } catch (error) {
+            console.error('Hiba a feltöltés során:', error);
+            showToast('Hiba történt a feltöltés során.', 'danger');
+        }        
+    });
 
     // Megyék betöltése
     megyekBetoltese();
@@ -79,15 +97,12 @@ function showToast(message, type = 'info') {
     const toastBody = toast.querySelector('.toast-body');
     toastBody.textContent = message;
 
-    // Toaster stílus beállítása
     toast.classList.remove('bg-info', 'bg-success', 'bg-danger');
     toast.classList.add(`bg-${type}`);
 
-    // Toaster megjelenítése
     const toastInstance = new bootstrap.Toast(toast);
     toastInstance.show();
 
-    // Toaster eltüntetése 5 másodperc múlva
     setTimeout(() => {
         toastInstance.hide();
     }, 5000);
