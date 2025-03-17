@@ -128,7 +128,7 @@ function eszkozIgenyLeker(){
             return json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
         }
         else{
-            $muvelet = "SELECT eszkoz.nev, eszkoz.kiszereles, eszkozszukseglet.igenyeltDarab FROM eszkoz INNER JOIN eszkozszukseglet on eszkozszukseglet.eszkozId = eszkoz.id WHERE eszkozszukseglet.felhasznalo_id = $id && eszkozszukseglet.teljesitve = 0";
+            $muvelet = "SELECT eszkoz.nev, eszkoz.kiszereles, eszkozszukseglet.igenyeltDarab, eszkozszukseglet.teljesitve FROM eszkoz INNER JOIN eszkozszukseglet on eszkozszukseglet.eszkozId = eszkoz.id WHERE eszkozszukseglet.felhasznalo_id = $id";
             $eredmeny = adatokLekerese($muvelet);
             if(!is_array($eredmeny)){
                 echo json_encode(["valasz"=>"Nincsenek aktuális igénylések!"], JSON_UNESCAPED_UNICODE);

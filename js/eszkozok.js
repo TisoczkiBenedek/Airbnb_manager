@@ -1,18 +1,24 @@
 let adatok
+var eszkozszam
+var id_index = 1
 async function eszkozLekeres() {
     try {
         let eredmeny = await fetch("../php/felhasznalok.php/eszkoz");
         if (eredmeny.ok) {
             adatok = await eredmeny.json()
             formFelt(false)
+            eszkozszam = adatok.length
         }
     } catch (error) {
         console.log(error)
     }
 }
-let id_index = 1
 
+if(id_index == eszkozszam ){
+    id_index = 0
+}
 function formFelt(tovabbihoz) {
+    //console.log("lefut: "+adatok.length)
     let eszkozok_db = adatok.length
     if (id_index <= eszkozok_db) {
 
@@ -45,11 +51,13 @@ function formFelt(tovabbihoz) {
             button.classList.add("btn", "btn-success", "m-2")
             button.id = "gomb"
             button.innerText = "Igénylés leadása"
+            button.setAttribute("onclick", "eszkozIgeny()")
             let button1 = document.createElement("button")
             button1.type = "button"
             button1.classList.add("btn", "btn-info", "m-2")
             button1.id = "tovabbi"
             button1.innerText = "További eszközök hozzáadása"
+            button1.setAttribute("onclick", "tovabbiFelt()")
             form.appendChild(label1)
             form.appendChild(select)
             form.appendChild(label2)
@@ -68,12 +76,14 @@ function formFelt(tovabbihoz) {
     if (id_index == eszkozok_db + 1) {
         let gomb = document.getElementById("tovabbi")
         gomb.disabled = true
+        
     }
 
 
 
 }
 function tovabbiFelt() {
+    //console.log("Belep")
     formFelt(true)
 }
 async function eszkozIgeny() {
@@ -101,6 +111,9 @@ async function eszkozIgeny() {
     }
     valaszFelh(valasz, siker)
     igenyeltEszkozLeker()
+    document.getElementById("form").innerText = ""
+    id_index = 1
+    eszkozLekeres()
 }
 function valaszFelh(valasz, siker) {
     let vhely = document.getElementById("vhely")
@@ -142,11 +155,23 @@ function eszkozEddigIgenyelt(adatok) {
         div.innerHTML = "<h3 class='text-danger mt-5'>" + adatok["valasz"] + "</h1>"
     }
     else {
+        let keszlistazott = 0
         for (let adat of adatok) {
             let divigeny = document.createElement("div")
+            divigeny.classList= ""
+            let h4 = document.createElement("h4")
+            h4.hidden = true
+            if(adat["teljesitve"]== 1 && keszlistazott<=5){
+                divigeny.classList.add("bg-success-subtle")
+                h4.innerText = "TELJESÍTVE"
+                h4.classList.add("text-center")
+                h4.hidden = false
+                keszlistazott++
+            }
             divigeny.classList.add("col-12", "card", "mt-2", "mx-1")
             let cardb = document.createElement('div')
             cardb.classList.add('card-body')
+            cardb.appendChild(h4)
             let h5 = document.createElement('h5')
             h5.classList.add("card-title")
             h5.innerText = adat['nev']
@@ -160,6 +185,9 @@ function eszkozEddigIgenyelt(adatok) {
             p1.innerHTML = "Kiszerelés: " + adat['kiszereles']
             cardb.appendChild(p1)
             divigeny.appendChild(cardb)
+            if(keszlistazott>= 5 && adat["teljesitve"]==1){
+                divigeny.hidden = true
+            }
             div.appendChild(divigeny)
         }
     }
@@ -167,6 +195,12 @@ function eszkozEddigIgenyelt(adatok) {
 
 window.addEventListener("load", eszkozLekeres)
 window.addEventListener("load", igenyeltEszkozLeker)
-setTimeout(() => document.getElementById("tovabbi").addEventListener("click", tovabbiFelt), 500)
-setTimeout(() => document.getElementById("gomb").addEventListener("click", eszkozIgeny), 500)
+/*try {
+    //console.log("Event")
+    document.getElementById("tovabbi").addEventListener("click", tovabbiFelt)
+    document.getElementById("gomb").addEventListener("click", eszkozIgeny)
+} catch (error) {
+    setTimeout(() => document.getElementById("tovabbi").addEventListener("click", tovabbiFelt), 200)
+    setTimeout(() => document.getElementById("gomb").addEventListener("click", eszkozIgeny), 200)
+}*/
 
