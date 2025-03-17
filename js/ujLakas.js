@@ -35,26 +35,64 @@ document.addEventListener('DOMContentLoaded', function() {
     // Űrlap beküldése
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
-    
-        // Hiányos adatok ellenőrzése
+        
+        // Kötelező mezők ellenőrzése
         const lakasNev = document.getElementById('lakasNev').value.trim();
         const lakcim = document.getElementById('lakcim').value.trim();
         const terulet = document.getElementById('terulet').value.trim();
-        const megye = document.getElementById('megye').value.trim();
+        const megye = document.getElementById('megye').value;
         const lakasAdatok = document.getElementById('lakasAdatok').value.trim();
     
-        console.log("Lakás neve:", lakasNev);
-        console.log("Lakcím:", lakcim);
-        console.log("Terület:", terulet);
-        console.log("Megye:", megye);
-        console.log("Lakás adatok:", lakasAdatok);
-    
-        // Kötelező mezők ellenőrzése
-        if (!lakasNev || !lakcim || !terulet || !megye || !lakasAdatok) {
-            showToast("Kérem töltse ki az összes kötelező mezőt!", 'danger');
-            return;
+        function lakcimEll(lakcim) {
+            const regex = /^\d{4} .+, .+ \d+/;
+            return regex.test(lakcim.trim());
         }
     
+        try {
+            // 1. Kötelező mezők ellenőrzése
+            if (!lakasNev || !terulet || !megye || !lakasAdatok) {
+                throw new Error("Kérem töltse ki az összes kötelező mezőt!");
+            }
+    
+            // 2. Cím formátum ellenőrzése
+            if (!lakcimEll(lakcim)) {
+                throw new Error("Érvénytelen címformátum! Példa: 1013 Budapest, Kossuth utca 12, vagy \n 1013 Budapest, Kossuth Lajos utca 12/A. emelet 3");
+            }
+    
+            // 3. FormData létrehozása
+            const formData = new FormData(form);
+    
+            // 4. Adatok elküldése
+            const response = await fetch('../php/ujLakas.php?feltoltes', {
+                method: 'POST',
+                body: formData
+            });
+    
+            const text = await response.text();
+            console.log("Szerver válasza:", text);
+    
+            try {
+                const result = JSON.parse(text);
+    
+                if (result.error) {
+                    showToast(result.error, 'danger');
+                } else if (result.success) {
+                    showToast(result.success, 'success');
+                    form.reset();
+                    setTimeout(() => location.reload(), 500);
+                }
+            } catch (jsonError) {
+                console.error('Hiba a JSON feldolgozásánál:', jsonError);
+                console.error('Kapott válasz:', text);
+                showToast('Hiba történt a szerver válaszának feldolgozása során.', 'danger');
+            }
+            
+        } catch (error) {
+            console.error('Hiba:', error);
+            showToast(error.message, 'danger');
+        }
+    });
+        /*
         // Adatok elküldése
         const formData = new FormData(form);
         try {
@@ -84,8 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Hiba a feltöltés során:', error);
             showToast('Hiba történt a feltöltés során.', 'danger');
-        }        
+        } 
+                   
     });
+*/
 
     // Megyék betöltése
     megyekBetoltese();
