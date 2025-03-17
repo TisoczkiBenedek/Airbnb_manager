@@ -77,7 +77,10 @@ function kiiras(adatok) {
         button2.type = "button";
         button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
         button2.value = "Törlés"
-        button2.setAttribute('onclick', `lakasTorles(${adat.id})`);
+        button2.addEventListener("click", () => {
+            selectedLakasId = adat.id
+            document.getElementById("torlesModal").style.display = "block";
+        });
         cardb.appendChild(button2);
 
         card.appendChild(cardb);

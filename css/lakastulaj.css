@@ -112,6 +112,53 @@ h2{
   padding: 1rem;
 }
 
+/* Törlés megerősítés modal */
+#torlesModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.torles-modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 25px;
+  border-radius: 8px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  animation: modalFadeIn 0.3s;
+}
+
+.torles-modal-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.torles-modal-content button {
+  width: 48%;
+  padding: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.torles-modal-content button#torlesIgen:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.torles-modal-content button#torlesNem:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
 /* Színek */
 .bg-danger {
   background-color: #dc3545 !important;
@@ -120,6 +167,9 @@ h2{
 .bg-success {
   background-color: #28a745 !important;
 }
+
+/* Modal stílusok */
+
 
 
 /*kártya css*/

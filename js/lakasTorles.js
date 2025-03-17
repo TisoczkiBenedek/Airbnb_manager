@@ -1,10 +1,17 @@
+document.getElementById("torlesNem").addEventListener("click", () => {
+    document.getElementById("torlesModal").style.display = "none";
+  });
+  
+  document.getElementById("torlesIgen").addEventListener("click", async () => {
+    document.getElementById("torlesModal").style.display = "none";
+    if(selectedLakasId) {
+      await lakasTorles(selectedLakasId);
+      selectedLakasId = null;
+    }
+  });
+
 async function lakasTorles(lakasId) {
     try {
-        const confirmDelete = confirm("Biztosan törölni szeretné ezt a lakást?");
-        if (!confirmDelete) {
-            return;
-        }
-
         const response = await fetch("../php/lakasTorles.php", {
             method: "POST",
             headers: {
