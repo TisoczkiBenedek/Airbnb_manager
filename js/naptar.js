@@ -68,6 +68,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    let selectedEvent = null;
+
+    function showDeleteModal(event){
+        const modal = document.getElementById('torlesModal');
+        selectedEvent = event;
+        modal.style.display = 'block';
+
+        document.getElementById('torlesIgen').onclick = function() {
+            deleteEvent(event.id);
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('torlesNem').onclick = function() {
+            modal.style.display = 'none';
+        }
+    }
+
+    async function deleteEvent(eventId) {
+        try {
+            const eredmeny = await fetch('../php/naptar.php?action=deleteTakaritas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify({eventId:eventId})
+            })
+
+            const data = await eredmeny.json();
+            if(data.success) {
+                selectedEvent.remove();
+                showToast("Takarítás sikeresen törölve!", 'success');
+            } else {
+                showToast("Hiba történt a törlés során!", 'danger');
+            }
+        } catch (error) {
+            console.error('Hiba történt:', error);
+        }
+    }
+
     calendar.render();
 
     //megyeId
