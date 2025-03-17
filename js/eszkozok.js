@@ -120,22 +120,22 @@ function valaszFelh(valasz, siker) {
     let visszajelz = document.getElementById("visszajelz")
     let tbody = document.getElementById("tbody")
     let toast = document.getElementById("toast")
-    vhely.classList = ""
     visszajelz.innerText = ""
+    toast.classList = ""
     tbody.innerText = ""
     if (siker == true) {
-        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "border-0", "bg-success")
+        toast.classList.add("bg-success-subtle", "toast")
         visszajelz.innerText = "Siker!"
         tbody.innerText = valasz["valasz"];
     }
     else {
-        vhely.classList.add("toast-container", "position-fixed", "bottom-0", "end-0", "p-3", "border-0", "bg-danger")
+        toast.classList.add("bg-danger-subtle", "toast")
         visszajelz.innerText = "Hiba történt!"
-        tbody.innerText = valasz[0]["valasz"];
+        tbody.innerText = valasz["valasz"];
     }
     const toastBootstrap = new bootstrap.Toast(toast)
     toastBootstrap.show()
-    setTimeout(() => vhely.hidden = true, 5005)
+    //setTimeout(() => vhely.hidden = true, 5005)
 }
 async function igenyeltEszkozLeker() {
     try {

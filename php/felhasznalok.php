@@ -102,11 +102,18 @@ function eszkozIgenyHoz(){
                 //$felhid = $_SESSION["id"];
                 $eszkozid = $adat["id"];
                 $igenyeltdb = $adat["igenyelt"];
-                $muvelet = "INSERT INTO `eszkozszukseglet`(`eszkozId`, `felhasznalo_id`, `teljesitve`, `igenyeltDarab`) VALUES ('{$eszkozid}', '3', '0', '{$igenyeltdb}')";
-                $eredmeny = adatokValtoztatasa($muvelet);
-                if($eredmeny == "Sikeres művelet!"){
-                    $db++;
+                if(empty($igenyeltdb)){
+                    break;
                 }
+                else{
+                    $muvelet = "INSERT INTO `eszkozszukseglet`(`eszkozId`, `felhasznalo_id`, `teljesitve`, `igenyeltDarab`) VALUES ('{$eszkozid}', '3', '0', '{$igenyeltdb}')";
+                    $eredmeny = adatokValtoztatasa($muvelet);
+                    if($eredmeny == "Sikeres művelet!"){
+                        $db++;
+                    }
+                }
+                    
+                
             }
             if($db == count($erkezett)){
                 echo json_encode(["valasz"=>"Az igénylését sikeresen rögzítettük!"]);
