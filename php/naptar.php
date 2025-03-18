@@ -35,7 +35,7 @@ if ($action === 'getTakaritok') {
     $megyeId = (int)$_GET['megye_id'] ?? null;
 
     try {
-        $muvelet = "SELECT id, CONCAT(Vezeteknev, ' ', Keresztnev) AS nev FROM felhasznalo WHERE megyeid = ? AND takarito = 1 AND TakaritoSzabadsagKezd = '0000-00-00';";
+        $muvelet = "SELECT id, CONCAT(Vezeteknev, ' ', Keresztnev) AS nev FROM felhasznalo WHERE megyeid = ? AND takarito = 1 AND (TakaritoSzabadsagKezd >= NOW() OR TakaritoSzabadsagVeg <= NOW());";
         $takaritok = adatokLekerese($muvelet, [$megyeId]);
 
         header('Content-Type: application/json');

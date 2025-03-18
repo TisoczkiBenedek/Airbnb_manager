@@ -108,7 +108,7 @@ try {
                     }
                 
                     // Kép feltöltés
-                    $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['png', 'jpg', 'jpeg'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
+                    $kepFeltoltes = handleFileUpload($_FILES['kepFeltoltes'], ['png', 'jpg', 'jpeg', 'jfif'], 5 * 1024 * 1024, "{$lakasMappa}/kepek");
                     if (isset($kepFeltoltes['error'])) {
                         echo json_encode($kepFeltoltes);
                         exit;

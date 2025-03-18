@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const lakasId = new URLSearchParams(window.location.search).get('lakas_id');
         
         if (!takaritoId) {
-            alert('Válassz takarítót!');
+            showToast('Válassz takarítót!', 'danger');
             return;
         }
         
@@ -196,7 +196,13 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(adat)
         })
+        .then(eredmeny => eredmeny.text())
+        .then(nyersSzoveg => {
+            console.log(nyersSzoveg); // Nyers válasz
+            const adat = JSON.parse(nyersSzoveg);
+        })
         .then(eredmeny => eredmeny.json())
+        .then(eredmeny => eredmeny.text())
         .then(adat => {
             if (adat.success) {
                 console.log('Takarítás sikeresen megrendelve', 'success');
@@ -230,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(events => {
                 if (events.error) {
                     console.error("Hiba a válaszban:", events.error);
-                    alert("Hiba történt: " + events.error); // felhasználó tájékoztatása
+                    showToast("Hiba történt: " + events.error);
                 } else {      
                     calendar.addEventSource(events);
                 }
@@ -290,7 +296,7 @@ async function loadTakaritok(megyeId) {
         });
     } catch (error) {
         console.error('Hiba a takarítók betöltésekor:', error);
-        alert('Hiba történt a takarítók betöltésekor.');
+        showToast('Hiba történt a takarítók betöltésekor.', 'danger');
     }
 }
 

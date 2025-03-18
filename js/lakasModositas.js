@@ -48,8 +48,18 @@ document.getElementById('modositForm').addEventListener('submit', async function
 
     const formData = new FormData(this);
     formData.append('id', this.dataset.lakasId);
+/*
+    function lakcimEll(lakcim) {
+        const regex = /^\d{4} .+, .+ \d+/;
+        return regex.test(lakcim.trim());
+    }
 
+    if (!lakcimEll(lakcim)) {
+        throw new Error("Érvénytelen címformátum! Példa: 1013 Budapest, Kossuth utca 12, vagy \n 1013 Budapest, Kossuth Lajos utca 12/A. emelet 3");
+    }
+*/
     try {
+
         const response = await fetch('../php/lakasok.php?action=modositas', {
             method: 'POST',
             body: formData
