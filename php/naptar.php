@@ -69,13 +69,14 @@ if ($action === 'getProfilNev') {
 }
 
 //esemény mentése
-if($action === 'esemenyMentes') {
+if ($action === 'esemenyMentes') {
     session_start();
     $json = file_get_contents('php://input');
     $adat = json_decode($json, true);
 
-    if(empty($adat['start']) || empty($adat['end']) || empty($adat['lakas_id']) || empty($adat['takarido_id'])) {
+    if (empty($adat['start']) || empty($adat['end']) || empty($adat['lakas_id']) || empty($adat['takarito_id'])) {
         echo json_encode(['success' => false, 'error' => 'Hiányzó adatok']);
+        exit;
     }
 
     $kezdoDatum = new DateTime($adat['start']);

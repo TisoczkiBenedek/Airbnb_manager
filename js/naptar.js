@@ -136,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         form.onsubmit = function (e) {
             e.preventDefault();
-            e.preventDefault();
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
@@ -179,16 +178,15 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('Válassz takarítót!', 'danger');
             return;
         }
-        
-
+    
         //adatok
         const adat = {
-            start: event.start,
-            end: event.end,
+            start: event.start.toISOString(), // Dátum átalakítása ISO formátumba
+            end: event.end.toISOString(), // Dátum átalakítása ISO formátumba
             lakas_id: lakasId,
             takarito_id: takaritoId
-        }
-
+        };
+    
         fetch('../php/naptar.php?action=esemenyMentes', {
             method: 'POST',
             headers: {
@@ -196,28 +194,23 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(adat)
         })
-        .then(eredmeny => eredmeny.text())
-        .then(nyersSzoveg => {
-            console.log(nyersSzoveg); // Nyers válasz
-            const adat = JSON.parse(nyersSzoveg);
-        })
-        .then(eredmeny => eredmeny.json())
-        .then(eredmeny => eredmeny.text())
-        .then(adat => {
-            if (adat.success) {
-                console.log('Takarítás sikeresen megrendelve', 'success');
-            } else {
-                console.error('Hiba a takarítás megrendelése során: ', adat.errorm, 'danger');
+        .then(eredmeny => {
+            if (!eredmeny.ok) {
+                throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
             }
+            return eredmeny.json();
         })
         .then(adat => {
             if (adat.success) {
                 calendar.refetchEvents(); // Frissítés hozzáadva
                 showToast("Takarítás sikeresen megrendelve!", 'success');
+            } else {
+                showToast("Hiba történt a takarítás megrendelése során: " + adat.error, 'danger');
             }
         })
         .catch(error => {
-            console.error('Hiba történt:', error);
+            console.error('Hiba történt a takarítás megrendelése során:', error);
+            showToast("Hiba történt a takarítás megrendelése során.", 'danger');
         });
     }
 
