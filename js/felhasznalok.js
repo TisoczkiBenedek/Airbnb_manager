@@ -200,7 +200,23 @@ function valasz(adatok, torol){
     }
     
 }
+function datumBeall(){
+    console.log("Megy")
+    let kezd = document.getElementById("kezd")
+    let veg = document.getElementById("veg")
+    let mai = new Date()
+    let mai1 = new Date(mai.getFullYear(),mai.getMonth(), mai.getDate()+1)
+    let seged = mai.toLocaleDateString().replaceAll('.', '-')
+    let seged1 = mai1.toLocaleDateString().replaceAll('.', '-')
+    let maidatum = seged.substring(0, seged.length-1).replaceAll(" ", "")
+    let mahozEgy = seged1.substring(0, seged.length-1).replaceAll(" ", "")
+    kezd.value =maidatum
+    kezd.setAttribute("min", maidatum)
+    veg.setAttribute("min", mahozEgy)
+    veg.value = mahozEgy
+}
 
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
+window.addEventListener('load', datumBeall)
 document.getElementById('mentes').addEventListener('click', mentes)
