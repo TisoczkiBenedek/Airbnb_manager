@@ -215,8 +215,55 @@ function datumBeall(){
     veg.setAttribute("min", mahozEgy)
     veg.value = mahozEgy
 }
+async function szabadsagRogzitese(){
+    try {
+        let kezd = document.getElementById("kezd").value
+        let veg = document.getElementById("veg").value 
+        let kuldendo = {
+            "kezd": kezd,
+            "veg": veg
+        }
+        let eredmeny = await fetch("../php/felhasznalok.php/szabadsag", {
+            method : "PUT",
+            headers : {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify(kuldendo)
+        })
+        let adatok = await eredmeny.json()
+        let siker = true
+        if(!eredmeny.ok){
+            siker = false
+        }
+        szabadsagVisszajelz(adatok, siker)
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+function szabadsagVisszajelz(adatok, siker){
+    let visszajelz = document.getElementById("visszajelz")
+    let tbody = document.getElementById("tbody")
+    let toast = document.getElementById("toast")
+    visszajelz.innerText = ""
+    toast.classList = ""
+    tbody.innerText = ""
+    if (siker == true) {
+        toast.classList.add("bg-success-subtle", "toast")
+        visszajelz.innerText = "Siker!"
+        tbody.innerText = adatok["valasz"];
+    }
+    else {
+        toast.classList.add("bg-danger-subtle", "toast")
+        visszajelz.innerText = "Hiba történt!"
+        tbody.innerText = adatok["valasz"];
+    }
+    const toastBootstrap = new bootstrap.Toast(toast)
+    toastBootstrap.show()
+}
 
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
 window.addEventListener('load', datumBeall)
 document.getElementById('mentes').addEventListener('click', mentes)
+document.getElementById("gomb").addEventListener("click", szabadsagRogzitese)

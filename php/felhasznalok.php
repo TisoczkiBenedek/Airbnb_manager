@@ -21,6 +21,9 @@ switch ($url[0]) {
     case "igenyek":
         eszkozIgenyLeker();
         break;
+    case "szabadsag":
+        szabadsagRogzites();
+        break;
     default:
         # code...
         break;
@@ -143,6 +146,30 @@ function eszkozIgenyLeker(){
             else{
                 echo json_encode($eredmeny);
             }
+        }
+    }
+}
+function szabadsagRogzites(){
+    if($_SERVER["REQUEST_METHOD"]== "PUT"){
+        $felhid = 5;
+        $erkezett = json_decode(file_get_contents('php://input'), true);
+        if(empty($erkezett["kezd"]) || empty($erkezett["veg"])){
+            header("BAD REQUEST", true, 400);
+            return json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
+        }
+        else{
+            $kezd = $erkezett["kezd"];
+            $veg = $erkezett["veg"];
+            $muvelet = "UPDATE `felhasznalo` SET `TakaritoSzabadsagKezd`= '{$kezd}', `TakaritoSzabadsagVeg` = '{$veg}' WHERE `id` = {$felhid} ";
+            $siker = adatokValtoztatasa($muvelet);
+            if($siker == "Sikeres művelet!"){
+                echo json_encode(["valasz"=>"A szabadságot sikeresen rögzítettük!"], JSON_UNESCAPED_UNICODE);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                json_encode(["valasz"=>"Sikertelen rögzítés!"], JSON_UNESCAPED_UNICODE);
+            }
+            
         }
     }
 }

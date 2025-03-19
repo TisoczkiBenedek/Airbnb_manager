@@ -48,9 +48,9 @@
       </div>
     </nav>
   </div>
-  <!---<div class="container">
+  <div class="container-fluid w-100">
 
-    <h4>Felhasználók szűrése</h4>
+    <!--<h4>Felhasználók szűrése</h4>
     <form id="form">
       <div class="row">
         <div class="col-6">
@@ -67,27 +67,32 @@
           </select>
         </div>
       </div>
-    </form>
+    </form>-->
 
     <hr class="mt-2">
-  </div>-->
-  <div class="row" id="valasz">
+    <div class="row" id="valasz">
 
-  </div>
-  <hr class="border border-danger border-2 opacity-50">
-  <div class="row">
-    <form class="mx-2 my-2">
-      <h4>Szabadság rögzítése</h4>
-      <div class="mb-3 w-25">
-        <label for="kezd" class="form-label">Kezdő dátum</label>
-        <input type="date" class="form-control" id="kezd" >
+    </div>
+    <hr class="border border-danger border-2 opacity-50">
+    <div class="row">
+      <div class="col-12">
+        <form class="my-2">
+          <h4>Szabadság rögzítése</h4>
+          <div class="mb-3 w-25">
+            <label for="kezd" class="form-label">Kezdő dátum</label>
+            <input type="date" class="form-control" id="kezd">
+          </div>
+          <div class="mb-3 w-25">
+            <label for="veg" class="form-label">Befejező dátum</label>
+            <input type="date" class="form-control" id="veg">
+          </div>
+          <div class="d-grid gap-2 w-25">
+            <button class="btn btn-primary" type="button" id="gomb">Szabadság kivétele</button>
+          </div>
+        </form>
       </div>
-      <div class="mb-3 w-25">
-        <label for="veg" class="form-label">Befejező dátum</label>
-        <input type="date" class="form-control" id="veg" >
-      </div>
-    </form>
-    
+
+    </div>
   </div>
 
   <!---Modal elem: befejezett takarítás-->
@@ -132,6 +137,17 @@
       </div>
     </div>
   </div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="vhely">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="toast">
+        <div class="toast-header">
+            <strong class="me-auto" id="visszajelz"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="tbody">
+
+        </div>
+    </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
