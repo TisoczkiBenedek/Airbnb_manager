@@ -219,23 +219,34 @@ async function szabadsagRogzitese(){
     try {
         let kezd = document.getElementById("kezd").value
         let veg = document.getElementById("veg").value 
-        let kuldendo = {
-            "kezd": kezd,
-            "veg": veg
+        let kezdDatum = new Date(kezd).getTime()
+        let vegDatum = new Date(veg).getTime()
+        if(kezdDatum>vegDatum){
+            szabadsagVisszajelz({"valasz":"A kezdődátum nem lehet kisebb mint a befejezés dátuma!"}, false)
         }
-        let eredmeny = await fetch("../php/felhasznalok.php/szabadsag", {
-            method : "PUT",
-            headers : {
-                "Content-Type": "application/json"
-            },
-            body : JSON.stringify(kuldendo)
-        })
-        let adatok = await eredmeny.json()
-        let siker = true
-        if(!eredmeny.ok){
-            siker = false
+        else if(kezdDatum == vegDatum){
+            szabadsagVisszajelz({"valasz":"A két dátum azonos!"}, false)
         }
-        szabadsagVisszajelz(adatok, siker)
+        else{
+            let kuldendo = {
+                "kezd": kezd,
+                "veg": veg
+            }
+            let eredmeny = await fetch("../php/felhasznalok.php/szabadsag", {
+                method : "PUT",
+                headers : {
+                    "Content-Type": "application/json"
+                },
+                body : JSON.stringify(kuldendo)
+            })
+            let adatok = await eredmeny.json()
+            let siker = true
+            if(!eredmeny.ok){
+                siker = false
+            }
+            szabadsagVisszajelz(adatok, siker)
+        }
+        
 
     } catch (error) {
         console.log(error)
@@ -250,7 +261,7 @@ function szabadsagVisszajelz(adatok, siker){
     tbody.innerText = ""
     if (siker == true) {
         toast.classList.add("bg-success-subtle", "toast")
-        visszajelz.innerText = "Siker!"
+        visszajelz.innerText = "Sikeres művelet!"
         tbody.innerText = adatok["valasz"];
     }
     else {
