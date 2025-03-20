@@ -124,5 +124,15 @@ function feltoltes(adatok){
         select.appendChild(opt)
     }
 }
-document.getElementById('gomb').addEventListener('click', ellenorzes)
+function jelszomegj(){
+    let mezo =  document.getElementById("jelszo")
+    if(mezo.type == "text"){
+        mezo.type = "password"
+    }
+    else{
+        mezo.type = "text"
+    }
+}
 window.addEventListener('load', megyelekeres)
+document.getElementById('gomb').addEventListener('click', ellenorzes)
+document.getElementById('szem').addEventListener("click", jelszomegj)

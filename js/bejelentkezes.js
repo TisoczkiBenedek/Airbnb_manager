@@ -79,6 +79,16 @@ function enterBevitel(event) {
         ellenorzes()
     }
 }
+function jelszomegj(){
+    let mezo =  document.getElementById("jelszo")
+    if(mezo.type == "text"){
+        mezo.type = "password"
+    }
+    else{
+        mezo.type = "text"
+    }
+}
 document.getElementById('gomb').addEventListener('click', ellenorzes)
 document.getElementById('jelszo').addEventListener("keypress", enterBevitel)
 document.getElementById('email').addEventListener("keypress", enterBevitel)
+document.getElementById('szem').addEventListener("click", jelszomegj)
