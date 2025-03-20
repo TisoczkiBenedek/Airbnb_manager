@@ -167,7 +167,7 @@ function szabadsagRogzites(){
             }
             else{
                 header("BAD REQUEST", true, 400);
-                json_encode(["valasz"=>"Sikertelen rögzítés!"], JSON_UNESCAPED_UNICODE);
+                echo json_encode(["valasz"=>"Sikertelen rögzítés!"], JSON_UNESCAPED_UNICODE);
             }
             
         }
