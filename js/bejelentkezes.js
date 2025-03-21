@@ -53,7 +53,7 @@ function felhasznaloInformalas(valasz){
         if (felhTipus == 'tulajdonos') { 
             window.open('../html/lakasok.html', '_parent'); 
         } else { 
-            window.open('../html/takarito.html', '_parent'); 
+            window.open('../html/felhasznalok.html', '_parent'); 
         }
 
 

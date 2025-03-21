@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         form.onsubmit = function (e) {
-            e.preventDefault();
+            e.preventDefault();      
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
@@ -150,7 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const endDateTime = new Date(`${date}T${endTime}:00`);
             
             // Ellenőrzés
-            if (startDateTime < new Date(`${date}T08:00:00`) && endDateTime > new Date(`${date}T17:00:00`)) {
+            const startLimit = new Date(`${date}T08:00:00`);
+            const endLimit = new Date(`${date}T17:00:00`);
+            
+            if (startDateTime < startLimit || endDateTime > endLimit) {
                 showToast("A kezdeti időpont nem lehet korábban 8:00 óránál, és a végső időpont pedig nem lehet később 17:00 óránál!", 'danger');
                 return;
             }

@@ -66,32 +66,6 @@
   float: left;
 } 
 
-#profilKep { 
-  height: 50px; 
-  width: 50px; 
-  border-radius: 100%; 
-  float: right;
-  margin-left: 10px;
-}
-
-/*oldal css*/
-#oldalLinkek{
-  display: flex;
-  justify-content: space-between;
-}
-
-a {
-  margin: 0 20px;
-  /*color: white;*/
-  text-decoration: none;
-  color: rgb(92, 212, 92);
-}
-
-#jelenlegiOldal{
-  color: rgb(92, 212, 92);
-  margin: 0 20px;
-}
-
 h2{
   color:white;
 }
