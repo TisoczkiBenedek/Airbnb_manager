@@ -10,8 +10,7 @@ function profilBetoltese(){
             $vezetekNev = $eredmeny[0]['vezetekNev'];
             $keresztNev = $eredmeny[0]['keresztNev'];
             $felhasznaloNev = $vezetekNev . " " . $keresztNev;
-            echo "<h5 id='nev'>" . htmlspecialchars($felhasznaloNev) . "</h5> 
-                  <img id='profilKep' src='../kepek/" . htmlspecialchars($profilKep) . "' alt='profilkép'>";
+
         } else {
             echo "<h5 id='felhNev'>Hiba a profil betöltésekor!</h5>";
         }
@@ -19,4 +18,6 @@ function profilBetoltese(){
         echo "<h5 id='felhNev'>Nincs bejelentkezve!</h5>";
     }
 }
+
+$action = $_GET['action'] ?? null;
 ?>

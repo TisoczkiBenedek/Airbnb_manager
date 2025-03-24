@@ -1,0 +1,61 @@
+/* Navbar alap stílusok */
+.navbar {
+  height: 60px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  }
+  
+  .navbar-toggler {
+  z-index: 1;
+  }
+  
+  .navbar-content {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  }
+  
+  .navbar-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  }
+  
+  .navbar-left {
+  display: flex;
+  align-items: center;
+  }
+  
+  .navbar-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  }
+  
+  /* Cím, és egyéb más(navbar) */
+  #cim {
+  text-transform: uppercase;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  color: white;
+  margin: 0;
+  }
+
+a {
+    color: white;
+}
+
+h2{
+    color:white;
+}
+
+#eszkozModal.modal-body{
+  color: black;
+}
