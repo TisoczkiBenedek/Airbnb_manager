@@ -59,3 +59,25 @@ h2{
 #eszkozModal.modal-body{
   color: black;
 }
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+.table-responsive {
+  border-radius: 0 0 10px 10px;
+}
+.btn-action {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+.form-control-sm {
+  max-width: 100px;
+}
+.checkbox-cell {
+  width: 40px;
+  text-align: center;
+}

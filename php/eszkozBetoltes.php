@@ -1,6 +1,6 @@
 <?php
 // eszkozBetoltes.php
-if (!function_exists('eszkozokBetoltese')) {
+/*if (!function_exists('eszkozokBetoltese')) {
     function eszkozokBetoltese() {
         $db = new mysqli('localhost', 'root', '', 'vizsgaremek_takaritas');
         if ($db->connect_error) {
@@ -32,5 +32,5 @@ if (!function_exists('eszkozokBetoltese')) {
     }
 }
 
-eszkozokBetoltese();
+eszkozokBetoltese();*/
 ?>
