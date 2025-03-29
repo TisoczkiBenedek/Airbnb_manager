@@ -177,24 +177,6 @@ try {
             }
             break;
 
-        case 'getNaptar':
-            // Naptár tartalom lekérése
-            $id = $_GET['id'];
-            $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = ?";
-            $eredmeny = adatokLekerese($muvelet, [$id]);
-
-            if (is_array($eredmeny) && count($eredmeny) > 0) {
-                echo json_encode(['file_content' => $eredmeny[0]['file_content']]);
-            } else {
-                echo json_encode(['file_content' => null]);
-            }
-            break;
-
-        default:
-            // Érvénytelen művelet esetén hibaüzenet
-            http_response_code(400);
-            echo json_encode(["valasz" => "Érvénytelen művelet"]);
-            break;
     }
 } catch (Exception $e) {
     // Szerverhiba esetén hibaüzenet

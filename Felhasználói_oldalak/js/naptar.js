@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             today: 'Mai nap'
         },
         eventContent: function(info) {
-            // Ha az esemény címe "Takarítás", akkor hozzáadjuk a kezdő és végző időpontokat
             if (info.event.title === 'Takarítás') {
                 const startTime = info.event.start ? info.timeText : '';
                 const endTime = info.event.end ? info.event.end.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }) : '';
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     `
                 };
             }
-            // Egyéb események esetén alapértelmezett megjelenítés
             return { html: info.event.title };
         },
         dateClick: function (info) {
@@ -30,19 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const ma = new Date();
             ma.setHours(0, 0, 0, 0);
         
-            // Múltbeli dátum letiltása
             if (clickedDate < ma) {
                 showToast("A múltbeli napokra nem lehet eseményt hozzáadni.", 'danger');
                 return;
             }
 
-            // Események ellenőrzése
             const existingEvents = calendar.getEvents();
             const hasConflict = existingEvents.some(event => {
                 const eventStart = event.start ? new Date(event.start) : null;
                 const eventEnd = event.end ? new Date(event.end) : null;
                 
-                // Teljes dátum-ellenőrzés időpontokkal
                 return (
                     (clickedDate >= eventStart && clickedDate <= eventEnd) ||
                     (eventStart.toDateString() === clickedDate.toDateString())
@@ -70,13 +65,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let selectedEvent = null;
 
-    function showDeleteModal(event){
+    function showDeleteModal(event) {
         const modal = document.getElementById('torlesModal');
         selectedEvent = event;
         modal.style.display = 'block';
 
-        document.getElementById('torlesIgen').onclick = function() {
-            deleteEvent(event.id);
+        document.getElementById('torlesIgen').onclick = async function() {
+            await deleteEvent(event.id);
             modal.style.display = 'none';
         }
 
@@ -93,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type':'application/json',
                 },
                 body: JSON.stringify({eventId:eventId})
-            })
+            });
 
             const data = await eredmeny.json();
             if(data.success) {
@@ -109,12 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-    //megyeId
     function getSelectedMegyeId() {
         const urlParams = new URLSearchParams(window.location.search);
-        const megyeId = urlParams.get('megye_id');
-
-        return megyeId
+        return urlParams.get('megye_id');
     }
 
     function modalNyitas(date) {
@@ -122,34 +114,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const closeButton = modal.querySelector('.close-button');
         const form = document.getElementById('ujEsemenyForm');
 
-        // Modal megjelenítés
         modal.style.display = 'block';
-
-        //takarítók betöltése
         const megyeId = getSelectedMegyeId();
         loadTakaritok(megyeId);
 
-        // Modal becsukás
         closeButton.onclick = function () {
             modal.style.display = 'none';
         }
 
-        form.onsubmit = function (e) {
+        form.onsubmit = async function (e) {
             e.preventDefault();      
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
-            // Kezdési időpont nem lehet később, mint a befejezési
             if (startTime >= endTime) {
                 showToast("A kezdeti időpont nem lehet később, mint a végső!", 'danger');
                 return;
             }
             
-            // Dátum és idő összeállítása
             const startDateTime = new Date(`${date}T${startTime}:00`);
             const endDateTime = new Date(`${date}T${endTime}:00`);
             
-            // Ellenőrzés
             const startLimit = new Date(`${date}T08:00:00`);
             const endLimit = new Date(`${date}T17:00:00`);
             
@@ -158,22 +143,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Esemény hozzáadása a naptárhoz
             calendar.addEvent({
                 title: 'Takarítás',
                 start: startDateTime,
                 end: endDateTime,
             });
 
-            // Modal 
             modal.style.display = 'none';
-
-            // Esemény mentése a backendre
-            saveEvent({ start: startDateTime, end: endDateTime });
+            await saveEvent({ start: startDateTime, end: endDateTime });
         }
     }
 
-    function saveEvent(event) {
+    async function saveEvent(event) {
         const takaritoId = document.getElementById('takaritoSelect').value;
         const lakasId = new URLSearchParams(window.location.search).get('lakas_id');
         
@@ -182,85 +163,86 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
     
-        //adatok
-        const adat = {
-            start: event.start.toISOString(), // Dátum átalakítása ISO formátumba
-            end: event.end.toISOString(), // Dátum átalakítása ISO formátumba
-            lakas_id: lakasId,
-            takarito_id: takaritoId
-        };
+        try {
+            const adat = {
+                start: event.start.toISOString(),
+                end: event.end.toISOString(),
+                lakas_id: lakasId,
+                takarito_id: takaritoId
+            };
     
-        fetch('../php/naptar.php?action=esemenyMentes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(adat)
-        })
-        .then(eredmeny => {
+            const eredmeny = await fetch('../php/naptar.php?action=esemenyMentes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(adat)
+            });
+
             if (!eredmeny.ok) {
                 throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
             }
-            return eredmeny.json();
-        })
-        .then(adat => {
-            if (adat.success) {
-                calendar.refetchEvents(); // Frissítés hozzáadva
+
+            const data = await eredmeny.json();
+            
+            if (data.success) {
+                calendar.refetchEvents();
                 showToast("Takarítás sikeresen megrendelve!", 'success');
             } else {
-                showToast("Hiba történt a takarítás megrendelése során: " + adat.error, 'danger');
+                showToast("Hiba történt a takarítás megrendelése során: " + data.error, 'danger');
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Hiba történt a takarítás megrendelése során:', error);
             showToast("Hiba történt a takarítás megrendelése során.", 'danger');
-        });
+        }
     }
 
+    // Load events for the apartment
     const urlParams = new URLSearchParams(window.location.search);
     const lakasId = urlParams.get('lakas_id');
 
     if (lakasId) {
-        console.log("A lakasId az URL-ben:", lakasId); // Ellenőrzés
-        fetch(`../php/naptar.php?lakas_id=${lakasId}`)
-            .then(eredmeny => {
-                if (!eredmeny.ok) {
-                    throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
-                }
-                return eredmeny.json();
-            })
-            .then(events => {
-                if (events.error) {
-                    console.error("Hiba a válaszban:", events.error);
-                    showToast("Hiba történt: " + events.error);
-                } else {      
-                    calendar.addEventSource(events);
-                }
-            })
-            .catch(error => {
-                console.error("Hiba történt:", error);
-            });
+        console.log("A lakasId az URL-ben:", lakasId);
+        
+        try {
+            const eredmeny = await fetch(`../php/naptar.php?lakas_id=${lakasId}`);
+            
+            if (!eredmeny.ok) {
+                throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
+            }
+
+            const events = await eredmeny.json();
+            
+            if (events.error) {
+                console.error("Hiba a válaszban:", events.error);
+                showToast("Hiba történt: " + events.error);
+            } else {      
+                calendar.addEventSource(events);
+            }
+        } catch (error) {
+            console.error("Hiba történt:", error);
+        }
     }
 });
 
 // Profilnév lekérése és megjelenítése
-function loadProfilNev() {
-    fetch('../php/naptar.php?action=getProfilNev')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.profilNev) {
-                document.getElementById('profilNev').innerText = data.profilNev;
-            }
-        })
-        .catch(error => {
-            console.error('Hiba a profilnév betöltésekor:', error);
-            document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
-        });
+async function loadProfilNev() {
+    try {
+        const response = await fetch('../php/naptar.php?action=getProfilNev');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.profilNev) {
+            document.getElementById('profilNev').innerText = data.profilNev;
+        }
+    } catch (error) {
+        console.error('Hiba a profilnév betöltésekor:', error);
+        document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
+    }
 }
 
 async function loadTakaritok(megyeId) {
@@ -273,9 +255,8 @@ async function loadTakaritok(megyeId) {
 
         const takaritok = await valasz.json();
         const select = document.getElementById('takaritoSelect');
-        select.innerHTML = ''; // Töröljük a korábbi opciókat
+        select.innerHTML = '';
 
-        // Ha nincsenek takarítók, egy üzenetet jelenítünk meg
         if (takaritok.message) {
             const option = document.createElement('option');
             option.textContent = takaritok.message;
@@ -283,7 +264,6 @@ async function loadTakaritok(megyeId) {
             return;
         }
 
-        // Takarítók hozzáadása a selecthez
         takaritok.forEach(takarito => {
             const option = document.createElement('option');
             option.value = takarito.id;
@@ -301,7 +281,6 @@ const toastElement = document.getElementById('toast');
 const toastBody = toastElement.querySelector('.toast-body');
 const toast = new bootstrap.Toast(toastElement);
 
-// Toast megjelenítése
 function showToast(message, type = 'danger') {
     toastBody.textContent = message;
     toastElement.classList.remove('bg-danger', 'bg-success');
@@ -312,6 +291,6 @@ function showToast(message, type = 'danger') {
 // Oldal betöltésekor futtatjuk
 document.addEventListener('DOMContentLoaded', loadProfilNev);
 
-function vissza(){
+function vissza() {
     window.location.href = '../html/lakasok.html'; 
 }

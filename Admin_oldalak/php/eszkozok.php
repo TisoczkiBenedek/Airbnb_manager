@@ -140,11 +140,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="card mb-4">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Eszközök kezelése</h3>
-                <div>
-                    <button type="button" class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#ujEszkozModal">
-                        <i class="bi bi-plus-circle"></i> Új eszköz
+                <div class="d-flex align-items-center">
+                <div class="input-group search-container me-2">
+                    <input type="text" class="form-control form-control-sm" id="nevSzuro" placeholder="Keresés">
+                    <button class="btn btn-light btn-sm" type="button" id="szuresGomb">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" type="button" id="szuresReset">
+                        <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
+            </div>
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#ujEszkozModal">
+                    <i class="bi bi-plus-circle"></i> Új eszköz
+                </button>
             </div>
             <div class="card-body">
                 <form method="post" action="eszkozok.php">
@@ -160,8 +169,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </thead>
                             <tbody>
                                 <?php
-                                $sql = "SELECT * FROM eszkoz ORDER BY nev";
-                                $eszkozok = adatokLekerese($sql);
+                                $szuroNev = $_GET['nev'] ?? '';
+
+                                $muvelet = "SELECT * FROM eszkoz WHERE 1"; 
+                                $params = [];
+                                
+                                if(!empty($szuroNev)){
+                                    $muvelet .= " nev LIKE ?";
+                                    $params[] = "%szuroNev%";
+                                }
+
+                                $muvelet .= " ORDER BY nev";
+                                $eszkozok = adatokLekerese($muvelet, $params);
                                 
                                 if (is_array($eszkozok)) {
                                     foreach ($eszkozok as $eszkoz) {

@@ -33,8 +33,7 @@ function kiiras(adatok) {
 
         // Kép betöltése
         let img = document.createElement('img');
-        // Az adatbázisból lekérdezett kép elérési útja
-        img.src = adat.kepek
+        img.src = adat.kepek;
         img.classList.add("card-img-top");
         img.onclick = function() {
             nagyKepMegjelenites(this);
@@ -78,7 +77,7 @@ function kiiras(adatok) {
         button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
         button2.value = "Törlés"
         button2.addEventListener("click", () => {
-            selectedLakasId = adat.id
+            selectedLakasId = adat.id;
             document.getElementById("torlesModal").style.display = "block";
         });
         cardb.appendChild(button2);
@@ -90,74 +89,64 @@ function kiiras(adatok) {
 }
 
 function naptarOldalra(lakasId, megyeId) {
-    console.log("Átadott lakasId:", lakasId); // Ellenőrzés
-    console.log("Átadott megyeId:", megyeId); // Ellenőrzés
+    console.log("Átadott lakasId:", lakasId);
+    console.log("Átadott megyeId:", megyeId);
     window.location.href = `../html/naptar.html?lakas_id=${lakasId}&megye_id=${megyeId}`;
 }
 
-function modositasModal(id) {
+async function modositasModal(id) {
     console.log(id);
     document.getElementById('lakasId').value = id;
 
-    // Naptár tartalom betöltése, ha létezik
-    fetch(`../php/lakasok.php?action=getNaptar&id=${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.file_content) {
-                // Ha van naptár tartalom, betöltjük a modalba
-                document.getElementById('naptarFeltoltes').value = data.file_content;
-            }
-        })
-        .catch(error => console.error('Hiba a naptár betöltésekor:', error));
-
-    // További adatok betöltése a modalba
-    fetch(`../php/lakasok.php?action=getLakas&id=${id}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                document.getElementById('lakasNev').value = data.nev;
-                document.getElementById('lakcim').value = data.cim;
-                document.getElementById('terulet').value = data.terulet;
-                document.getElementById('medence').checked = data.medence === 1;
-                document.getElementById('szauna').checked = data.szauna === 1;
-                document.getElementById('megye').value = data.megye_id;
-                document.getElementById('lakasAdatok').value = data.belepesi_adatok;
-            }
-        })
-        .catch(error => console.error('Hiba a lakás adatok betöltésekor:', error));
+    try {
+        const lakasResponse = await fetch(`../php/lakasok.php?action=getLakas&id=${id}`);
+        const lakasData = await lakasResponse.json();
+        
+        if (lakasData) {
+            document.getElementById('lakasNev').value = lakasData.nev;
+            document.getElementById('lakcim').value = lakasData.cim;
+            document.getElementById('terulet').value = lakasData.terulet;
+            document.getElementById('medence').checked = lakasData.medence === 1;
+            document.getElementById('szauna').checked = lakasData.szauna === 1;
+            document.getElementById('megye').value = lakasData.megye_id;
+            document.getElementById('lakasAdatok').value = lakasData.belepesi_adatok;
+        }
+    } catch (error) {
+        console.error('Hiba az adatok betöltésekor:', error);
+    }
 }
 
 document.getElementById('modositForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const formData = new FormData(this); // Az űrlap adatainak összegyűjtése
-    const lakasId = formData.get('id'); // Az ID kinyerése
+    const formData = new FormData(this);
+    const lakasId = formData.get('id');
 
     try {
         // Naptár fájl kezelése
         const icsFile = formData.get('naptarFeltoltes');
         if (icsFile && icsFile.size > 0) {
             const icsContent = await icsFile.text();
-            formData.set('naptar_content', icsContent); // Naptár tartalom hozzáadása
+            formData.set('naptar_content', icsContent);
         }
 
         // Kép fájl kezelése
         const kepFile = formData.get('kepFeltoltes');
         if (kepFile && kepFile.size > 0) {
-            formData.set('kepFeltoltes', kepFile); // Kép fájl hozzáadása
+            formData.set('kepFeltoltes', kepFile);
         }
 
         // Küldés a szervernek
         const response = await fetch(`../php/lakasok.php?action=modositas`, {
             method: 'POST',
-            body: formData // FormData küldése
+            body: formData
         });
 
         const result = await response.json();
         
         if (result.success) {
             showToast("Sikeres módosítás!", 'success');
-            adatokLekerese(); // Lakások listájának frissítése
-            $('#modal_modosit').modal('hide'); // Modal bezárása
+            adatokLekerese();
+            $('#modal_modosit').modal('hide');
         } else {
             showToast(result.error || "Hiba történt", 'danger');
         }
@@ -190,23 +179,23 @@ window.onclick = function(event) {
 };
 
 // Profilnév lekérése és megjelenítése
-function loadProfilNev() {
-    fetch('../php/lakasok.php?action=getProfilNev')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.profilNev) {
-                document.getElementById('profilNev').innerText = data.profilNev;
-            }
-        })
-        .catch(error => {
-            console.error('Hiba a profilnév betöltésekor:', error);
-            document.getElementById('profilNev').innerText = "Nincsen bejelentkezve";
-        });
+async function loadProfilNev() {
+    try {
+        const response = await fetch('../php/lakasok.php?action=getProfilNev');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.profilNev) {
+            document.getElementById('profilNev').innerText = data.profilNev;
+        }
+    } catch (error) {
+        console.error('Hiba a profilnév betöltésekor:', error);
+        document.getElementById('profilNev').innerText = "Nincsen bejelentkezve";
+    }
 }
 
 // Oldal betöltésekor futtatjuk

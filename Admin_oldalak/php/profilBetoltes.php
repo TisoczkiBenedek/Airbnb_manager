@@ -11,6 +11,8 @@ if ($action === 'getProfilNev') {
         $vezeteknev = $nevEredmeny[0]['Vezeteknev'];
         $keresztnev = $nevEredmeny[0]['Keresztnev'];
         $profilNev = $vezeteknev . ' ' . $keresztnev;
+    } else {
+        $profilNev = "Ismeretlen felhasználó";
     }
 
     echo json_encode(['profilNev' => $profilNev]);

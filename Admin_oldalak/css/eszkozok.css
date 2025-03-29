@@ -81,3 +81,29 @@ h2{
   width: 40px;
   text-align: center;
 }
+
+/* Keresési mező stílusai */
+.input-group {
+  transition: all 0.3s ease;
+}
+
+.input-group:focus-within {
+  width: 50px;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group.search-container {
+  width: 400px !important;
+}
+
+.input-group.search-container .form-control {
+  flex-grow: 1;
+}
+
+#szuresReset {
+  display: none;
+}
+
+#nevSzuro:not(:placeholder-shown) + #szuresGomb + #szuresReset {
+  display: block;
+}
