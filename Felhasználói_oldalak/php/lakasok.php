@@ -11,27 +11,7 @@ if (!isset($_SESSION['id'])) {
 // SQL függvények betöltése
 include './parameterezett_sql_fuggvenyek.php';
 
-// Az action paraméter lekérése (pl. lekeres, getLakas, modositas, getNaptar)
 $action = $_GET['action'] ?? null;
-
-// Profilnév lekérése
-if ($action === 'getProfilNev') {
-    $email = $_SESSION['emailcim'];
-    $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
-    $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);
-
-    if (is_array($nevEredmeny) && count($nevEredmeny) > 0) {
-        $vezeteknev = $nevEredmeny[0]['Vezeteknev'];
-        $keresztnev = $nevEredmeny[0]['Keresztnev'];
-        $profilNev = $vezeteknev . ' ' . $keresztnev;
-    } else {
-        $profilNev = "Ismeretlen felhasználó";
-    }
-
-    echo json_encode(['profilNev' => $profilNev]);
-    exit;
-}
-
 try {
     switch ($action) {
         case 'lekeres':
@@ -48,6 +28,22 @@ try {
             } else {
                 http_response_code(404);
                 echo json_encode(["valasz" => "Nincsenek lakások"]);
+            }
+            break;
+
+        case 'getProfilAdatok':
+            $email = $_SESSION['emailcim'];
+            $muvelet = "SELECT CONCAT(Vezeteknev, ' ', Keresztnev) as nev, emailcim as email FROM felhasznalo WHERE id = ?";
+            $eredmeny = adatokLekerese($muvelet, [$_SESSION['id']]);
+            
+            if(is_array($eredmeny)) {
+                echo json_encode([
+                    'success' => true,
+                    'nev' => $eredmeny[0]['nev'],
+                    'email' => $eredmeny[0]['email']
+                ]);
+            }else{
+                echo json_encode(['success' => false]);
             }
             break;
 
