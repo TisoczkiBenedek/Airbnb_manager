@@ -1,15 +1,6 @@
 async function adatokLekerese() {
-    let adatkuld = {
-        "id": 3
-    }
     try {
-        let eredmeny = await fetch('../php/felhasznalok.php/lekeres', {
-            method : "POST", 
-            headers : {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(adatkuld)
-        })
+        let eredmeny = await fetch('../php/felhasznalok.php/lekeres')
         if(eredmeny.ok){
             let adatok = await eredmeny.json();
             console.log(adatok)

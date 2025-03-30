@@ -1,0 +1,9 @@
+header{
+    text-align: center;
+}
+#gomb{
+    text-align: center;
+    padding: 8px;
+    width: 180px;
+    height: auto;
+}

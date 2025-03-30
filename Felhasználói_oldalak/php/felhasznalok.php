@@ -2,13 +2,13 @@
 session_start();
 include './sql_fuggvenyek.php';
 $action = $_GET['action'] ?? null;
-
+$fid = 0;
 // Profilnév lekérése
 if ($action === 'getProfilNev') {
     $email = $_SESSION['emailcim'];
     $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
     $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);
-
+    
     if (is_array($nevEredmeny) && count($nevEredmeny) > 0) {
         $vezeteknev = $nevEredmeny[0]['Vezeteknev'];
         $keresztnev = $nevEredmeny[0]['Keresztnev'];
@@ -20,6 +20,14 @@ if ($action === 'getProfilNev') {
     echo json_encode(['profilNev' => $profilNev]);
     exit;
 }
+function felhasznaloID(){
+    $email = $_SESSION['emailcim'];
+    $muvelet = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = '{$email}'";
+    $eredemeny = adatokLekerese($muvelet);
+    $GLOBALS['fid'] = $eredemeny[0]["id"];
+}
+felhasznaloID();
+
 $teljesURL = explode('/', $_SERVER['REQUEST_URI']);
 $url = explode("?", end($teljesURL));
 switch ($url[0]) {
@@ -49,10 +57,9 @@ switch ($url[0]) {
         break;
 }
 function lekeres(){
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $adatok = json_decode(file_get_contents('php://input'), true);
-        if(!empty($adatok['id'])){
-            $id = $adatok['id'];
+    if($_SERVER["REQUEST_METHOD"] == "GET"){
+        if(!empty($GLOBALS['fid'])){
+            $id = $GLOBALS['fid'];
             $muvelet = "SELECT takaritas.id, takaritas.lakasId, takaritas.felhasznalo_id, takaritas.takaritoErkezes, takaritas.befejezve, takaritas.megjegyzes, lakas.nev, lakas.cim, lakas.terulet, lakas.medence, lakas.szauna, lakas.belepesi_adatok, felhasznalo.elerhetoseg FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id and DATE(takaritas.takaritoErkezes) = DATE(NOW()) and takaritas.befejezve = 0;";
             $eredmeny = adatokLekerese($muvelet);
             if(is_array($eredmeny)){
@@ -122,14 +129,14 @@ function eszkozIgenyHoz(){
         else{
             $db = 0;
             foreach($erkezett as $adat){
-                //$felhid = $_SESSION["id"];
+                $felhid = $GLOBALS["fid"];
                 $eszkozid = $adat["id"];
                 $igenyeltdb = $adat["igenyelt"];
                 if(empty($igenyeltdb)){
                     break;
                 }
                 else{
-                    $muvelet = "INSERT INTO `eszkozszukseglet`(`eszkozId`, `felhasznalo_id`, `teljesitve`, `igenyeltDarab`) VALUES ('{$eszkozid}', '3', '0', '{$igenyeltdb}')";
+                    $muvelet = "INSERT INTO `eszkozszukseglet`(`eszkozId`, `felhasznalo_id`, `teljesitve`, `igenyeltDarab`) VALUES ('{$eszkozid}', '{$felhid}', '0', '{$igenyeltdb}')";
                     $eredmeny = adatokValtoztatasa($muvelet);
                     if($eredmeny == "Sikeres művelet!"){
                         $db++;
@@ -152,7 +159,7 @@ function eszkozIgenyHoz(){
 }
 function eszkozIgenyLeker(){
     if($_SERVER["REQUEST_METHOD"] == "GET"){
-        $id = $_GET["id"];
+        $id = $GLOBALS["fid"];
         if(empty($id)){
             header("BAD REQUEST", true, 400);
             return json_encode(["valasz"=>"Hiányos adatok!"], JSON_UNESCAPED_UNICODE);
@@ -171,7 +178,7 @@ function eszkozIgenyLeker(){
 }
 function szabadsagRogzites(){
     if($_SERVER["REQUEST_METHOD"]== "PUT"){
-        $felhid = 5;
+        $felhid = $GLOBALS["fid"];
         $erkezett = json_decode(file_get_contents('php://input'), true);
         if(empty($erkezett["kezd"]) || empty($erkezett["veg"])){
             header("BAD REQUEST", true, 400);
@@ -193,6 +200,7 @@ function szabadsagRogzites(){
         }
     }
 }
+
 
 
 
