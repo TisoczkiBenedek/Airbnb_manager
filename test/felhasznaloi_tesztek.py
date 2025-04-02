@@ -155,9 +155,21 @@ def lakasTorles():
     torlesiegn.click()
     time.sleep(2)
     lakasEllenorzes("")
+def naptarEllenorzes():
+    cardbody = web.find_elements(By.CLASS_NAME, "card-body")
+    gombok = cardbody[0].find_elements(By.CLASS_NAME, "btn")
+    naptar = ""
+    for elem in gombok:
+        if(elem.get_attribute("value")== "Naptár"):
+            naptar = elem
+            break
+    naptar.click()
+    print("Az oldal címe: ", web.title)
+
 #regisztracioTeszt()
 bejelentkezesTeszt()
 lakasFeltoltes()
 #lakasEllenorzes("Teszt1")
 #lakasModositas()
+naptarEllenorzes()
 #lakasTorles()

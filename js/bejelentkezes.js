@@ -26,8 +26,8 @@ function ellenorzes() {
     }
     else {
         adatKuldes(emailcim, jelszo)
-        document.getElementById('jelszo').style.border = "none"
-        document.getElementById('email').style.border = "none"
+        document.getElementById('jelszo').style.border = "1px solid grey" //vagy black
+        document.getElementById('email').style.border = "1px solid grey" //vagy black
         vhely.hidden = true
     }
 }
