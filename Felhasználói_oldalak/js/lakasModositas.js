@@ -48,18 +48,8 @@ document.getElementById('modositForm').addEventListener('submit', async function
 
     const formData = new FormData(this);
     formData.append('id', this.dataset.lakasId);
-/*
-    function lakcimEll(lakcim) {
-        const regex = /^\d{4} .+, .+ \d+/;
-        return regex.test(lakcim.trim());
-    }
 
-    if (!lakcimEll(lakcim)) {
-        throw new Error("Érvénytelen címformátum! Példa: 1013 Budapest, Kossuth utca 12, vagy \n 1013 Budapest, Kossuth Lajos utca 12/A. emelet 3");
-    }
-*/
     try {
-
         const response = await fetch('../php/lakasok.php?action=modositas', {
             method: 'POST',
             body: formData
@@ -67,28 +57,41 @@ document.getElementById('modositForm').addEventListener('submit', async function
 
         const result = await response.json();
 
+        if (!response.ok) {
+            throw new Error(result.message || 'Hiba történt a módosítás során');
+        }
+
         if (result.success) {
             showToast(result.message, 'success');
             const modal = bootstrap.Modal.getInstance(document.getElementById('modal_modosit'));
             modal.hide();
-            setTimeout(() => location.reload(), 1000); // Oldal frissítése
+            setTimeout(() => location.reload(), 1000);
         } else {
             showToast(result.message, 'danger');
         }
     } catch (error) {
         console.error('Hiba:', error);
-        showToast('Hiba történt a módosítás során.', 'danger');
+        showToast(error.message, 'danger');
     }
 });
 
 // Toast üzenetek
 function showToast(message, type = 'info') {
     const toast = document.getElementById('liveToast');
-    toast.querySelector('.toast-body').textContent = message;
-    toast.classList.add(`bg-${type}`);
+    const toastBody = toast.querySelector('.toast-body');
+    toastBody.textContent = message;
+
+    // Eltávolítjuk az összes korábbi stílusosztályt
+    toast.classList.remove('bg-info', 'bg-success', 'bg-danger', 'bg-warning');
     
+    // Hozzáadjuk az új stílusosztályt
+    toast.classList.add(`bg-${type}`);
+
     const toastInstance = new bootstrap.Toast(toast);
     toastInstance.show();
     
-    setTimeout(() => toast.classList.remove(`bg-${type}`), 5000);
+    // 5 másodperc után eltűnik
+    setTimeout(() => {
+        toastInstance.hide();
+    }, 5000);
 }
