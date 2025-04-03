@@ -181,7 +181,7 @@ window.onclick = function(event) {
 // Profilnév lekérése és megjelenítése
 async function loadProfilNev() {
     try {
-        const response = await fetch('../php/lakasok.php?action=getProfilNev');
+        const response = await fetch('../php/lakasok.php?action=getProfilAdatok');
         
         if (!response.ok) {
             throw new Error(`HTTP hiba! Státusz: ${response.status}`);
@@ -189,8 +189,8 @@ async function loadProfilNev() {
         
         const data = await response.json();
         
-        if (data.profilNev) {
-            document.getElementById('profilNev').innerText = data.profilNev;
+        if (data.nev) {
+            document.getElementById('profilNev').innerText = data.nev;
         }
     } catch (error) {
         console.error('Hiba a profilnév betöltésekor:', error);
@@ -212,7 +212,7 @@ async function kijelentkezes() {
             const adat = await eredmeny.json();
 
             if (adat.success) {
-                window.location.href = '../../html/bejelentkezes.html';
+                window.location.href = '../html/bejelentkezes.html';
             } else {
                 console.error('Hiba a kijelentkezés során:', adat.message);
             }
@@ -223,7 +223,33 @@ async function kijelentkezes() {
         console.error('Hiba a kijelentkezés során: ', error);
     }
 }
+/*
+async function felhasznaloModal(){
+    const modal = document.getElementById('profilModal')
+    modal.style.display = 'block'
 
+    let eredmeny = await fetch('../php/naptar.php?action=getProfilAdat')
+    let valasz = await eredmeny.json();
+
+    if(eredmeny.ok){
+        document.getElementById('FelhNev').innerHTML += data.nev;
+        document.getElementById('FelhEmail').innerHTML += data.email;
+    }
+}
+
+// Felhasználó modal bezárása
+function modalBezaras() {
+    document.getElementById('profilModal').style.display = 'none';
+}
+
+// Felhasználó modal: Kattintás a modalon kívülre
+window.onclick = function(event) {
+    const modal = document.getElementById('profilModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+*/
 // Toast üzenet megjelenítése
 function showToast(message, type) {
     const toastBody = document.getElementById('toast-body');

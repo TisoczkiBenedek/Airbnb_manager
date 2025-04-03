@@ -69,60 +69,145 @@ try {
             break;
 
             case 'modositas':
+                // Lakás módosítása
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     try {
-                        // ... (korábbi kód változatlan)
+                        // Ellenőrizzük, hogy az ID létezik-e
+                        if (!isset($_POST['id'])) {
+                            throw new Exception("Hiányzó lakás azonosító.");
+                        }
+
             
-                        // 5. NAPTÁR FRISSÍTÉS KEZELÉSE
-                        $naptarUzenet = null;
-                        $naptarValtozas = false;
-                        
-                        if (!empty($_FILES['naptarFeltoltes']['tmp_name'])) {
-                            $naptarValtozas = true;
-                            $icsContent = file_get_contents($_FILES['naptarFeltoltes']['tmp_name']);
-                            
-                            // Ellenőrizzük, hogy van-e már naptár ehhez a lakáshoz
-                            $letezoNaptar = adatokLekerese("SELECT id, file_content FROM naptarak WHERE lakas_id = ?", [$id]);
-                            
-                            // Ha nincs változás a tartalomban
-                            if (!empty($letezoNaptar) && $letezoNaptar[0]['file_content'] === $icsContent) {
-                                $naptarUzenet = "A naptárfájl változatlan maradt.";
-                            } else {
-                                if (!empty($letezoNaptar)) {
-                                    $muvelet = "UPDATE naptarak SET file_name = ?, file_content = ? WHERE lakas_id = ?";
-                                    $params = [$_FILES['naptarFeltoltes']['name'], $icsContent, $id];
-                                } else {
-                                    $muvelet = "INSERT INTO naptarak (file_name, file_content, lakas_id, felhasznalo_id) VALUES (?, ?, ?, ?)";
-                                    $params = [$_FILES['naptarFeltoltes']['name'], $icsContent, $id, $_SESSION['id']];
-                                }
-                                
-                                $naptarResult = adatokValtoztatasa($muvelet, $params);
-                                $naptarUzenet = ($naptarResult === "Sikeres művelet!") 
-                                    ? "Naptár sikeresen frissítve!" 
-                                    : "Hiba történt a naptár frissítésekor!";
-                            }
+                        $id = $_POST['id'];
+                        $data = [
+                            'nev' => $_POST['nev'] ?? '',
+                            'cim' => $_POST['cim'] ?? '',
+                            'terulet' => (int)($_POST['terulet'] ?? 0),
+                            'medence' => isset($_POST['medence']) ? 1 : 0, // Medence állapot kezelése
+                            'szauna' => isset($_POST['szauna']) ? 1 : 0,   // Szauna állapot kezelése
+                            'megye_id' => (int)($_POST['megye'] ?? 0),
+                            'belepesi_adatok' => $_POST['belepesi_adatok'] ?? ''
+                        ];
+            
+                        if(empty($_POST['nev']) || empty($_POST['cim']) || empty($_POST['terulet']) || empty($_POST['megye'])){
+                            die(json_encode(['success' => false, 'message' => 'Minden kötelező mezőt ki kell tölteni!']));
+                        }
+                        if (!empty($check)) {
+                            echo json_encode(['success' => false, 'message' => "Ez a lakcím már szerepel a rendszerünkben."]);
+                            exit;
                         }
             
-                        // 6. SQL FRISSÍTÉS (korábbi kód változatlan)
-            
-                        if ($eredmeny === "Sikeres művelet!") {
-                            $message = "Lakás adatai sikeresen frissültek!";
-                            
-                            // Egyéni üzenetek összeállítása
-                            if ($naptarValtozas) {
-                                $message .= " " . $naptarUzenet;
-                            } else if (empty($_FILES['kepFeltoltes']['name']) && empty($_FILES['naptarFeltoltes']['name'])) {
-                                $message = "Nincsenek módosítandó adatok, vagy minden adat változatlan maradt.";
+                        // 1. RÉGI ADATOK LEKÉRÉSE
+                        $muvelet = "SELECT * FROM lakas WHERE id = ?";
+                        $eredmeny = adatokLekerese($muvelet, [$id]);
+                        $regiAdatok = $eredmeny[0] ?? null;
+                        
+                        // 2. VÁLTOZÁS ELLENŐRZÉSE
+                        $valtozasVan = false;
+                        if ($regiAdatok) {
+                            if ($regiAdatok['nev'] !== $data['nev'] ||
+                                $regiAdatok['cim'] !== $data['cim'] ||
+                                $regiAdatok['terulet'] != $data['terulet'] ||
+                                $regiAdatok['medence'] != $data['medence'] ||
+                                $regiAdatok['szauna'] != $data['szauna'] ||
+                                $regiAdatok['megye_id'] != $data['megye_id'] ||
+                                $regiAdatok['belepesi_adatok'] !== $data['belepesi_adatok']) {
+                                $valtozasVan = true;
                             }
+                        }
+                        
+                        // 3. KÉP ELLENŐRZÉS
+                        $regiKep = $regiAdatok['kepek'] ?? null;
+                        $ujKep = $regiKep;
+                        
+                        if (!empty($_FILES['kepFeltoltes']['name'])) {
+                            $valtozasVan = true;
+                            $engedett = ['image/jpeg', 'image/jpg', 'image/png', 'image/jfif'];
+
+                            if(!in_array($_FILES['kepFeltoltes']['type'], $engedett)){
+                                die(json_encode(['success' => false, 'message' => 'Csak JPG/PNG/JFIF formátum!']));
+                            }
+
+                            $uploadDir = "../php/uploads/lakas_{$id}/kepek/";
+
+                            if (!file_exists($uploadDir)) {
+                                mkdir($uploadDir, 0755, true); // Biztonságosabb jogosultság
+                            }
+
+                            $fileName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES['kepFeltoltes']['name']);
+                            $kepPath = $uploadDir . $fileName;
                             
-                            echo json_encode(["success" => true, "message" => $message]);
+                            if (!move_uploaded_file($_FILES['kepFeltoltes']['tmp_name'], $kepPath)) {
+                                throw new Exception("Képfeltöltés sikertelen.");
+                            }
+
+                            if ($regiKep && file_exists($regiKep)) {
+                                unlink($regiKep);
+                            }
+                            $data['kepek'] = $kepPath;
+                        }
+            
+                        // 4. NAPTÁR FRISSÍTÉSE, HA KELL
+                        if (!empty($_FILES['naptarFeltoltes']['tmp_name'])) {
+                            $icsContent = file_get_contents($_FILES['naptarFeltoltes']['tmp_name']);
+                            $muvelet = "INSERT INTO naptarak (lakas_id, file_name, file_content) 
+                                        VALUES (?, ?, ?)
+                                        ON DUPLICATE KEY UPDATE 
+                                        file_name = VALUES(file_name), 
+                                        file_content = VALUES(file_content)";
+                            $params = [$id, $_FILES['naptarFeltoltes']['name'], $icsContent];
+                            adatokValtoztatasa($muvelet, $params);
+                        }
+
+                        // 5. HA NINCS VÁLTOZÁS
+                        if (!$valtozasVan) {
+                            echo json_encode(["success" => true, "message" => "Nem volt módosítás"]);
+                            exit;
+                        }
+            
+                        // 5. SQL FRISSÍTÉS
+                        $muvelet = "UPDATE lakas SET 
+                            nev = ?, 
+                            cim = ?, 
+                            terulet = ?, 
+                            medence = ?, 
+                            szauna = ?, 
+                            megye_id = ?, 
+                            belepesi_adatok = ?" 
+                            . (!empty($data['kepek']) ? ", kepek = ?" : "") . 
+                            " WHERE id = ? AND felhasznalo_id = ?";
+            
+                        $params = [
+                            $data['nev'],
+                            $data['cim'],
+                            $data['terulet'],
+                            $data['medence'],
+                            $data['szauna'],
+                            $data['megye_id'],
+                            $data['belepesi_adatok'],
+                        ];
+            
+                        if (!empty($data['kepek'])) {
+                            $params[] = $data['kepek'];
+                        }
+            
+                        $params[] = $id;
+                        $params[] = $_SESSION['id'];
+            
+                        $eredmeny = adatokValtoztatasa($muvelet, $params);
+            
+                        if ($eredmeny >= 0) {
+                            echo json_encode(["success" => true, "message" => $eredmeny > 0 ? "Sikeres módosítás" : "Nem volt módosítás"]);
                         } else {
                             http_response_code(400);
-                            echo json_encode(["success" => false, "message" => $eredmeny]);
+                            echo json_encode(["success" => false, "message" => "Hiba történt a módosítás során"]);
                         }
                     } catch (Exception $e) {
                         http_response_code(400);
-                        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                        echo json_encode([
+                            'success' => false,
+                            'message' => $e->getMessage()
+                        ]);
                     }
                 }
                 break;
