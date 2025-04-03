@@ -54,7 +54,7 @@ function kiiras(adatok){
     valasz.innerText = ""
     for (let adat of adatok) {
         let div = document.createElement('div')
-        div.classList.add("col-sm-12", "col-md-3", "col-lg-2", "mt-3", "mx-1", adat['emailcim'])
+        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['emailcim'])
         let card = document.createElement('div')
         card.classList.add("card")
         let cardb = document.createElement('div')
@@ -96,7 +96,7 @@ function kiiras(adatok){
         let button = document.createElement('input')
         button.type = "button"
         button1.value = "Módosítás"
-        button.classList.add("btn","btn-danger")
+        button.classList.add("btn","btn-danger", "mx-2")
         button.value = "Törlés"
         button.setAttribute("onclick", "torlesModal("+"'"+adat['emailcim']+"'"+")")
         button.setAttribute("data-bs-toggle", "modal")

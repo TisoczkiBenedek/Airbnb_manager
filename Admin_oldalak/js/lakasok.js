@@ -80,7 +80,7 @@ function kiiras(adatok){
         cardb.appendChild(button)*/
         let button1 = document.createElement('input')
         button1.type = "button"
-        button1.classList.add("btn","btn-info")
+        button1.classList.add("btn","btn-info", "mx-2")
         button1.id = "gomb"
         button1.setAttribute("onclick", "modositasModal("+adat['id']+")")
         button1.setAttribute("data-bs-toggle", "modal")

@@ -54,7 +54,7 @@ def regisztracioTeszt():
     #alert = web.find_element(By.LINK_TEXT, "Már van ezzel az e-mail címmel regisztrált felhasználó! Kérem próbáljon meg bejelentkezni!")
     #alert.click()
     time.sleep(2)
-def bejelentkezesTeszt():
+def bejelentkezesTeszt(felh, jelszoIras):
     web.get(url)
     elem = web.find_elements(By.CLASS_NAME, "btn")
     regisztracio = elem[0]
@@ -63,9 +63,9 @@ def bejelentkezesTeszt():
     print("Az oldal címe:", title)
     time.sleep(2)
     email = web.find_element(By.ID, "email")
-    email.send_keys("tesztemail@gmail.com")
+    email.send_keys(felh)
     jelszo = web.find_element(By.ID, "jelszo")
-    jelszo.send_keys("Jelszoteszt2")
+    jelszo.send_keys(jelszoIras)
     time.sleep(2)
     megj = web.find_element(By.ID, "szem")
     time.sleep(2)
@@ -165,11 +165,49 @@ def naptarEllenorzes():
             break
     naptar.click()
     print("Az oldal címe: ", web.title)
+    time.sleep(2)
+    gombok = web.find_elements(By.CLASS_NAME, "btn")
+    gombok[0].click()
+    time.sleep(2)
+def kijelentkezes():
+    gombok = web.find_elements(By.CLASS_NAME, "btn")
+    gombok[0].click()
+    time.sleep(2)
+
+def modositas_felhasznalo():
+    kartyak= web.find_elements(By.CLASS_NAME, "card-body")
+    gomb = kartyak[0].find_element(By.ID, "gomb")
+    gomb.click()
+    time.sleep(2)
+    modalfrom = web.find_element(By.ID, "modal_form")
+    email = modalfrom.find_element(By.ID, "email")
+    email.clear()
+    email.send_keys("ujemailcim@gmail.com")
+    knev = modalfrom.find_element(By.ID, "knev")
+    knev.clear()
+    knev.send_keys("Újnév")
+    time.sleep(1)
+    mentes = web.find_element(By.ID, "mentes")
+    mentes.click()
+    time.sleep(2)
+    modal_body = web.find_elements(By.CLASS_NAME, "modal-body")
+    valasz = modal_body[0].find_elements(By.TAG_NAME, "p")
+    print("PHP válasz: ", valasz[0].text)
+
+
+#Lakástulaj: tesztemail@gmail.com Jelszoteszt2
+#admin: envagyok1@gmail.com Kivagyoken1
+
 
 #regisztracioTeszt()
-bejelentkezesTeszt()
-lakasFeltoltes()
+#bejelentkezesTeszt("tesztemail@gmail.com", "Jelszoteszt2")
+#lakasFeltoltes()
 #lakasEllenorzes("Teszt1")
 #lakasModositas()
-naptarEllenorzes()
+#naptarEllenorzes()
 #lakasTorles()
+#kijelentkezes()
+
+
+bejelentkezesTeszt("envagyok1@gmail.com", "Kivagyoken1")
+modositas_felhasznalo()
