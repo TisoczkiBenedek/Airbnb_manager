@@ -59,7 +59,7 @@ function kiiras(adatok){
         let card = document.createElement('div')
         card.classList.add("card")
         let img = document.createElement('img')
-        img.src = adat['kepek']
+        img.src = '../../Felhasználói_oldalak/php/'+adat["kepek"]
         img.classList.add("card-img-top")
         card.appendChild(img)
         let cardb = document.createElement('div')
