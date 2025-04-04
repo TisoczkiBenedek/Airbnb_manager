@@ -319,41 +319,49 @@ function szures(){
     let azon = document.getElementById('felh')
     let card = document.getElementsByClassName('col-sm-12')
     let cardtext = document.getElementsByClassName('card-text')
-    console.log(azon.value +"  "+ megye.value)
+    //console.log(azon.value +"  "+ megye.value)
     if(megye.value == "" && azon.value == ""){
         for (let i = 0; i<card.length; i++) {
             card[i].hidden = false
         }
     }
     else{
+        
         if(megye.value == ""){
-            for (let i = 0; i<card.length; i++) {
-                if(!card[i].className.includes(azon.value)){
-                    card[i].hidden = true
+            let cardindex = 0
+            for (let i = 3; i<card.length; i=i+5) {
+                if(!card[cardindex].className.includes(azon.value)){
+                    card[cardindex].hidden = true
                 }
                 else{
-                    card[i].hidden = false
+                    card[cardindex].hidden = false
                 }
+                cardindex++
             }
         }
         else if(azon.value== ""){
-            for (let i = 0; i<cardtext.length; i++) {
+            let cardindex = 0
+            for (let i = 3; i<cardtext.length; i=i+5) {
+                
                 if(!cardtext[i].innerText.includes(megye.value)){
-                    card[i].hidden = true
+                    card[cardindex].hidden = true
                 }
                 else{
-                    card[i].hidden = false
+                    card[cardindex].hidden = false
                 }
+                cardindex++
             }
         }
         else{
-            for (let i = 0; i<cardtext.length; i++) {
-                if(!cardtext[i].innerText.includes(megye.value) || !card[i].className.includes(azon.value)){
-                    card[i].hidden = true
+            let cardindex = 0
+            for (let i = 3; i<cardtext.length; i=i+5) {
+                if(!cardtext[i].innerText.includes(megye.value) || !card[cardindex].className.includes(azon.value)){
+                    card[cardindex].hidden = true
                 }
                 else{
-                    card[i].hidden = false
+                    card[cardindex].hidden = false
                 }
+                cardindex++
             }
         }
         
