@@ -79,7 +79,7 @@ async function kijelentkezes() {
             const adat = await eredmeny.json();
 
             if (adat.success) {
-                window.location.href = '../html/bejelentkezes.html';
+                window.location.href = '../../html/bejelentkezes.html';
             } else {
                 console.error('Hiba a kijelentkezés során:', adat.message);
             }
