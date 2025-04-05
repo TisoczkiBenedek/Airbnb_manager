@@ -180,6 +180,7 @@ window.onclick = function(event) {
 
 // Profilnév lekérése és megjelenítése
 async function loadProfilNev() {
+    /*
     try {
         const response = await fetch('../php/lakasok.php?action=getProfilAdatok');
         
@@ -195,6 +196,13 @@ async function loadProfilNev() {
     } catch (error) {
         console.error('Hiba a profilnév betöltésekor:', error);
         document.getElementById('profilNev').innerText = "Nincsen bejelentkezve";
+    }*/
+    try {
+        const response = await fetch('../php/lakasok.php?action=getProfilNev'); // Helyes action
+        const data = await response.json();
+        document.getElementById('profilNev').innerText = data.profilNev; // Módosított kulcs
+    } catch (error) {
+        console.error('Hiba:', error);
     }
 }
 

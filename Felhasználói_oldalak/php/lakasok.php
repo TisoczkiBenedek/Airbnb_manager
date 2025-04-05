@@ -128,10 +128,11 @@ try {
                                 die(json_encode(['success' => false, 'message' => 'Csak JPG/PNG/JFIF formátum!']));
                             }
 
-                            $uploadDir = "../php/uploads/lakas_{$id}/kepek/";
-
-                            if (!file_exists($uploadDir)) {
-                                mkdir($uploadDir, 0755, true); // Biztonságosabb jogosultság
+                            if (!empty($_FILES['kepFeltoltes']['name'])) {
+                                $uploadDir = "../php/uploads/lakas_{$id}/kepek/";
+                                if (!file_exists($uploadDir)) {
+                                    mkdir($uploadDir, 0755, true);
+                                }
                             }
 
                             $fileName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES['kepFeltoltes']['name']);
