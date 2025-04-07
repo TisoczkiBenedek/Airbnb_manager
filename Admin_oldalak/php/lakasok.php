@@ -34,9 +34,20 @@ function modositas(){
         if(!empty($adatok['id']) && !empty($adatok['email']) && isset($adatok['email']) && isset($adatok['id'])){
             $id = $adatok['id'];
             $email = $adatok['email'];
-            $muvelet = "UPDATE `lakas` SET `tulajdonosEmail` = '{$email}' WHERE `lakas`.`Id` = $id";
-            $eredmeny =adatokValtoztatasa($muvelet);
-            echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+            $van = "SELECT felhasznalo.id FROM felhasznalo WHERE felhasznalo.emailcim = '$email'";
+            $felhId = adatokLekerese($van);
+            if($felhId != "Nincsenek találatok!"){
+                $fid = $felhId[0]["id"];
+                $muvelet = "UPDATE `lakas` SET `felhasznalo_id` = '{$fid}' WHERE `lakas`.`Id` = $id";
+                $eredmeny =adatokValtoztatasa($muvelet);
+                echo json_encode(['valasz'=> $eredmeny], JSON_UNESCAPED_UNICODE);
+            }
+            else{
+                header("BAD REQUEST", true, 400);
+                echo json_encode(["valasz"=>"Nincs ilyen e-mail címmel felhasználó!"], JSON_UNESCAPED_UNICODE);
+            }
+            
+            
         }
         else{
             header("BAD REQUEST", true, 400);
