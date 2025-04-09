@@ -8,25 +8,41 @@ function ellenorzes(){
     let megye = document.getElementById('megye').value
     const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ][a-zéáűúőóüöí]{1,})/)
     const tel = new RegExp(/(^\+?\d[0-9]{10})$/g)
+    let visszajelz = document.getElementById("visszajelz")
+    let tbody = document.getElementById("tbody")
+    let toast = document.getElementById("toast")
+    visszajelz.innerText = ""
+    toast.classList = ""
+    tbody.innerText = ""
+    toast.classList.add("bg-danger-subtle", "toast")
+    const toastBootstrap = new bootstrap.Toast(toast)
     if(email=="" || vezetnev== "" || keresztnev == "" || telefon == "" || radioeredmeny == null || megye==""){
-        alert("Kérem minden mezőt töltsön ki!")
+        visszajelz.innerText = "Hiba történt!"
+        tbody.innerText= "Kérem minden mezőt ötlsön ki!"
+        toastBootstrap.show()
         return
     }
     else if(!email.includes("@")){
-        alert("Hibás e-mail cím!")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText= "Hibásan megadott e-mail cím!"
+        toastBootstrap.show()
         document.getElementById('email').style.border = "2px dashed red"
         return
     }
     else if(jelszo.length<8){
         document.getElementById('email').style.border = "2px solid green"
-        alert("Kérem hosszabb jelszót adjon meg!")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText= "Túl rövid a jelszó! (legalább 8 karakter)"
+        toastBootstrap.show()
         document.getElementById('jelszo').style.border = "2px dashed red"
         return
     }
     else if(nev.test(vezetnev)== false){
         document.getElementById('email').style.border = "2px solid green"
         document.getElementById('jelszo').style.border = "2px solid green"
-        alert("Hibásan megadott név")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText= "Hibásan megadott név!"
+        toastBootstrap.show()
         document.getElementById('vnev').style.border = "2px dashed red"
         return
     }
@@ -34,7 +50,9 @@ function ellenorzes(){
         document.getElementById('email').style.border = "2px solid green"
         document.getElementById('jelszo').style.border = "2px solid green"
         document.getElementById('vnev').style.border = "2px solid green"
-        alert("Hibásan megadott keresztnév")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText= "Hibásan megadott név!"
+        toastBootstrap.show()
         document.getElementById('knev').style.border = "2px dashed red"
         return
     }
@@ -43,8 +61,11 @@ function ellenorzes(){
         document.getElementById('jelszo').style.border = "2px solid green"
         document.getElementById('vnev').style.border = "2px solid green"
         document.getElementById('knev').style.border = "2px solid green"
-        alert("Hibás telefonszám!")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText=  "Hibásan megadott telefonszám!"
+        toastBootstrap.show()
         document.getElementById('telefonszam').style.border = "2px dashed red"
+        document.getElementById('telefonszam').setAttribute("placeholder", "+36301234567 formában!")
         return
     }
     else{
@@ -87,17 +108,32 @@ async function adatKuldes(email, jelszo, knev, vnev, tel, tipus, megye) {
     }
 }
 function valaszkiir(valasz){
+    let visszajelz = document.getElementById("visszajelz")
+    let tbody = document.getElementById("tbody")
+    let toast = document.getElementById("toast")
+    visszajelz.innerText = ""
+    toast.classList = ""
+    tbody.innerText = ""
     if(valasz['valasz']== "Nincs"){
-        alert("Már van ezzel az e-mail címmel regisztrált felhasználó! Kérem próbáljon meg bejelentkezni!")
+        visszajelz.innerText = "Hiba történt"
+        tbody.innerText= "Már van ezzel az e-mail címmel regisztrált felhasználó! Kérem próbáljon meg bejelentkezni!"
+        toast.classList.add("bg-danger-subtle", "toast")
+        const toastBootstrap = new bootstrap.Toast(toast)
+        toastBootstrap.show()
     }
     else{
-        document.getElementById('infok').classList.add("visually-hidden")
-        document.getElementById('urlap').classList.add("visually-hidden")
-        let div = document.createElement('div')
-        div.innerText = valasz['valasz']
-        document.getElementById("torzs").appendChild(div)
-        alert(valasz['valasz'])
-        window.open('../alapoldal.html', '_parent')
+        //document.getElementById('infok').classList.add("visually-hidden")
+        //document.getElementById('urlap').classList.add("visually-hidden")
+        //let div = document.createElement('div')
+        //div.innerText = valasz['valasz']
+        //document.getElementById("torzs").appendChild(div)
+        visszajelz.innerText = "Siker!"
+        tbody.innerText= valasz['valasz']
+        toast.classList.add("bg-success-subtle", "toast")
+        const toastBootstrap = new bootstrap.Toast(toast)
+        toastBootstrap.show()
+        setTimeout(()=>{window.open('../alapoldal.html', '_parent')}, 6000)
+        
     }
     
 }
