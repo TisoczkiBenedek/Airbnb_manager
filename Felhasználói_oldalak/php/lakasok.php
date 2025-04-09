@@ -92,8 +92,12 @@ try {
                         if(empty($_POST['nev']) || empty($_POST['cim']) || empty($_POST['terulet']) || empty($_POST['megye'])){
                             die(json_encode(['success' => false, 'message' => 'Minden kötelező mezőt ki kell tölteni!']));
                         }
-                        if (!empty($check)) {
-                            echo json_encode(['success' => false, 'message' => "Ez a lakcím már szerepel a rendszerünkben."]);
+                        // Cím ellenőrzés - már létezik-e másik lakásnál ez a cím (kivéve az aktuálisat)
+                        $ellenorzes = "SELECT lakas.cim FROM `lakas` WHERE LOWER(lakas.cim) = LOWER(?) AND id != ?";
+                        $eredmeny = adatokLekerese($ellenorzes, [$data['cim'], $id]);
+
+                        if (!empty($eredmeny)) {
+                            echo json_encode(['success' => false, 'message' => "Ez a lakcím már szerepel a rendszerünkben."], JSON_UNESCAPED_UNICODE);
                             exit;
                         }
             

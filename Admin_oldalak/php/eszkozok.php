@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql = "INSERT INTO `eszkoz`(`nev`, `kiszereles`, `keszletenDB`) VALUES ('$nev', '$kiszereles', $mennyiseg)";
                 $eredmeny = adatokValtoztatasa($sql);
                 
-                if ($eredmeny === 'Sikeres művelet!') {
+                if ($eredmeny === 'Sikeres művelet!') { 
                     echo "<script>alert('Sikeres hozzáadás!'); window.location.href = '$atiranyitas';</script>";
                 } else {
                     echo "<script>alert('Hiba történt: $eredmeny'); window.location.href = '$atiranyitas';</script>";
@@ -247,7 +247,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <form method='post' action='eszkozok.php' class='d-inline'>
                                                 <input type='hidden' name='igenyles_id' value='".$igenyles['id']."'>
                                                 <button type='submit' name='teljesit' class='btn btn-sm btn-success'>
-                                                    <i class='bi bi-check-circle'></i> Teljesítve
+                                                    <i class='bi bi-check-circle'></i> Megjelölés teljesítettként
                                                 </button>
                                             </form>
                                           </td>";

@@ -25,13 +25,21 @@ async function adatokLekerese() {
 function kiiras(adatok) {
     let valasz = document.getElementById('valasz');
     valasz.innerText = "";
-    for (let adat of adatok) {
+    
+    for (let adat of adatok) {        
+        // Gombok div létrehozása
+        let buttons = document.createElement('div');
+        buttons.classList.add("buttons");
+        
+        // Fő konténer div
         let div = document.createElement('div');
-        div.classList.add("col-sm-12", "col-md-4", "col-lg-3", "mt-3", adat['emailcim']);
+        div.classList.add("col-sm-12", "col-md-6", "col-lg-4", "mt-3", adat['emailcim']);
+        
+        // Kártya div
         let card = document.createElement('div');
         card.classList.add("card");
-
-        // Kép betöltése
+        
+        // 1. Kép hozzáadása
         let img = document.createElement('img');
         img.src = adat.kepek;
         img.classList.add("card-img-top");
@@ -39,54 +47,69 @@ function kiiras(adatok) {
             nagyKepMegjelenites(this);
         };
         card.appendChild(img);
-
+        
+        // 2. Card body létrehozása
         let cardb = document.createElement('div');
         cardb.classList.add('card-body');
-
+        
+        // 2.1 Cím hozzáadása
         let h5 = document.createElement('h5');
         h5.classList.add("card-title");
         h5.innerText = adat.nev;
         cardb.appendChild(h5);
-
+        
+        // 2.2 Tartalom hozzáadása
         let p = document.createElement('p');
         p.classList.add('card-text');
-        p.innerHTML = adat.cim + "<br>Terület: " + adat.terulet + " m²<br>Medence: " + (adat.medence && adat.medence == 1 ? 'Van' : 'Nincs') + "<br>Szauna: " + (adat.szauna && adat.szauna == 1 ? 'Van' : 'Nincs') + "<br>Belépési adatok: <br>" + adat.belepesi_adatok;
+        p.innerHTML = `${adat.cim}<br>Terület: ${adat.terulet} m²<br>` +
+                     `Medence: ${adat.medence && adat.medence == 1 ? 'Van' : 'Nincs'}<br>` +
+                     `Szauna: ${adat.szauna && adat.szauna == 1 ? 'Van' : 'Nincs'}<br>` +
+                     `Belépési adatok: <br>${adat.belepesi_adatok}`;
         cardb.appendChild(p);
-
+        
+        // 2.3 Gombok hozzáadása
         // Naptár gomb
         let button = document.createElement('input');
         button.type = "button";
         button.classList.add("btn", "btn-success", "mt-2", "ms-2");
         button.value = "Naptár";
-        button.setAttribute('onclick', `naptarOldalra(${adat.id}, ${adat.megye_id})`);
-        cardb.appendChild(button);
-
+        button.onclick = function() {
+            naptarOldalra(adat.id, adat.megye_id);
+        };
+        buttons.appendChild(button);
+        
         // Módosítás gomb
         let button1 = document.createElement('input');
         button1.type = "button";
         button1.classList.add("btn", "btn-warning", "mt-2", "ms-2");
         button1.value = "Módosítás";
-        button1.setAttribute("onclick", "modositasModal(" + adat.id + ")");
+        button1.onclick = function() {
+            modositasModal(adat.id);
+        };
         button1.setAttribute("data-bs-toggle", "modal");
         button1.setAttribute("data-bs-target", "#modal_modosit");
-        cardb.appendChild(button1);
-
+        buttons.appendChild(button1);
+        
         // Törlés gomb
         let button2 = document.createElement('input');
         button2.type = "button";
         button2.classList.add("btn", "btn-danger", "mt-2", "ms-2");
-        button2.value = "Törlés"
-        button2.addEventListener("click", () => {
+        button2.value = "Törlés";
+        button2.onclick = function() {
             selectedLakasId = adat.id;
             document.getElementById("torlesModal").style.display = "block";
-        });
-        cardb.appendChild(button2);
-
+        };
+        buttons.appendChild(button2);
+        
+        // Összeállítás
+        cardb.appendChild(buttons);
         card.appendChild(cardb);
         div.appendChild(card);
         valasz.appendChild(div);
     }
 }
+
+
 
 function naptarOldalra(lakasId, megyeId) {
     console.log("Átadott lakasId:", lakasId);
