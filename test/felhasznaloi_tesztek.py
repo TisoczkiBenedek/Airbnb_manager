@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import random
 import time
+from PIL import Image
 
 
 web = webdriver.Chrome()
@@ -164,10 +165,16 @@ def naptarEllenorzes():
             naptar = elem
             break
     naptar.click()
+    time.sleep(2)
     print("Az oldal címe: ", web.title)
+    web.save_screenshot(".\\kepek\\naptar.png")
+    #kep = Image.open("naptar.png")
+    #kep.show()
     time.sleep(2)
     gombok = web.find_elements(By.CLASS_NAME, "btn")
     gombok[0].click()
+    
+   
     time.sleep(2)
 def kijelentkezes():
     gombok = web.find_elements(By.CLASS_NAME, "btn")
@@ -192,22 +199,32 @@ def modositas_felhasznalo():
     time.sleep(2)
     modal_body = web.find_elements(By.CLASS_NAME, "modal-body")
     valasz = modal_body[0].find_elements(By.TAG_NAME, "p")
-    print("PHP válasz: ", valasz[0].text)
-
+    print("PHP válasz módosításnál: ", valasz[0].text)
+def torles_felhaszalo():
+    kartyak= web.find_elements(By.CLASS_NAME, "card-body")
+    gomb = kartyak[0].find_elements(By.TAG_NAME, "input")
+    gomb[1].click()
+    time.sleep(2)
+    torles = web.find_element(By.ID, "torles")
+    torles.click()
+    time.sleep(1)
+    valasz = web.find_elements(By.CLASS_NAME, "modal_valasz")
+    print("PHP válasz törlésnél:", valasz[1].text)
 
 #Lakástulaj: tesztemail@gmail.com Jelszoteszt2
 #admin: envagyok1@gmail.com Kivagyoken1
 
 
 #regisztracioTeszt()
-#bejelentkezesTeszt("tesztemail@gmail.com", "Jelszoteszt2")
+bejelentkezesTeszt("tesztemail@gmail.com", "Jelszoteszt2")
 #lakasFeltoltes()
-#lakasEllenorzes("Teszt1")
+lakasEllenorzes("Teszt1")
 #lakasModositas()
-#naptarEllenorzes()
+naptarEllenorzes()
 #lakasTorles()
 #kijelentkezes()
 
 
-bejelentkezesTeszt("envagyok1@gmail.com", "Kivagyoken1")
-modositas_felhasznalo()
+#bejelentkezesTeszt("envagyok1@gmail.com", "Kivagyoken1")
+#modositas_felhasznalo()
+torles_felhaszalo()
