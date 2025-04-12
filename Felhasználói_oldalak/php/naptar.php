@@ -151,7 +151,7 @@ try {
             $start = new DateTime($event['start']);
             $end = new DateTime($event['end']);
             $events[] = [
-                'id' => $event['id'], 
+                'id' => $event['id'],
                 'title' => 'Takarítás',
                 'start' => $start->format('c'),
                 'end' => $end->format('c'),

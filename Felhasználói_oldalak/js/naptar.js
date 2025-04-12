@@ -94,11 +94,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 },
                 body: JSON.stringify({eventId:eventId})
             });
-
+    
             const data = await eredmeny.json();
             if(data.success) {
-                selectedEvent.remove();
                 showToast("Takarítás sikeresen törölve!", 'success');
+                // Újratöltjük az oldalt a lakas_id-val, hogy a naptár frissüljön
+                const urlParams = new URLSearchParams(window.location.search);
+                const lakasId = urlParams.get('lakas_id');
+                if (lakasId) {
+                    window.location.href = `naptar.html?lakas_id=${lakasId}`;
+                } else {
+                    // Ha valamiért nincs lakasId, akkor visszatérhetünk a lakások oldalára
+                    window.location.href = '../html/lakasok.html';
+                }
             } else {
                 showToast("Hiba történt a törlés során!", 'danger');
             }
@@ -106,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Hiba történt:', error);
         }
     }
-
+    
     calendar.render();
 
     function getSelectedMegyeId() {
@@ -210,20 +218,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (lakasId) {
         console.log("A lakasId az URL-ben:", lakasId);
-        
+
         try {
             const eredmeny = await fetch(`../php/naptar.php?lakas_id=${lakasId}`);
-            
+
             if (!eredmeny.ok) {
                 throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
             }
 
             const events = await eredmeny.json();
-            
+
             if (events.error) {
                 console.error("Hiba a válaszban:", events.error);
                 showToast("Hiba történt: " + events.error);
-            } else {      
+            } else {
                 calendar.addEventSource(events);
             }
         } catch (error) {
