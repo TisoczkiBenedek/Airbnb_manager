@@ -128,12 +128,25 @@ function modositasModal(id){
 }
 async function modositas(){
     let email = document.getElementById('email')
+    let p = document.getElementsByClassName('modal_valasz')
     if(email.value == ""){
-        alert("Kérem töltse ki az e-mail címet!")
+        
+        p[0].innerText = "Kérem töltse ki a mezőt!"
+        p[0].hidden = false
+        p[0].style.border = '2px solid red'
+        p[0].style.color = 'red'
+        p[0].style.padding = '5px'
+        p[0].style.textAlign = "center"
+        //alert("Kérem töltse ki az e-mail címet!")
         return
     }
     if(!email.value.includes("@")){
-        alert("Hibásan megadott e-mail cím!")
+        p[0].innerText = "Hibásan megadott e-mail cím!"
+        p[0].hidden = false
+        p[0].style.border = '2px solid red'
+        p[0].style.color = 'red'
+        p[0].style.padding = '5px'
+        p[0].style.textAlign = "center"
         return
     }
     else{
