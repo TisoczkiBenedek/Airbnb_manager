@@ -1,4 +1,6 @@
-/* Alap stílusok */
+/* ==================== */
+/* ALAP STÍLUSOK        */
+/* ==================== */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
@@ -12,7 +14,9 @@ a {
     text-decoration: none;
 }
 
-/* Naptár stílusok */
+/* ==================== */
+/* NAPTÁR LAYOUT        */
+/* ==================== */
 #calendar {
     max-width: 900px;
     margin: 40px auto 60px;
@@ -22,7 +26,9 @@ a {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Naptár napok szövegének stílusa */
+/* ==================== */
+/* NAPOK ÉS ESEMÉNYEK   */
+/* ==================== */
 .fc-daygrid-day-number {
     color: #000;
     text-decoration: none;
@@ -30,7 +36,6 @@ a {
     cursor: default;
 }
 
-/* Események stílusa */
 .fc-event {
     background-color: #28a745;
     border: none;
@@ -46,7 +51,40 @@ a {
     background-color: #218838;
 }
 
-/* Modal stílusok */
+.fc-event-takaritas {
+    background-color: #ff6b6b !important;
+    border-color: #ff5252 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2px 5px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.fc-event-title {
+    font-weight: bold;
+}
+
+.fc-event-time {
+    font-size: 12px;
+    color: #fff;
+}
+
+.fc-day-disabled {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255,0,0,0.1),
+        rgba(255,0,0,0.1) 10px,
+        rgba(255,0,0,0.05) 10px,
+        rgba(255,0,0,0.05) 20px
+    ) !important;
+    pointer-events: none !important;
+}
+
+/* ==================== */
+/* MODAL ABLAKOK        */
+/* ==================== */
 .modal {
     display: none;
     position: fixed;
@@ -84,12 +122,37 @@ a {
     color: #555;
 }
 
+#torlesModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.torles-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* ==================== */
+/* ŰRLAP ELEMEK        */
+/* ==================== */
 #takaritoSelect {
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
-/* Form középre igazítása */
 #ujEsemenyForm {
     display: flex;
     flex-direction: column;
@@ -98,7 +161,6 @@ a {
     gap: 15px;
 }
 
-/* Input mezők középre igazítása */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -107,13 +169,14 @@ a {
     max-width: 500px;
 }
 
-/* A gomb középre igazítása */
 button[type="submit"] {
     align-self: center;
     margin-top: 30px;
 }
 
-/* Idő kiválasztása stílusok */
+/* ==================== */
+/* IDŐVÁLASZTÓ         */
+/* ==================== */
 input[type="time"] {
     width: 100%;
     padding: 12px;
@@ -123,18 +186,18 @@ input[type="time"] {
     background-color: #f9f9f9;
     color: #333;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    appearance: none; /* alapértelmezett stílus eltávolítása */
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    text-align: center; /* középre igazítja a szöveget */
+    text-align: center;
 }
 
 input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* ikon színének megváltoztatása */
-    color: #28a745; /* ikon színe */
-    background-color: #333; /* ikon háttérszíne */
-    padding: 5px; /* ikon körüli margó */
-    border-radius: 50%; /* ikon lekerekítése */
+    filter: invert(1);
+    color: #28a745;
+    background-color: #333;
+    padding: 5px;
+    border-radius: 50%;
 }
 
 input[type="time"]:focus {
@@ -148,27 +211,9 @@ input[type="time"]:hover {
     border-color: #999;
 }
 
-
-input[type="time"]:hover::before {
-    display: none;
-}
-
-input[type="time"]::-webkit-time-picker {
-    background-color: #333; /* új háttérszín */
-    color: #fff; /* szöveg színe */
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    /*box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);*/
-    text-align: center;
-}
-
-/* Óra színe megváltoztatása */
-input[type="time"]::-webkit-time-picker::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    color: #1741ca;
-}
-
-/*toast stílus*/
+/* ==================== */
+/* ÉRTESÍTÉSEK         */
+/* ==================== */
 #toast {
     position: fixed !important; 
     top: 70px !important;
@@ -177,59 +222,24 @@ input[type="time"]::-webkit-time-picker::-webkit-calendar-picker-indicator {
     min-width: 250px;
 }
 
-/* Letiltott dátumok */
-.fc-day-disabled {
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(255,0,0,0.1),
-        rgba(255,0,0,0.1) 10px,
-        rgba(255,0,0,0.05) 10px,
-        rgba(255,0,0,0.05) 20px
-    ) !important;
-    pointer-events: none !important;
-}
-
-/* Takarítás események színe */
-.fc-event-takaritas {
-    background-color: #ff6b6b !important;
-    border-color: #ff5252 !important;
-}
-
-/* Törlés modal */
-#torlesModal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.torles-modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    width: 300px;
-    border-radius: 5px;
-}
-
-
-.fc-event-takaritas {
+/* ==================== */
+/* GOMB CSOPORTOK       */
+/* ==================== */
+.gomb-csoport {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2px 5px;
-    font-size: 15px;
-    line-height: 1.5;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
 }
 
-.fc-event-title {
-    font-weight: bold;
-}
-
-.fc-event-time {
-    font-size: 12px;
-    color: #fff;
+.gomb-csoport button {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }

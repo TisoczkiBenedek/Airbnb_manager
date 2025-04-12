@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         },
         eventClick: function(info) {
             if(info.event.title === 'Takarítás') {
-                showDeleteModal(info.event);
+                showModModal(info.event);
             }
         },
         eventDidMount: function(info) {
@@ -65,8 +65,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     let selectedEvent = null;
 
-    function showDeleteModal(event) {
+    function showModModal(event) {
         const modal = document.getElementById('torlesModal');
+        const closeButton = modal.querySelector('.close-button');
         selectedEvent = event;
         modal.style.display = 'block';
 
@@ -76,6 +77,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         document.getElementById('torlesNem').onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        closeButton.onclick = function () {
             modal.style.display = 'none';
         }
     }
@@ -127,6 +132,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
+
+
             if (startTime >= endTime) {
                 showToast("A kezdeti időpont nem lehet később, mint a végső!", 'danger');
                 return;
@@ -228,48 +235,54 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Profilnév lekérése és megjelenítése
 async function loadProfilNev() {
     try {
-        const response = await fetch('../php/naptar.php?action=getProfilNev');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-        }
-
+        const response = await fetch('../php/naptar.php?action=getProfilAdat');
         const data = await response.json();
-        
-        if (data.profilNev) {
-            document.getElementById('profilNev').innerText = data.profilNev;
-        }
+        document.getElementById('profilNev').innerText = data.profilNev; // Módosított kulcs
     } catch (error) {
-        console.error('Hiba a profilnév betöltésekor:', error);
-        document.getElementById('profilNev').innerText = "Hiba a profilnév betöltésekor";
+        console.error('Hiba:', error);
     }
 }
 
 async function loadTakaritok(megyeId) {
     try {
         const valasz = await fetch(`../php/naptar.php?action=getTakaritok&megye_id=${megyeId}`);
-        
-        if (!valasz.ok) {
-            throw new Error(`HTTP hiba! Státusz: ${valasz.status}`);
-        }
-
-        const takaritok = await valasz.json();
+        const responseData = await valasz.json();
         const select = document.getElementById('takaritoSelect');
-        select.innerHTML = '';
+        select.innerHTML = ''; // Select ürítése
 
-        if (takaritok.message) {
+        // 1. Üzenet kezelése
+        if (responseData.message) {
             const option = document.createElement('option');
-            option.textContent = takaritok.message;
+            option.textContent = responseData.message;
+            option.disabled = true;
             select.appendChild(option);
             return;
         }
 
-        takaritok.forEach(takarito => {
-            const option = document.createElement('option');
-            option.value = takarito.id;
-            option.textContent = takarito.nev;
-            select.appendChild(option);
-        });
+        // 2. Tömb kezelése
+        if (Array.isArray(responseData)) {
+            if (responseData.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = "Nincsenek elérhető takarítók";
+                option.disabled = true;
+                select.appendChild(option);
+            } else {
+                responseData.forEach(takarito => {
+                    const option = document.createElement('option');
+                    option.value = takarito.id;
+                    option.textContent = takarito.nev;
+                    select.appendChild(option);
+                });
+            }
+            return;
+        }
+
+        // 3. Egyéb esetek
+        const option = document.createElement('option');
+        option.textContent = "Nincsenek elérhető takarítók ebben a megyében";
+        option.disabled = true;
+        select.appendChild(option);
+
     } catch (error) {
         console.error('Hiba a takarítók betöltésekor:', error);
         showToast('Hiba történt a takarítók betöltésekor.', 'danger');

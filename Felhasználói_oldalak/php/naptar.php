@@ -39,6 +39,10 @@ if ($action === 'getTakaritok') {
         $takaritok = adatokLekerese($muvelet, [$megyeId]);
 
         header('Content-Type: application/json');
+        if(empty($takaritok)){
+            echo json_encode(["valasz" => "Ebben a megyében nincsenek takarítóink"]);
+            exit;
+        }
         echo json_encode($takaritok);
         exit; // Kilépés a kódból, ne futtassa le a többi részt
     } catch (Exception $e) {
@@ -49,7 +53,7 @@ if ($action === 'getTakaritok') {
 }
 
 //profilnév betöltése
-if ($action === 'getProfilNev') {
+if ($action === 'getProfilAdat') {
     session_start();
 
     $email = $_SESSION['emailcim'];
@@ -113,14 +117,6 @@ if ($action === 'esemenyMentes') {
 
 try {
     $lakas_id = $_GET['lakas_id'] ?? null;
-
-    if (!$lakas_id) {
-        throw new Exception("Nincs lakas_id megadva");
-    }
-
-    if (!is_numeric($lakas_id)) {
-        throw new Exception("Érvénytelen lakas_id");
-    }
 
     // ICS események betöltése
     $muvelet = "SELECT file_content FROM naptarak WHERE lakas_id = ?";

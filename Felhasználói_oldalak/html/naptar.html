@@ -51,9 +51,25 @@
   <!--Törlés megerősítés modal-->
   <div id="torlesModal" class="modal">
     <div class="torles-modal-content">
-      <p>Biztosan törölni szeretné ezt a takarítást?</p>
-      <button id="torlesIgen" class="btn btn-danger">Igen</button>
-      <button id="torlesNem" class="btn btn-secondary">Nem</button>
+      <span class="close-button">&times;</span>
+      <h2>Takarítás módosítása</h2>
+      <form id="ujEsemenyForm">
+          <div class="form-group">
+              <label for="start">Takarítás kezdete:</label>
+              <input type="time" id="start" name="start" class="form-control">
+          </div>
+          <div class="form-group">
+              <label for="end">Takarítás befejezése:</label>
+              <input type="time" id="end" name="end" class="form-control">
+          </div>
+          <select id="takaritoSelect" class="form-select" aria-label="Default select example"></select>
+          </select>
+          <div class="gomb-csoport">
+            <button type="submit" id="takaritasMod" class="btn btn-primary">Módosítás</button>
+            <button type="submit" id="torlesIgen" class="btn btn-danger">Törlés</button>
+            <button type="submit" id="torlesNem" class="btn btn-secondary">Mégse</button>
+          </div>
+      </form>
     </div>
   </div>
 

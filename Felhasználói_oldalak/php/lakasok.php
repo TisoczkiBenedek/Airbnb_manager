@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['emailcim'])) {
     http_response_code(401);
     die(json_encode(["valasz" => "Nincs bejelentkezve."]));
 }
@@ -15,20 +15,27 @@ include './parameterezett_sql_fuggvenyek.php';
 $action = $_GET['action'] ?? null;
 
 // Profilnév lekérése
-if ($action === 'getProfilNev') {
+if ($action === 'getProfilAdat') {
     $email = $_SESSION['emailcim'];
-    $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
-    $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);
+    $felhasznaloNev = "SELECT Vezeteknev AS Vezeteknev, Keresztnev AS Keresztnev, emailcim AS emailcim, elerhetoseg AS elerhetoseg FROM felhasznalo WHERE emailcim = ?";
+    $felhAdatok = adatokLekerese($felhasznaloNev, [$email]);
 
-    if (is_array($nevEredmeny) && count($nevEredmeny) > 0) {
-        $vezeteknev = $nevEredmeny[0]['Vezeteknev'];
-        $keresztnev = $nevEredmeny[0]['Keresztnev'];
-        $profilNev = $vezeteknev . ' ' . $keresztnev;
+    if (is_array($felhAdatok) && count($felhAdatok) > 0) {
+        $eredmeny = [
+            'profilNev' => ($felhAdatok[0]['Vezeteknev'] ?? '') . ' ' . ($felhAdatok[0]['Keresztnev'] ?? ''),
+            'emailcim' => $felhAdatok[0]['emailcim'] ?? null,
+            'elerhetoseg' => $felhAdatok[0]['elerhetoseg'] ?? null,
+        ];
     } else {
-        $profilNev = "Ismeretlen felhasználó";
+        $eredmeny = [
+            'error' => 'No user found',
+            'profilNev' => "Ismeretlen felhasználó",
+            'emailcim' => null,
+            'elerhetoseg' => null
+        ];
     }
 
-    echo json_encode(['profilNev' => $profilNev]);
+    echo json_encode($eredmeny);
     exit;
 }
 
@@ -118,6 +125,11 @@ try {
                                 $regiAdatok['belepesi_adatok'] !== $data['belepesi_adatok']) {
                                 $valtozasVan = true;
                             }
+                        }
+
+                        if($regiAdatok['megye_id'] != $data['megye_id']){
+                            $megyemodTakTorl = "DELETE FROM `takaritas` WHERE takaritas.lakasId = ?";
+                            $eredmeny = adatokValtoztatasa($megyemodTakTorl, [$id]);
                         }
                         
                         // 3. KÉP ELLENŐRZÉS

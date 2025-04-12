@@ -195,7 +195,7 @@ function eszkozEddigIgenyelt(adatok) {
 
 // Profilnév lekérése és megjelenítése
 function loadProfilNev() {
-    fetch('../php/naptarTakarito.php?action=getProfilNev')
+    fetch('../php/naptarTakarito.php?action=getProfilAdat')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP hiba! Státusz: ${response.status}`);

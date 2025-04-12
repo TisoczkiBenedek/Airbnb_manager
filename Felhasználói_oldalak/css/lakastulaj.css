@@ -226,6 +226,88 @@ img {
   border-color: #545b62;
 }
 
+/* profil modál */
+
+#profilModal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: modalFadeIn 0.3s;
+}
+
+.profil-modal-content {
+  background-color: #f8f9fa;
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border: 1px solid #dee2e6;
+}
+
+.profil-modal-content .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #6c757d;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.profil-modal-content .close:hover {
+  color: #dc3545;
+}
+
+.profil-modal-content .form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.profil-modal-content .form-select {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+}
+
+.profil-modal-content .form-select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+  outline: none;
+}
+
+/* Gomb stílusok */
+#profilModal .btn {
+  padding: 10px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.3s;
+  margin-right: 10px;
+  margin-top: 10px;
+  border: none;
+}
+
+#profilModal #modositas {
+  background-color: #28a745;
+  color: white;
+}
+
 /* ======================= */
 /* === Toast stílusok === */
 /* ======================= */

@@ -4,7 +4,7 @@ include './sql_fuggvenyek.php';
 $action = $_GET['action'] ?? null;
 $fid = 0;
 // Profilnév lekérése
-if ($action === 'getProfilNev') {
+if ($action === 'getProfilAdat') {
     $email = $_SESSION['emailcim'];
     $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
     $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);

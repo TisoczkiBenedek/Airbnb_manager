@@ -171,7 +171,7 @@ document.getElementById('modositForm').addEventListener('submit', async function
             adatokLekerese();
             $('#modal_modosit').modal('hide');
         } else {
-            showToast(result.error || "Hiba történt", 'danger');
+            showToast("Hiba történt", 'danger');
         }
     } catch (error) {
         console.error('Hiba:', error);
@@ -179,49 +179,10 @@ document.getElementById('modositForm').addEventListener('submit', async function
     }
 });
 
-// A kép modal ablak megjelenítése
-function nagyKepMegjelenites(kep) {
-    const modal = document.getElementById("kepModal");
-    const modalKep = document.getElementById("modalKep");
-    modal.style.display = "block";
-    modalKep.src = kep.src;
-}
-
-// A kép modal ablak bezárása
-function modalBezaras() {
-    const modal = document.getElementById("kepModal");
-    modal.style.display = "none";
-}
-
-// A kép modal ablak bezárása a képen kívülre kattintva
-window.onclick = function(event) {
-    const modal = document.getElementById("kepModal");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
 // Profilnév lekérése és megjelenítése
 async function loadProfilNev() {
-    /*
     try {
-        const response = await fetch('../php/lakasok.php?action=getProfilAdatok');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.nev) {
-            document.getElementById('profilNev').innerText = data.nev;
-        }
-    } catch (error) {
-        console.error('Hiba a profilnév betöltésekor:', error);
-        document.getElementById('profilNev').innerText = "Nincsen bejelentkezve";
-    }*/
-    try {
-        const response = await fetch('../php/lakasok.php?action=getProfilNev'); // Helyes action
+        const response = await fetch('../php/lakasok.php?action=getProfilAdat'); // Helyes action
         const data = await response.json();
         document.getElementById('profilNev').innerText = data.profilNev; // Módosított kulcs
     } catch (error) {
@@ -254,33 +215,68 @@ async function kijelentkezes() {
         console.error('Hiba a kijelentkezés során: ', error);
     }
 }
-/*
+
 async function felhasznaloModal(){
     const modal = document.getElementById('profilModal')
     modal.style.display = 'block'
+    try {
+        let eredmeny = await fetch('../php/lakasok.php?action=getProfilAdat')
+    
+        if(eredmeny.ok){
+            let valasz = await eredmeny.json();
 
-    let eredmeny = await fetch('../php/naptar.php?action=getProfilAdat')
-    let valasz = await eredmeny.json();
+            document.getElementById('felhNev').innerHTML = valasz.profilNev;
+            document.getElementById('felhEmail').innerHTML = valasz.emailcim;
+            document.getElementById('felhTelSzam').innerHTML = valasz.elerhetoseg;
+        }
+    } catch (error) {
+        console.log(error);
 
-    if(eredmeny.ok){
-        document.getElementById('FelhNev').innerHTML += data.nev;
-        document.getElementById('FelhEmail').innerHTML += data.email;
+        document.getElementById('felhNev').innerHTML = "Hiba történt a betöltés során!";
+        document.getElementById('felhEmail').innerHTML = "";
+        document.getElementById('felhTelSzam').innerHTML = "";
     }
 }
 
 // Felhasználó modal bezárása
-function modalBezaras() {
+function profilModalBezaras() {
     document.getElementById('profilModal').style.display = 'none';
 }
 
-// Felhasználó modal: Kattintás a modalon kívülre
-window.onclick = function(event) {
-    const modal = document.getElementById('profilModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
+// A kép modal ablak megjelenítése
+function nagyKepMegjelenites(kep) {
+    const modal = document.getElementById("kepModal");
+    const modalKep = document.getElementById("modalKep");
+    modal.style.display = "block";
+    modalKep.src = kep.src;
 }
-*/
+
+// A kép modal ablak bezárása
+function kepModalBezaras() {
+    document.getElementById("kepModal").style.display = "none";
+}
+
+//egyesített modal záró
+document.addEventListener('click', function(event) {
+    const profilModal = document.getElementById('profilModal');
+    const kepModal = document.getElementById('kepModal');
+
+    // Profil modal bezárása
+    if (event.target === profilModal) {
+        profilModalBezaras();
+    }
+    
+    // Kép modal bezárása
+    if (event.target === kepModal) {
+        kepModalBezaras();
+    }
+    
+    // Törlés modal bezárása
+    if (event.target === document.getElementById('torlesModal')) {
+        document.getElementById('torlesModal').style.display = 'none';
+    }
+})
+
 // Toast üzenet megjelenítése
 function showToast(message, type) {
     const toastBody = document.getElementById('toast-body');

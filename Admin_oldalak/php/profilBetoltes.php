@@ -2,7 +2,7 @@
 $action = $_GET['action'] ?? null;
 
 // Profilnév lekérése
-if ($action === 'getProfilNev') {
+if ($action === 'getProfilAdat') {
     $email = $_SESSION['emailcim'];
     $felhasznaloNev = "SELECT felhasznalo.Vezeteknev, felhasznalo.Keresztnev FROM `felhasznalo` WHERE felhasznalo.emailcim = ?";
     $nevEredmeny = adatokLekerese($felhasznaloNev, [$email]);

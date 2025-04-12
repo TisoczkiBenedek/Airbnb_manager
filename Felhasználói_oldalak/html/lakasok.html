@@ -164,7 +164,7 @@
 
   <!--kép Modal -->
   <div id="kepModal" class="kep-modal">
-    <span class="close" onclick="modalBezaras()">&times;</span>
+    <span class="close" onclick="kepModalBezaras()">&times;</span>
     <img class="modal-content" id="modalKep">
   </div>
 
@@ -192,23 +192,21 @@
     <!--Profil modal-->
     <div id="profilModal" class="modal">
         <div class="profil-modal-content">
+            <span class="close" onclick="profilModalBezaras()">&times;</span>
             <div class="mb-3">
-                <label class="form-label">Felhasználó név</label>
-                <select class="form-select" name="felhNev" id="felhNev"></select>
+                <label>Felhasználó név:</label>
+                <h5 name="felhNev" id="felhNev"></h5>
             </div>
-
+    
             <div class="mb-3">
-                <label class="form-label">Email cím</label>
-                <select class="form-select" name="felhEmail" id="felhEmail"></select>
+                <label>Email cím:</label>
+                <h5 name="felhEmail" id="felhEmail"></h5>
             </div>
-
+    
             <div class="mb-3">
-                <label class="form-label">Email cím</label>
-                <select class="form-select" name="felhEmail" id="felhEmail"></select>
+                <label>Telefonszám:</label>
+                <h5 name="felhTelSzam" id="felhTelSzam"></h5>
             </div>
-
-            <button id="modositas" class="btn btn-secondary">Módosítás</button>
-            <button id="torles" class="btn btn-danger">Nem</button>
         </div>
     </div>
 

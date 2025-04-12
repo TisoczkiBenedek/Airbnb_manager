@@ -1,7 +1,7 @@
 // Profilnév lekérése és megjelenítése (async/await verzió)
 async function loadProfilNev() {
     try {
-        const response = await fetch('../php/lakasok.php?action=getProfilNev', {
+        const response = await fetch('../php/lakasok.php?action=getProfilAdat', {
             credentials: 'include' // Küldjük el a sütiket
         });
         
