@@ -48,26 +48,25 @@
     </div>
   </div>
 
-  <!--Törlés megerősítés modal-->
-  <div id="torlesModal" class="modal">
-    <div class="torles-modal-content">
+  <!--Módosítás modal-->
+  <div id="modositasModal" class="modal">
+    <div class="modositas-modal-content">
       <span class="close-button">&times;</span>
       <h2>Takarítás módosítása</h2>
-      <form id="ujEsemenyForm">
+      <form id="esemenyModositasForm">
           <div class="form-group">
-              <label for="start">Takarítás kezdete:</label>
-              <input type="time" id="start" name="start" class="form-control">
+              <label for="ujStart">Takarítás kezdete:</label>
+              <input type="time" id="ujStart" name="ujStart" class="form-control">
           </div>
           <div class="form-group">
-              <label for="end">Takarítás befejezése:</label>
-              <input type="time" id="end" name="end" class="form-control">
+              <label for="ujVeg">Takarítás befejezése:</label>
+              <input type="time" id="ujVeg" name="ujVeg" class="form-control mb-5">
           </div>
-          <select id="takaritoSelect" class="form-select" aria-label="Default select example"></select>
+          <select id="ujTakaritoSelect" class="form-select" aria-label="Default select example"></select>
           </select>
           <div class="gomb-csoport">
             <button type="submit" id="takaritasMod" class="btn btn-primary">Módosítás</button>
-            <button type="submit" id="torlesIgen" class="btn btn-danger">Törlés</button>
-            <button type="submit" id="torlesNem" class="btn btn-secondary">Mégse</button>
+            <button type="submit" id="torles" class="btn btn-danger">Törlés</button>
           </div>
       </form>
     </div>

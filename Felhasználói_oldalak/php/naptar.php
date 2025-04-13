@@ -30,6 +30,38 @@ if($action === 'deleteTakaritas'){
     exit;
 }
 
+//esemény módosítása
+if($action === 'updateTakaritas'){
+    session_start();
+    $json = file_get_contents('php://input');
+    $adat = json_decode($json, true);
+
+    if(empty($adat['id']) || empty($adat['start']) || empty($adat['end']) || empty($adat['takarito_id'])) {
+        echo json_encode((['success' => false, 'error' => 'Hiányzó adatok']));
+        exit;
+    }
+
+    $esemenyId = $adat['id'];
+    $kezdoDatum = new DateTime($adat['start']);
+    $vegDatum = new DateTime($adat['end']);
+    $takaritoId = $adat['takarito_id'];
+
+    try {
+        $muvelet = "UPDATE takaritas SET takaritoErkezes = ?, takaritoTavozas = ?, felhasznalo_id = ? WHERE id = ?";
+        $frissites = [$kezdoDatum->format('Y-m-d H:i:s'), $vegDatum->format('Y-m-d H:i:s'), $takaritoId, $esemenyId];
+        $eredmeny = adatokValtoztatasa($muvelet, $frissites);
+
+        if($eredmeny) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Sikertelen módosítás']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 //takarítók betöltése
 if ($action === 'getTakaritok') {
     $megyeId = (int)$_GET['megye_id'] ?? null;
@@ -51,6 +83,29 @@ if ($action === 'getTakaritok') {
         exit;
     }
 }
+
+ // Takarító ID-jának lekérése esemény ID alapján
+ if ($action === 'getTakaritoId') {
+        $eventId = $_GET['event_id'] ?? null;
+  
+        if ($eventId) {
+            try {
+                $muvelet = "SELECT felhasznalo_id FROM takaritas WHERE id = ?";
+                $eredmeny = adatokLekerese($muvelet, [$eventId]);
+  
+                if ($eredmeny && count($eredmeny) > 0) {
+                    echo json_encode(['success' => true, 'takarito_id' => $eredmeny[0]['felhasznalo_id']]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Nem található esemény a megadott ID-val.']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Hiányzó esemény ID.']);
+        }
+        exit;
+    }
 
 //profilnév betöltése
 if ($action === 'getProfilAdat') {
@@ -89,7 +144,7 @@ if ($action === 'esemenyMentes') {
 
     //van e már takarító rendelve erre a napra
     try {
-        $rendelesEll = "Select id FROM takaritas WHERE lakasId = ? AND DATE(takaritoErkezes) = ?";
+        $rendelesEll = "SELECT id FROM takaritas WHERE lakasId = ? AND DATE(takaritoErkezes) = ?";
         $ellenorzes = [$adat['lakas_id'], $datum];
         $letezoEsemeny = adatokLekerese($rendelesEll, $ellenorzes);
 
@@ -143,8 +198,9 @@ try {
     }
 
     // Takarítási események betöltése
-    $takaritasMuvelet = "SELECT id, takaritoErkezes AS start, takaritoTavozas AS end, 'Takarítás' AS title FROM takaritas WHERE lakasId = ? AND befejezve = 0";
-    $takaritasEredmeny = adatokLekerese($takaritasMuvelet, [$lakas_id]);
+// Takarítási események betöltése
+$takaritasMuvelet = "SELECT id, takaritoErkezes AS start, takaritoTavozas AS end, 'Takarítás' AS title, felhasznalo_id FROM takaritas WHERE lakasId = ? AND befejezve = 0";
+$takaritasEredmeny = adatokLekerese($takaritasMuvelet, [$lakas_id]);
 
     foreach ($takaritasEredmeny as $event) {
         try {
@@ -155,6 +211,7 @@ try {
                 'title' => 'Takarítás',
                 'start' => $start->format('c'),
                 'end' => $end->format('c'),
+                'extendedProps' => ['takarito_id' => $event['felhasznalo_id']], // Hozzáadva
             ];
         } catch (Exception $e) {
             continue;
