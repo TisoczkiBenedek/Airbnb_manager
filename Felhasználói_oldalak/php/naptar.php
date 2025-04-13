@@ -1,6 +1,8 @@
 <?php
 ini_set('display_errors', 1); // Hibák megjelenítése fejlesztés közben
 error_reporting(E_ALL); // Minden hiba jelzés bekapcsolása
+date_default_timezone_set('Europe/Budapest');
+
 
 require __DIR__ . '/../vendor/autoload.php';
 use Sabre\VObject\Reader;
@@ -42,12 +44,14 @@ if($action === 'updateTakaritas'){
     }
 
     $esemenyId = $adat['id'];
-    $kezdoDatum = new DateTime($adat['start']);
-    $vegDatum = new DateTime($adat['end']);
+    // Expliciten megadjuk az UTC időzónát a DateTime objektumok létrehozásakor
+    $kezdoDatum = new DateTime($adat['start'], new DateTimeZone('UTC'));
+    $vegDatum = new DateTime($adat['end'], new DateTimeZone('UTC'));
     $takaritoId = $adat['takarito_id'];
 
     try {
         $muvelet = "UPDATE takaritas SET takaritoErkezes = ?, takaritoTavozas = ?, felhasznalo_id = ? WHERE id = ?";
+        // Az adatbázisban UTC formátumban frissítjük
         $frissites = [$kezdoDatum->format('Y-m-d H:i:s'), $vegDatum->format('Y-m-d H:i:s'), $takaritoId, $esemenyId];
         $eredmeny = adatokValtoztatasa($muvelet, $frissites);
 
@@ -138,12 +142,13 @@ if ($action === 'esemenyMentes') {
         exit;
     }
 
-    $kezdoDatum = new DateTime($adat['start']);
-    $vegDatum = new DateTime($adat['end']);
-    $datum = $kezdoDatum->format('Y-m-d');
-
-    //van e már takarító rendelve erre a napra
     try {
+        // Expliciten megadjuk az UTC időzónát a DateTime objektumok létrehozásakor
+        $kezdoDatum = new DateTime($adat['start'], new DateTimeZone('UTC'));
+        $vegDatum = new DateTime($adat['end'], new DateTimeZone('UTC'));
+        $datum = $kezdoDatum->format('Y-m-d');
+
+        //van e már takarító rendelve erre a napra
         $rendelesEll = "SELECT id FROM takaritas WHERE lakasId = ? AND DATE(takaritoErkezes) = ?";
         $ellenorzes = [$adat['lakas_id'], $datum];
         $letezoEsemeny = adatokLekerese($rendelesEll, $ellenorzes);
@@ -155,16 +160,17 @@ if ($action === 'esemenyMentes') {
 
         //esemény mentése adatbázisba
         $felvitel = "INSERT INTO takaritas (lakasId, felhasznalo_id, takaritoErkezes, takaritoTavozas, befejezve) VALUES (?, ?, ?, ?, 0)";
+        // Az adatbázisba UTC formátumban mentjük
         $mentes = [$adat['lakas_id'], $adat['takarito_id'], $kezdoDatum->format('Y-m-d H:i:s'), $vegDatum->format('Y-m-d H:i:s')];
 
         $mentesEredmeny = adatokValtoztatasa($felvitel, $mentes);
 
         if($mentesEredmeny) {
             echo json_encode(['success' => true]);
-        }else{
+        } else {
             echo json_encode(['success' => false, 'error' => 'Adatbázis hiba']);
         }
-    }catch(Exception $e) {
+    } catch(Exception $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
     exit;

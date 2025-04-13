@@ -181,12 +181,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     async function updateEvent(eventData) {
         try {
+            // 2 óra hozzáadása ezredmásodpercben
+            const twoHoursInMillis = 7200000;
+            const adjustedStart = new Date(new Date(eventData.start).getTime() + twoHoursInMillis);
+            const adjustedEnd = new Date(new Date(eventData.end).getTime() + twoHoursInMillis);
+    
             const eredmeny = await fetch('../php/naptar.php?action=updateTakaritas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(eventData)
+                body: JSON.stringify({
+                    id: eventData.id,
+                    start: adjustedStart.toISOString(),
+                    end: adjustedEnd.toISOString(),
+                    takarito_id: eventData.takarito_id
+                })
             });
     
             if (!eredmeny.ok) {
@@ -195,9 +205,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     
             const data = await eredmeny.json();
             if (data.success) {
-                selectedEvent.setStart(eventData.start);
-                selectedEvent.setEnd(eventData.end);
-                // Ha frissítetted a takarító ID-ját, itt frissítheted az extendedProps-ot is
+                selectedEvent.setStart(adjustedStart);
+                selectedEvent.setEnd(adjustedEnd);
                 showToast("Takarítás sikeresen módosítva!", 'success');
             } else {
                 showToast("Hiba történt a takarítás módosítása során: " + data.error, 'danger');
@@ -257,7 +266,7 @@ async function deleteEvent(eventId) {
             const startTime = document.getElementById('start').value;
             const endTime = document.getElementById('end').value;
             
-
+            console.log(startTime, endTime);
 
             if (startTime >= endTime) {
                 showToast("A kezdeti időpont nem lehet később, mint a végső!", 'danger');
@@ -289,19 +298,27 @@ async function deleteEvent(eventId) {
     async function saveEvent(event) {
         const takaritoId = document.getElementById('takaritoSelect').value;
         const lakasId = new URLSearchParams(window.location.search).get('lakas_id');
-        
+    
         if (!takaritoId) {
             showToast('Válassz takarítót!', 'danger');
             return;
         }
     
+        // 2 óra hozzáadása ezredmásodpercben (2 * 60 * 60 * 1000)
+        const twoHoursInMillis = 7200000;
+        const adjustedStart = new Date(event.start.getTime() + twoHoursInMillis);
+        const adjustedEnd = new Date(event.end.getTime() + twoHoursInMillis);
+    
         try {
             const adat = {
-                start: event.start.toISOString(),
-                end: event.end.toISOString(),
+                start: adjustedStart.toISOString(),
+                end: adjustedEnd.toISOString(),
                 lakas_id: lakasId,
                 takarito_id: takaritoId
             };
+    
+            console.log("JS - Elküldött start (2 órával hozzáadva):", adat.start);
+            console.log("JS - Elküldött end (2 órával hozzáadva):", adat.end);
     
             const eredmeny = await fetch('../php/naptar.php?action=esemenyMentes', {
                 method: 'POST',
@@ -310,13 +327,13 @@ async function deleteEvent(eventId) {
                 },
                 body: JSON.stringify(adat)
             });
-
+    
             if (!eredmeny.ok) {
                 throw new Error(`HTTP hiba: ${eredmeny.status} ${eredmeny.statusText}`);
             }
-
+    
             const data = await eredmeny.json();
-            
+    
             if (data.success) {
                 calendar.refetchEvents();
                 showToast("Takarítás sikeresen megrendelve!", 'success');
