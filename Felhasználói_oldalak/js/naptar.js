@@ -181,11 +181,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     async function updateEvent(eventData) {
         try {
-            // 2 óra hozzáadása ezredmásodpercben
-            const twoHoursInMillis = 7200000;
-            const adjustedStart = new Date(new Date(eventData.start).getTime() + twoHoursInMillis);
-            const adjustedEnd = new Date(new Date(eventData.end).getTime() + twoHoursInMillis);
-    
             const eredmeny = await fetch('../php/naptar.php?action=updateTakaritas', {
                 method: 'POST',
                 headers: {
