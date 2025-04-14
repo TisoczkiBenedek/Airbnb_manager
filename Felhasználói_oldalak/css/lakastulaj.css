@@ -140,6 +140,8 @@ img {
 /* === Modal stílusok === */
 /* ======================== */
 
+
+
 /* Kép modal */
 #kepModal {
   display: none;
@@ -226,69 +228,78 @@ img {
   border-color: #545b62;
 }
 
-/* profil modál */
-
+/* Profil modál */
 #profilModal {
-  display: none;
-  position: fixed;
-  z-index: 1050;
+  text-align: center;
+  display: none; /* Alapértelmezésben rejtett */
+  position: fixed; /* Rögzített pozíció a képernyőn */
+  z-index: 1050; /* Magasabb z-index, hogy biztosan felül legyen */
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-  animation: modalFadeIn 0.3s;
+  width: 100%; /* Teljes szélesség */
+  height: 100%; /* Teljes magasság */
+  overflow: auto; /* Görgethető, ha a tartalom túl hosszú */
+  background-color: rgba(0, 0, 0, 0.5); /* Kissé sötétebb, áttetsző háttér */
+  animation: modalFadeIn 0.3s ease-out; /* Lágyabb megjelenési animáció */
+}
+
+@keyframes modalFadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 .profil-modal-content {
-  background-color: #f8f9fa;
-  margin: 10% auto;
-  padding: 25px;
-  border-radius: 10px;
+  background-color: #fff; /* Fehér háttér a tartalomnak */
+  margin: 5% auto; /* Nagyobb felső margó a középre igazításhoz */
+  padding: 30px; /* Nagyobb belső margó a kényelmesebb olvasáshoz */
+  border-radius: 8px; /* Kicsit lágyabb sarkok */
   width: 90%;
-  max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-width: 600px; /* Nagyobb maximális szélesség a jobb olvashatóságért szélesebb képernyőkön */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Finomabb, de hangsúlyosabb árnyék */
   position: relative;
-  border: 1px solid #dee2e6;
+  border: none; /* Nincs alapértelmezett szegély */
 }
 
 .profil-modal-content .close {
   position: absolute;
-  top: 15px;
-  right: 20px;
-  color: #6c757d;
-  font-size: 28px;
+  top: 10px; /* Kicsit feljebb helyezve */
+  right: 15px; /* Kicsit beljebb helyezve */
+  color: #888; /* Világosabb szín */
+  font-size: 32px; /* Nagyobb méret */
   font-weight: bold;
+  text-decoration: none; /* Nincs aláhúzás */
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.2s ease-in-out; /* Lágyabb színátmenet */
 }
 
-.profil-modal-content .close:hover {
-  color: #dc3545;
+.profil-modal-content .close:hover,
+.profil-modal-content .close:focus {
+  color: #333; /* Sötétebb szín hover/focus állapotban */
 }
 
-.profil-modal-content .form-label {
-  font-weight: 500;
-  color: #495057;
+.profil-modal-content .mb-3 {
+  margin-bottom: 20px; /* Nagyobb térköz az információs blokkok között */
+}
+
+.profil-modal-content label {
+  display: block;
+  font-size: 1.1em; /* Kicsit nagyobb betűméret */
+  font-weight: bold;
+  color: #555;
   margin-bottom: 8px;
 }
 
-.profil-modal-content .form-select {
-  width: 100%;
-  padding: 10px 15px;
-  font-size: 16px;
-  border: 2px solid #ced4da;
-  border-radius: 6px;
-  background-color: white;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  margin-bottom: 20px;
+.profil-modal-content h5[name] {
+  font-size: 1.2em; /* Kicsit nagyobb betűméret az értékeknek */
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee; /* Vékony vonal az adatok alatt a vizuális elválasztáshoz */
 }
 
-.profil-modal-content .form-select:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
-  outline: none;
+.profil-modal-content h5[name]:last-child {
+  border-bottom: none; /* Az utolsó adat alatt ne legyen vonal */
 }
 
 /* Gomb stílusok */
