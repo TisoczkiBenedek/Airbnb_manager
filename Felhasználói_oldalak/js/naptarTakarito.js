@@ -118,3 +118,13 @@ async function felhasznaloModal(){
 function profilModalBezaras() {
     document.getElementById('profilModal').style.display = 'none';
 }
+
+//egyesített modal záró
+document.addEventListener('click', function(event) {
+    const profilModal = document.getElementById('profilModal');
+
+    // Profil modal bezárása
+    if (event.target === profilModal) {
+        profilModalBezaras();
+    }
+})

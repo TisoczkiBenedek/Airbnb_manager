@@ -145,6 +145,7 @@ document.getElementById('modositForm').addEventListener('submit', async function
     const lakasId = formData.get('id');
 
     try {
+
         // Naptár fájl kezelése
         const icsFile = formData.get('naptarFeltoltes');
         if (icsFile && icsFile.size > 0) {
@@ -260,6 +261,7 @@ function kepModalBezaras() {
 document.addEventListener('click', function(event) {
     const profilModal = document.getElementById('profilModal');
     const kepModal = document.getElementById('kepModal');
+    const torlesModal = document.getElementById('torlesModal')
 
     // Profil modal bezárása
     if (event.target === profilModal) {
@@ -273,7 +275,7 @@ document.addEventListener('click', function(event) {
     
     // Törlés modal bezárása
     if (event.target === document.getElementById('torlesModal')) {
-        document.getElementById('torlesModal').style.display = 'none';
+        torlesModal.style.display = 'none';
     }
 })
 

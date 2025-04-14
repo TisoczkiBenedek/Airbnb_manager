@@ -131,6 +131,16 @@ try {
                             $megyemodTakTorl = "DELETE FROM `takaritas` WHERE takaritas.lakasId = ?";
                             $eredmeny = adatokValtoztatasa($megyemodTakTorl, [$id]);
                         }
+
+                        if($regiAdatok['cim'] != $data['cim']){
+                            $bontottRegiCim = explode(" ", $regiAdatok['cim']);
+                            $bontottUjCim = explode(" ", $data['cim']);
+
+                            if($bontottRegiCim[0] != $bontottUjCim[0] || $bontottRegiCim[1] != $bontottUjCim[1]){
+                                echo json_encode(["success" => false, "message" => "Irányítószámot, és várost bizonyos okokból módosítani nem lehet"]);
+                                exit;
+                            }
+                        }
                         
                         // 3. KÉP ELLENŐRZÉS
                         $regiKep = $regiAdatok['kepek'] ?? null;

@@ -330,3 +330,12 @@ window.addEventListener('load', megyelekeres)
 window.addEventListener('load', datumBeall)
 document.getElementById('mentes').addEventListener('click', mentes)
 document.getElementById("gomb").addEventListener("click", szabadsagRogzitese)
+//egyesített modal záró
+document.addEventListener('click', function(event) {
+    const profilModal = document.getElementById('profilModal');
+
+    // Profil modal bezárása
+    if (event.target === profilModal) {
+        profilModalBezaras();
+    }
+})
