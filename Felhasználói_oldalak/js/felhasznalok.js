@@ -297,6 +297,33 @@ async function kijelentkezes() {
     }
 }
 
+async function felhasznaloModal(){
+    const modal = document.getElementById('profilModal')
+    modal.style.display = 'block'
+    try {
+        let eredmeny = await fetch('../php/lakasok.php?action=getProfilAdat')
+    
+        if(eredmeny.ok){
+            let valasz = await eredmeny.json();
+
+            document.getElementById('felhNev').innerHTML = valasz.profilNev;
+            document.getElementById('felhEmail').innerHTML = valasz.emailcim;
+            document.getElementById('felhTelSzam').innerHTML = valasz.elerhetoseg;
+        }
+    } catch (error) {
+        console.log(error);
+
+        document.getElementById('felhNev').innerHTML = "Hiba történt a betöltés során!";
+        document.getElementById('felhEmail').innerHTML = "";
+        document.getElementById('felhTelSzam').innerHTML = "";
+    }
+}
+
+// Felhasználó modal bezárása
+function profilModalBezaras() {
+    document.getElementById('profilModal').style.display = 'none';
+}
+
 window.addEventListener('load', loadProfilNev)
 window.addEventListener('load', adatokLekerese)
 window.addEventListener('load', megyelekeres)
