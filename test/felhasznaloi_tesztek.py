@@ -167,7 +167,7 @@ def naptarEllenorzes():
     naptar.click()
     time.sleep(2)
     print("Az oldal címe: ", web.title)
-    web.save_screenshot(".\\kepek\\naptar.png")
+    web.save_screenshot("./test/kepek/naptartest.png")
     #kep = Image.open("naptar.png")
     #kep.show()
     time.sleep(2)
@@ -211,20 +211,82 @@ def torles_felhaszalo():
     valasz = web.find_elements(By.CLASS_NAME, "modal_valasz")
     print("PHP válasz törlésnél:", valasz[1].text)
 
+def lakasok_oldal():
+    menu = web.find_elements(By.CLASS_NAME, "dropdown-toggle")
+    menu[0].click()
+    elem = web.find_element(By.CLASS_NAME, "dropdown-menu")
+    li = elem.find_elements(By.TAG_NAME, "li")
+    li[1].click()
+    print("Oldal címe: ", web.title)
+    time.sleep(2)
+
+def lakas_modosit():
+    modositas = web.find_elements(By.CLASS_NAME, "card-body")
+    gomb = modositas[0].find_element(By.ID, "gomb")
+    gomb.click()
+    time.sleep(2)
+    email = web.find_element(By.ID, "email")
+    email.clear()
+    email.send_keys("valaki1@gmail.com")
+    time.sleep(2)
+    mentes = web.find_element(By.ID, "mentes")
+    mentes.click()
+    time.sleep(2)
+    web.save_screenshot("./test/kepek/lakasTesztMod.png")
+def lakas_torles():
+    modositas = web.find_elements(By.CLASS_NAME, "card-body")
+    gomb = modositas[0].find_elements(By.CLASS_NAME, "btn")
+    gomb[1].click()
+    time.sleep(2)
+    modal_footer = web.find_elements(By.CLASS_NAME, "modal-footer")
+    gombok = modal_footer[1].find_elements(By.CLASS_NAME, "btn")
+    gombok[1].click()
+    time.sleep(2)
+    web.save_screenshot("./test/kepek/lakasTesztTorles.png")
+def eszkozok_oldal():
+    menu = web.find_elements(By.CLASS_NAME, "dropdown-toggle")
+    menu[0].click()
+    elem = web.find_element(By.CLASS_NAME, "dropdown-menu")
+    li = elem.find_elements(By.TAG_NAME, "li")
+    li[2].click()
+    print("Oldal címe: ", web.title)
+    time.sleep(2)
+    web.save_screenshot("./test/kepek/eszkozokOldal.png")
+
+def takaritas_befejezve():
+    gomb = web.find_element(By.ID, "gomb")
+    gomb.click()
+    time.sleep(2)
+    megj = web.find_element(By.ID, "megj")
+    megj.send_keys("Szöveg szöveg szöveg123")
+    time.sleep(2)
+    mentes = web.find_element(By.ID, "mentes")
+    mentes.click()
+
+
+
 #Lakástulaj: tesztemail@gmail.com Jelszoteszt2
 #admin: envagyok1@gmail.com Kivagyoken1
 
 
 #regisztracioTeszt()
-bejelentkezesTeszt("tesztemail@gmail.com", "Jelszoteszt2")
+#bejelentkezesTeszt("tesztemail@gmail.com", "Jelszoteszt2")
 #lakasFeltoltes()
-lakasEllenorzes("Teszt1")
+#lakasEllenorzes("Teszt1")
 #lakasModositas()
-naptarEllenorzes()
+#naptarEllenorzes()
 #lakasTorles()
 #kijelentkezes()
 
 
 #bejelentkezesTeszt("envagyok1@gmail.com", "Kivagyoken1")
 #modositas_felhasznalo()
-torles_felhaszalo()
+#torles_felhaszalo()
+#lakasok_oldal()
+#lakas_modosit()
+#lakas_torles()
+#eszkozok_oldal()
+
+
+bejelentkezesTeszt("remekvizsga@gmail.com", "Jelszo1234")
+takaritas_befejezve()
