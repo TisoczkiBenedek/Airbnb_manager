@@ -262,6 +262,45 @@ def takaritas_befejezve():
     time.sleep(2)
     mentes = web.find_element(By.ID, "mentes")
     mentes.click()
+    time.sleep(2)
+    web.save_screenshot("./test/kepek/megjegyzes.png")
+    modal_footer = web.find_elements(By.CLASS_NAME, "modal-footer")
+    gombok = modal_footer[0].find_elements(By.CLASS_NAME, "btn")
+    gombok[0].click()
+    time.sleep(2)
+
+def szabadsagKivetel():
+    kezdo = web.find_element(By.ID, "kezd")
+    kezdo.send_keys("0020250421")
+    time.sleep(2)
+    veg = web.find_element(By.ID, "veg")
+    veg.clear()
+    veg.send_keys("0020250423")
+    time.sleep(2)
+    elem = web.find_elements(By.CLASS_NAME, "d-grid")
+    gomb =elem[0].find_element(By.ID, "gomb")
+    gomb.click()
+    time.sleep(1)
+    web.save_screenshot("./test/kepek/szabadsag.png")
+    time.sleep(1)
+def naptar_kijelentkezes():
+    menu= web.find_elements(By.CLASS_NAME, "dropdown-toggle")
+    menu[0].click()
+    time.sleep(1)
+    elem = web.find_elements(By.CLASS_NAME, "dropdown-menu")
+    li = elem[0].find_elements(By.TAG_NAME, "li")
+    li[1].click()
+    time.sleep(2)
+    print("Az oldal címe: "+ web.title)
+    web.save_screenshot("./test/kepek/takaritoNaptar.png")
+    menu= web.find_elements(By.CLASS_NAME, "dropdown-toggle")
+    menu[0].click()
+    time.sleep(1)
+    elem = web.find_elements(By.CLASS_NAME, "dropdown-menu")
+    li = elem[0].find_elements(By.TAG_NAME, "li")
+    li[3].click()
+    time.sleep(2)
+    print("Oldal címe kijelentkezés után: "+ web.title)
 
 
 
@@ -289,4 +328,6 @@ def takaritas_befejezve():
 
 
 bejelentkezesTeszt("remekvizsga@gmail.com", "Jelszo1234")
-takaritas_befejezve()
+#takaritas_befejezve()
+#szabadsagKivetel()
+naptar_kijelentkezes()

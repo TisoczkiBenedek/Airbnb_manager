@@ -60,7 +60,7 @@ function lekeres(){
     if($_SERVER["REQUEST_METHOD"] == "GET"){
         if(!empty($GLOBALS['fid'])){
             $id = $GLOBALS['fid'];
-            $muvelet = "SELECT takaritas.id, takaritas.lakasId, takaritas.felhasznalo_id, takaritas.takaritoErkezes, takaritas.befejezve, takaritas.megjegyzes, lakas.nev, lakas.cim, lakas.terulet, lakas.medence, lakas.szauna, lakas.belepesi_adatok, felhasznalo.elerhetoseg FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id and DATE(takaritas.takaritoErkezes) = DATE(NOW()) and takaritas.befejezve = 0;";
+            $muvelet = "SELECT takaritas.id, takaritas.lakasId, takaritas.felhasznalo_id, takaritas.takaritoErkezes, takaritas.takaritoTavozas, takaritas.befejezve, takaritas.megjegyzes, lakas.nev, lakas.cim, lakas.terulet, lakas.medence, lakas.szauna, lakas.belepesi_adatok, felhasznalo.elerhetoseg FROM takaritas inner join lakas on lakas.id = takaritas.lakasid inner join felhasznalo on felhasznalo.id = lakas.felhasznalo_id WHERE takaritas.felhasznalo_id = $id and DATE(takaritas.takaritoErkezes) = DATE(NOW()) and takaritas.befejezve = 0;";
             $eredmeny = adatokLekerese($muvelet);
             if(is_array($eredmeny)){
                 echo json_encode($eredmeny, JSON_UNESCAPED_UNICODE);

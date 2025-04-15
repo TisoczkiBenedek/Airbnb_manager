@@ -74,8 +74,12 @@ function kiiras(adatok){
         cardb.appendChild(p3)
         let p4 = document.createElement('p')
         p4.classList.add('card-text')
-        p4.innerHTML ="Lakás mérete: "+ adat['terulet']+" m<sup>2</sup>"
+        p4.innerHTML ="Távozási időpont: "+ adat['takaritoTavozas']
         cardb.appendChild(p4)
+        let p5 = document.createElement('p')
+        p5.classList.add('card-text')
+        p5.innerHTML ="Lakás mérete: "+ adat['terulet']+" m<sup>2</sup>"
+        cardb.appendChild(p5)
         let p0 = document.createElement('p')
         p0.classList.add('card-text')
         p0.innerHTML = adat['id']
@@ -210,23 +214,34 @@ async function szabadsagRogzitese(){
     try {
         let kezd = document.getElementById("kezd").value
         let veg = document.getElementById("veg").value 
-        let kuldendo = {
-            "kezd": kezd,
-            "veg": veg
+        let kezdDatum = new Date(kezd).getTime()
+        let vegDatum = new Date(veg).getTime()
+        if(kezdDatum>vegDatum){
+            szabadsagVisszajelz({"valasz":"A kezdődátum nem lehet kisebb mint a befejezés dátuma!"}, false)
         }
-        let eredmeny = await fetch("../php/felhasznalok.php/szabadsag", {
-            method : "PUT",
-            headers : {
-                "Content-Type": "application/json"
-            },
-            body : JSON.stringify(kuldendo)
-        })
-        let adatok = await eredmeny.json()
-        let siker = true
-        if(!eredmeny.ok){
-            siker = false
+        else if(kezdDatum == vegDatum){
+            szabadsagVisszajelz({"valasz":"A két dátum azonos!"}, false)
         }
-        szabadsagVisszajelz(adatok, siker)
+        else{
+            let kuldendo = {
+                "kezd": kezd,
+                "veg": veg
+            }
+            let eredmeny = await fetch("../php/felhasznalok.php/szabadsag", {
+                method : "PUT",
+                headers : {
+                    "Content-Type": "application/json"
+                },
+                body : JSON.stringify(kuldendo)
+            })
+            let adatok = await eredmeny.json()
+            let siker = true
+            if(!eredmeny.ok){
+                siker = false
+            }
+            szabadsagVisszajelz(adatok, siker)
+        }
+        
 
     } catch (error) {
         console.log(error)
