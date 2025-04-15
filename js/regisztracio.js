@@ -6,7 +6,7 @@ function ellenorzes(){
     let telefon = document.getElementById('telefonszam').value
     let radioeredmeny = document.querySelector('input:checked')
     let megye = document.getElementById('megye').value
-    const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ][a-zéáűúőóüöí]{1,})/)
+    const nev = new RegExp(/^([A-ZÉÁŰÚŐÜÖÓÍ][a-zéáűúőóüöí]{1,}$)/)
     const tel = new RegExp(/(^\+?\d[0-9]{10})$/g)
     let visszajelz = document.getElementById("visszajelz")
     let tbody = document.getElementById("tbody")
