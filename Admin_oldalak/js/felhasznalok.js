@@ -116,8 +116,6 @@ function modositasModal(id){
     p[0].innerText = ""
     p[0].style.border = "none"
     p[0].hidden = true
-    //let modalcim = document.getElementById('modal_cim')
-    //modalcim.innerText = "Lakás módosítása "
     let span = document.getElementById('modal_felh_email')
     span.innerText = ""
     span.innerText = id

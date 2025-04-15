@@ -1,3 +1,20 @@
 header{
     text-align: center;
+    background-color: white;
+}
+body{
+    background-image: url("./hatter3.png");
+    background-size: contain;
+}
+#tartalom{
+    background-color: white;
+    width: 50%;
+    margin: auto;
+    padding: 5px;
+    margin-top: 5px;
+}
+#inf{
+    text-align: center;
+    border: 5px solid;
+    border-color: #87c6f5;
 }
