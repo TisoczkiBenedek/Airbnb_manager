@@ -50,11 +50,9 @@ def regisztracioTeszt():
     gomb = web.find_element(By.ID, "gomb")
     gomb.send_keys(Keys.ENTER)
     time.sleep(2)
-    alert = web.switch_to.alert
-    alert.accept()
-    #alert = web.find_element(By.LINK_TEXT, "Már van ezzel az e-mail címmel regisztrált felhasználó! Kérem próbáljon meg bejelentkezni!")
+    web.save_screenshot("./test/kepek/regisztracioKep.png")
     #alert.click()
-    time.sleep(2)
+    #time.sleep(2)
 def bejelentkezesTeszt(felh, jelszoIras):
     web.get(url)
     elem = web.find_elements(By.CLASS_NAME, "btn")
