@@ -115,6 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <ul class="navbar-nav me-auto">
               <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="menu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    További oldalak
                   </a>
                   <ul class="dropdown-menu dropdown-menu-dark bg-dark" aria-labelledby="menu">
                       <li><a class="dropdown-item" href="../html/felhasznalok.html">Felhasználók</a></li>
