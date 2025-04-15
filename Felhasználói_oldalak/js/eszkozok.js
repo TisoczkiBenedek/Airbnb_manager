@@ -135,7 +135,6 @@ function valaszFelh(valasz, siker) {
     }
     const toastBootstrap = new bootstrap.Toast(toast)
     toastBootstrap.show()
-    //setTimeout(() => vhely.hidden = true, 5005)
 }
 async function igenyeltEszkozLeker() {
     try {
