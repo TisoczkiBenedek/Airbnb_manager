@@ -96,7 +96,7 @@ function kiiras(adatok){
         let button = document.createElement('input')
         button.type = "button"
         button1.value = "Módosítás"
-        button.classList.add("btn","btn-danger", "mx-2")
+        button.classList.add("btn","btn-danger", "mx-2", "mt-sm-2", "mt-lg-0", "mt-md-2")
         button.value = "Törlés"
         button.setAttribute("onclick", "torlesModal("+"'"+adat['emailcim']+"'"+")")
         button.setAttribute("data-bs-toggle", "modal")
