@@ -27,7 +27,7 @@ async function lakasTorles(lakasId) {
             result = JSON.parse(rawResponse);
         } catch (error) {
             console.error("A szerver nem JSON választ küldött:", rawResponse);
-            throw new Error("A szerver hibás választ küldött.");
+            throw new Error("Hiba történt!");
         }
 
         if (result.success) {

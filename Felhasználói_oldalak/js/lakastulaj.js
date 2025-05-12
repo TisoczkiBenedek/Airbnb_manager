@@ -141,42 +141,40 @@ async function modositasModal(id) {
 
 document.getElementById('modositForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const formData = new FormData(this);
-    const lakasId = formData.get('id');
-
     try {
-
-        // Naptár fájl kezelése
-        const icsFile = formData.get('naptarFeltoltes');
-        if (icsFile && icsFile.size > 0) {
-            const icsContent = await icsFile.text();
-            formData.set('naptar_content', icsContent);
-        }
-
-        // Kép fájl kezelése
-        const kepFile = formData.get('kepFeltoltes');
-        if (kepFile && kepFile.size > 0) {
-            formData.set('kepFeltoltes', kepFile);
-        }
-
-        // Küldés a szervernek
         const response = await fetch(`../php/lakasok.php?action=modositas`, {
             method: 'POST',
-            body: formData
+            body: new FormData(this)
         });
 
-        const result = await response.json();
-        
-        if (result.success) {
-            showToast("Sikeres módosítás!", 'success');
+        // Hibakezelés: válasz szövegének kiírása konzolra
+        const responseText = await response.text();
+        console.log("Szerver válasz:", responseText);
+
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (parseError) {
+            // Ellenőrizzük, hogy a válasz tartalmaz-e irányítószám hibát
+            if (responseText.includes("Hiba: Az irányítószám formátuma nem megfelelő")) {
+                showToast("Hiba: Az irányítószám formátuma nem megfelelő. 4 karaktert kell megadni.", 'danger');
+                return; // Megállítjuk a további feldolgozást
+            }
+            // Ha nem irányítószám hiba, akkor dobjuk az eredeti hibát
+            throw new Error("Érvénytelen JSON válasz a szervertől: " + parseError.message);
+        }
+
+        if (!response.ok || !result.success) {
+            // Pontos hibaüzenet megjelenítése
+            showToast(result.message || "Ismeretlen hiba történt", 'danger');
+        } else {
+            showToast(result.message || "Sikeres módosítás", 'success');
             adatokLekerese();
             $('#modal_modosit').modal('hide');
-        } else {
-            showToast("Hiba történt", 'danger');
         }
     } catch (error) {
-        console.error('Hiba:', error);
-        showToast("Szerverhiba történt", 'danger');
+        console.error("Hiba:", error);
+        showToast(error.message || "Szerverhiba történt", 'danger');
     }
 });
 

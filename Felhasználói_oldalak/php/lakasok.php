@@ -83,7 +83,6 @@ try {
                         if (!isset($_POST['id'])) {
                             throw new Exception("Hiányzó lakás azonosító.");
                         }
-
             
                         $id = $_POST['id'];
                         $data = [
@@ -96,15 +95,23 @@ try {
                             'belepesi_adatok' => $_POST['belepesi_adatok'] ?? ''
                         ];
             
-                        if(empty($_POST['nev']) || empty($_POST['cim']) || empty($_POST['terulet']) || empty($_POST['megye'])){
-                            die(json_encode(['success' => false, 'message' => 'Minden kötelező mezőt ki kell tölteni!']));
+                        if (empty($_POST['nev']) || empty($_POST['cim']) || empty($_POST['terulet']) || empty($_POST['megye'])) {
+                            echo json_encode([
+                                'success' => false,
+                                'message' => 'Hiba: Minden kötelező mezőt ki kell tölteni!',
+                            ], JSON_UNESCAPED_UNICODE);
+                            exit;
                         }
+            
                         // Cím ellenőrzés - már létezik-e másik lakásnál ez a cím (kivéve az aktuálisat)
                         $ellenorzes = "SELECT lakas.cim FROM `lakas` WHERE LOWER(lakas.cim) = LOWER(?) AND id != ?";
                         $eredmeny = adatokLekerese($ellenorzes, [$data['cim'], $id]);
-
+            
                         if (!empty($eredmeny)) {
-                            echo json_encode(['success' => false, 'message' => "Ez a lakcím már szerepel a rendszerünkben."], JSON_UNESCAPED_UNICODE);
+                            echo json_encode(
+                                ['success' => false, 'message' => "Hiba: Ez a lakcím már szerepel a rendszerünkben."],
+                                JSON_UNESCAPED_UNICODE
+                            );
                             exit;
                         }
             
@@ -112,62 +119,77 @@ try {
                         $muvelet = "SELECT * FROM lakas WHERE id = ?";
                         $eredmeny = adatokLekerese($muvelet, [$id]);
                         $regiAdatok = $eredmeny[0] ?? null;
-                        
+            
                         // 2. VÁLTOZÁS ELLENŐRZÉSE
                         $valtozasVan = false;
                         if ($regiAdatok) {
-                            if ($regiAdatok['nev'] !== $data['nev'] ||
+                            if (
+                                $regiAdatok['nev'] !== $data['nev'] ||
                                 $regiAdatok['cim'] !== $data['cim'] ||
                                 $regiAdatok['terulet'] != $data['terulet'] ||
                                 $regiAdatok['medence'] != $data['medence'] ||
                                 $regiAdatok['szauna'] != $data['szauna'] ||
                                 $regiAdatok['megye_id'] != $data['megye_id'] ||
-                                $regiAdatok['belepesi_adatok'] !== $data['belepesi_adatok']) {
+                                $regiAdatok['belepesi_adatok'] !== $data['belepesi_adatok']
+                            ) {
                                 $valtozasVan = true;
                             }
                         }
-
-                        if($regiAdatok['megye_id'] != $data['megye_id']){
+            
+                        if ($regiAdatok['megye_id'] != $data['megye_id']) {
                             $megyemodTakTorl = "DELETE FROM `takaritas` WHERE takaritas.lakasId = ?";
                             $eredmeny = adatokValtoztatasa($megyemodTakTorl, [$id]);
                         }
-
-                        if($regiAdatok['cim'] != $data['cim']){
+            
+                        if ($regiAdatok['cim'] != $data['cim']) {
                             $bontottRegiCim = explode(" ", $regiAdatok['cim']);
                             $bontottUjCim = explode(" ", $data['cim']);
-
-                            if($bontottRegiCim[0] != $bontottUjCim[0] || $bontottRegiCim[1] != $bontottUjCim[1]){
-                                echo json_encode(["success" => false, "message" => "Irányítószámot, és várost bizonyos okokból módosítani nem lehet"]);
+            
+                            // Ellenőrizzük az irányítószám hosszát (az első rész 4 karakter kell, hogy legyen)
+                            if (strlen($bontottUjCim[0]) != 4) {
+                                echo json_encode([
+                                    "success" => false,
+                                    "message" => "Hiba: Az irányítószám formátuma nem megfelelő.  4 karaktert kell megadni.",
+                                ], JSON_UNESCAPED_UNICODE);
+                                exit;
+                            }
+                            
+                            if ($bontottRegiCim[0] != $bontottUjCim[0] || $bontottRegiCim[1] != $bontottUjCim[1]) {
+                                echo json_encode(
+                                    ["success" => false, "message" => "Hiba: Irányítószámot és várost nem lehet módosítani."],
+                                    JSON_UNESCAPED_UNICODE
+                                );
                                 exit;
                             }
                         }
-                        
+            
                         // 3. KÉP ELLENŐRZÉS
                         $regiKep = $regiAdatok['kepek'] ?? null;
                         $ujKep = $regiKep;
-                        
+            
                         if (!empty($_FILES['kepFeltoltes']['name'])) {
                             $valtozasVan = true;
                             $engedett = ['image/jpeg', 'image/jpg', 'image/png', 'image/jfif'];
-
-                            if(!in_array($_FILES['kepFeltoltes']['type'], $engedett)){
-                                die(json_encode(['success' => false, 'message' => 'Csak JPG/PNG/JFIF formátum!']));
+            
+                            if (!in_array($_FILES['kepFeltoltes']['type'], $engedett)) {
+                                echo json_encode(['success' => false, 'message' => 'Hiba: Csak JPG/PNG/JFIF formátum engedélyezett!'], JSON_UNESCAPED_UNICODE);
+                                exit;
                             }
-
+            
                             if (!empty($_FILES['kepFeltoltes']['name'])) {
                                 $uploadDir = "../php/uploads/lakas_{$id}/kepek/";
                                 if (!file_exists($uploadDir)) {
                                     mkdir($uploadDir, 0755, true);
                                 }
                             }
-
+            
                             $fileName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES['kepFeltoltes']['name']);
                             $kepPath = $uploadDir . $fileName;
-                            
+            
                             if (!move_uploaded_file($_FILES['kepFeltoltes']['tmp_name'], $kepPath)) {
-                                throw new Exception("Képfeltöltés sikertelen.");
+                                throw new Exception("Hiba: Képfeltöltés sikertelen.");
                             }
-
+            
                             if ($regiKep && file_exists($regiKep)) {
                                 unlink($regiKep);
                             }
@@ -178,31 +200,31 @@ try {
                         if (!empty($_FILES['naptarFeltoltes']['tmp_name'])) {
                             $icsContent = file_get_contents($_FILES['naptarFeltoltes']['tmp_name']);
                             $muvelet = "INSERT INTO naptarak (lakas_id, file_name, file_content) 
-                                        VALUES (?, ?, ?)
-                                        ON DUPLICATE KEY UPDATE 
-                                        file_name = VALUES(file_name), 
-                                        file_content = VALUES(file_content)";
+                                                        VALUES (?, ?, ?)
+                                                        ON DUPLICATE KEY UPDATE 
+                                                        file_name = VALUES(file_name), 
+                                                        file_content = VALUES(file_content)";
                             $params = [$id, $_FILES['naptarFeltoltes']['name'], $icsContent];
                             adatokValtoztatasa($muvelet, $params);
                         }
-
+            
                         // 5. HA NINCS VÁLTOZÁS
                         if (!$valtozasVan) {
-                            echo json_encode(["success" => true, "message" => "Nem volt módosítás"]);
+                            echo json_encode(["success" => true, "message" => "Nem történt módosítás."], JSON_UNESCAPED_UNICODE);
                             exit;
                         }
             
                         // 5. SQL FRISSÍTÉS
                         $muvelet = "UPDATE lakas SET 
-                            nev = ?, 
-                            cim = ?, 
-                            terulet = ?, 
-                            medence = ?, 
-                            szauna = ?, 
-                            megye_id = ?, 
-                            belepesi_adatok = ?" 
-                            . (!empty($data['kepek']) ? ", kepek = ?" : "") . 
-                            " WHERE id = ? AND felhasznalo_id = ?";
+                                    nev = ?, 
+                                    cim = ?, 
+                                    terulet = ?, 
+                                    medence = ?, 
+                                    szauna = ?, 
+                                    megye_id = ?, 
+                                    belepesi_adatok = ?" 
+                                    . (!empty($data['kepek']) ? ", kepek = ?" : "") . 
+                                    " WHERE id = ? AND felhasznalo_id = ?";
             
                         $params = [
                             $data['nev'],
@@ -224,21 +246,23 @@ try {
                         $eredmeny = adatokValtoztatasa($muvelet, $params);
             
                         if ($eredmeny >= 0) {
-                            echo json_encode(["success" => true, "message" => $eredmeny > 0 ? "Sikeres módosítás" : "Nem volt módosítás"]);
+                            echo json_encode(
+                                ["success" => true, "message" => $eredmeny > 0 ? "Sikeres módosítás." : "Nem történt módosítás."],
+                                JSON_UNESCAPED_UNICODE
+                            );
                         } else {
                             http_response_code(400);
-                            echo json_encode(["success" => false, "message" => "Hiba történt a módosítás során"]);
+                            echo json_encode(["success" => false, "message" => "Hiba: A módosítás során hiba lépett fel."], JSON_UNESCAPED_UNICODE);
                         }
                     } catch (Exception $e) {
                         http_response_code(400);
                         echo json_encode([
                             'success' => false,
-                            'message' => $e->getMessage()
-                        ]);
+                            'message' => 'Hiba: ' . $e->getMessage(),
+                        ], JSON_UNESCAPED_UNICODE);
                     }
                 }
-                break;
-
+                break;            
     }
 } catch (Exception $e) {
     // Szerverhiba esetén hibaüzenet
